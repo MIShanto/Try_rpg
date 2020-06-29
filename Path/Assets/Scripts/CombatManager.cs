@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    [SerializeField] GameObject ArrowPrefab;
+    ObjectPooler objectPooler;
     Animator animator;
     Movement characterMovement;
     Coroutine attackCoroutine;
@@ -30,10 +30,11 @@ public class CombatManager : MonoBehaviour
     
 
     Vector2 playerPos;
-    Vector2 ArrowPos;
+    Vector2 arrowPos;
 
     private void Start()
     {
+        objectPooler = ObjectPooler.Instance;
         animator = GetComponent<Animator>();
         characterMovement = GetComponent<Movement>();
         rb = GetComponent<Rigidbody2D>();
@@ -45,9 +46,9 @@ public class CombatManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(playerPos != null)
-            playerPos = GetComponent<Movement>().player.transform.position;
-        ArrowPos = transform.position;
+        if(characterMovement.player != null)
+            playerPos = characterMovement.player.transform.position;
+        arrowPos = transform.position;
     }
 
 
@@ -89,18 +90,13 @@ public class CombatManager : MonoBehaviour
             isAttacking = false;
             animator.SetBool("Attack", isAttacking);
 
-            characterMovement.MovementControl = Movement.MovementControls.walk;
-            characterMovement.OnFreezeInputDisable();
+            if (characterMovement.MovementControl != Movement.MovementControls.chargedAttack)
+            {
+                characterMovement.MovementControl = Movement.MovementControls.walk;
+                characterMovement.OnFreezeInputDisable();
+            }
+            
         }
-    }
-
-
-    public void KnockOff(Vector2 facingDirection)
-    {
-        animator.SetTrigger("KnockOff");
-        rb.AddForce(facingDirection  * 500);
-        Debug.Log(facingDirection);
-
     }
 
     /// <summary>
@@ -228,22 +224,27 @@ public class CombatManager : MonoBehaviour
         {
             if (!isDead)
             {
+                characterMovement.otherCharacterFacingDirection =
+                            otherCharacter.GetComponent<Movement>().myFacingDirection;
+
                 if (!isBlocked)
                 {
                     //decrease health..
                     currentHealth -= damage;
 
                     // DEMO...(knock off)
-                    if (AttackState == Movement.MovementControls.chargedAttack && currentHealth>0)
+                    if (AttackState == Movement.MovementControls.chargedAttack && currentHealth > 0)
                     {
                         //Debug.Log(otherCharacter.GetComponent<Movement>().myFacingDirection); 
-                        characterMovement.otherCharacterFacingDirection = 
-                            otherCharacter.GetComponent<Movement>().myFacingDirection;
+
                         characterMovement.MovementControl = Movement.MovementControls.knockedOff;
                         characterMovement.OnFreezeInputEnable();
                     }
                     else
+                    {
                         animator.SetTrigger("GetHit");
+                        characterMovement.OnHitPush();
+                    }
                 }
                 else
                 {
@@ -251,14 +252,16 @@ public class CombatManager : MonoBehaviour
                     currentHealth -= damage*0.5f;
 
                     OnBlockDisable();
+                    characterMovement.OnHitPush();
                 }
+                
             }
         }
         // if enemy hits player then this section of codes will activate..
         else
         {
             if(!isDead)
-            {
+            { 
                 currentHealth -= damage;
 
                 if (AttackState == Movement.MovementControls.chargedAttack && currentHealth>0)
@@ -268,6 +271,13 @@ public class CombatManager : MonoBehaviour
                             otherCharacter.GetComponent<Movement>().myFacingDirection;
                     characterMovement.MovementControl = Movement.MovementControls.knockedOff;
                     characterMovement.OnFreezeInputEnable();
+                }
+                else if (AttackState != Movement.MovementControls.none)
+                {
+                    characterMovement.otherCharacterFacingDirection =
+                             otherCharacter.GetComponent<Movement>().myFacingDirection;
+                    animator.SetTrigger("GetHit");
+                    characterMovement.OnHitPush();
                 }
             }
         }
@@ -305,22 +315,21 @@ public class CombatManager : MonoBehaviour
     /// </summary>
     public void LaunchArrow()
     {
-        GameObject arrow = Instantiate(ArrowPrefab, ArrowPos, Quaternion.identity);
-        Destroy(arrow.gameObject, 3f);
+        GameObject arrow = objectPooler.SpawnFromPool("Arrow", arrowPos, Quaternion.identity);
 
-        Vector2 Vo = calculateVelocity(ArrowPos, playerPos, 1);
+        Vector2 Vo = calculateVelocity(arrowPos, playerPos, 1);
 
         arrow.GetComponent<Rigidbody2D>().velocity = Vo;
 
-        arrow.GetComponent<Projectile>().setRotation(Mathf.Acos(Vo.x / Vo.magnitude) * Mathf.Rad2Deg);
+        arrow.GetComponent<Projectile>().setRotation(Mathf.Acos(Vo.x / Vo.magnitude) * Mathf.Rad2Deg, playerPos);
     }
 
     /// <summary>
     /// Used to calculate the velocity vector and the trajectory..
     /// </summary>
-    private Vector2 calculateVelocity(Vector2 ArrowPos, Vector2 playerPos, float fightTime)
+    private Vector2 calculateVelocity(Vector2 arrowPos, Vector2 playerPos, float fightTime)
     {
-        Vector2 distance = playerPos - ArrowPos;
+        Vector2 distance = playerPos - arrowPos;
         Vector2 distanceX = distance;
         distanceX.y = 0f;
 

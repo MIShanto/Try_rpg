@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 3621261065156082778}
   m_Layer: 9
   m_Name: Archer
-  m_TagString: Enemy
+  m_TagString: Archer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  target: {fileID: 0}
+  target: {fileID: 2751545783011731723, guid: 980ff0b8ecdd77547953aa37079e16d9, type: 3}
 --- !u!114 &3621261065156082755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,19 +236,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: 1
+  foo: 1
+  path: {fileID: 0}
   player: {fileID: 0}
   characterMoveSpeed: 0
-  dashEffectPrefab: {fileID: 0}
+  nextAttackTime: 1
+  attackIndex: 0
   dashSpeed: 0
   startDashTime: 0.1
   rollSpeed: 0
   startRollTime: 0.1
-  starAttackTime: 0.25
+  knockSpeed: 0
+  startKnockTime: 0
+  chargedAttackSpeed: 0
+  startAttackTime: 0
+  chargedAttackTime: 0
+  stamina: 0
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
+  enemyHealingAmount: 0
   direction: {x: 0, y: 0}
-  facingDirection: {x: 0, y: 0}
+  myFacingDirection: {x: 0, y: 0}
+  otherCharacterFacingDirection: {x: 0, y: 0}
+  isCharacterControllable: 1
+  isHealer: 0
+  healing: 0
+  speedFactor: 1
+  MovementControl: 0
 --- !u!114 &3621261065156082778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,14 +276,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5478a661663b72441b76f87f8b5a4cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: 1
   ArrowPrefab: {fileID: 3407171059142659467, guid: a5a4dceeef08075438d21b1ad42500d0,
     type: 3}
   hitboxes: []
   hitboxRange: 0
+  midHitboxRange: 0
   hitLayer:
     serializedVersion: 2
     m_Bits: 1024
   maxHealth: 100
   currentHealth: 0
   swordDamage: 0
+  chargedDamage: 0
+  isDead: 0
+  isAttacking: 0
+  isBlocked: 0

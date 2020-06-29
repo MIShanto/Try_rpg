@@ -19,43 +19,28 @@ public class Movement : MonoBehaviour
 
     Rigidbody2D rb;
     Animator animator;
-    
-    
-    [Header("player movement functionality")]
-    [SerializeField] float characterMoveSpeed;
+
+    [HideInInspector] public  float characterMoveSpeed;
     float moveSpeed;
 
-    [Space]
-    [Tooltip("character next attack time")]
-    [SerializeField] float nextAttackTime, attackIndex;
+    [HideInInspector]public float nextAttackTime, attackIndex;
 
-
-    [Header("Additional move effects functionality")]
-    [SerializeField] float dashSpeed;
-    [SerializeField] float startDashTime;
+    [HideInInspector]public float dashSpeed, startDashTime;
     float dashTime;
 
-    [Space]
-    [SerializeField] float rollSpeed;
-    [SerializeField] float startRollTime;
+    [HideInInspector] public float rollSpeed, startRollTime;
     float rollTime;
 
-    [Space]
-    [SerializeField] float knockSpeed;
-    [SerializeField] float startKnockTime;
+    [HideInInspector] public float knockSpeed, startKnockTime;
     float knockTime;
 
-    [Space]
-    [SerializeField] float chargedAttackSpeed;
-    [SerializeField] float startAttackTime;
-    [SerializeField] public float chargedAttackTime;
-    [SerializeField] float stamina;
+    [HideInInspector] public float chargedAttackSpeed, startAttackTime, chargedAttackTime, chargedDistance, waitAfterAttackDuration;
+    [SerializeField] public float stamina;
     float staminaDecreaseRate = 20;
+    bool waiting = false;
 
-    [Space]
     [SerializeField] LayerMask obstacleLayer;
-    [SerializeField] float enemyHealingAmount;
-
+    [HideInInspector]public float enemyHealingAmount;
 
     [HideInInspector] public Vector2 direction, myFacingDirection, otherCharacterFacingDirection;
     [HideInInspector] public bool isCharacterControllable = true, isHealer = false, healing = false;
@@ -68,7 +53,7 @@ public class Movement : MonoBehaviour
     //movement states..
     public  enum MovementControls
     {
-        walk, dash, roll, attack, block, chargedAttack, knockedOff
+        walk, dash, roll, attack, block, chargedAttack, knockedOff, none
     }
     public  MovementControls MovementControl;
 
@@ -79,7 +64,7 @@ public class Movement : MonoBehaviour
         animator = GetComponent<Animator>();
 
         player = GameObject.FindGameObjectWithTag("Player");
-        path = GetComponentInParent<AIPath>();
+        path = GetComponent<AIPath>();
 
         dashTime = startDashTime;
         rollTime = startRollTime;
@@ -212,7 +197,6 @@ public class Movement : MonoBehaviour
             {
                 MovementControl = MovementControls.attack;
                 attackIndex = 0;
-                nextAttackTime = 0.25f;
                 OnFreezeInputEnable();
             }
             
@@ -272,12 +256,9 @@ public class Movement : MonoBehaviour
     private void DoEnemyStuffsInUpdate()
       {
         // movement animation
-        if (isCharacterControllable && MovementControl == MovementControls.walk)
-        {
-            AnimateMovementEnemy();
-        }
+        AnimateMovementEnemy();
 
-      }
+    }
     private void DoEnemyStuffsInFixedUpdate()
     {
         if (isCharacterControllable && MovementControl == MovementControls.walk)
@@ -304,11 +285,11 @@ public class Movement : MonoBehaviour
 
     /// <summary>
     /// Animates the enemy character during movement..
-    /// This need to polish.. will cover later
+    /// This need to polish.. will cover aste aste
     /// </summary>
     private void AnimateMovementEnemy()
     {
-
+        // aro better kisu paile replace kore nite hobe..(need optimization).. 
         direction = (player.transform.position - transform.position);
 
         direction.Normalize();
@@ -327,58 +308,68 @@ public class Movement : MonoBehaviour
     private void EnemyPathCheck()
     {
         //if destination reached enemy will play attack animation otherwise play move animation
-        if (!path.reachedDestination && player != null)
+        if (!path.reachedDestination && player != null && !player.GetComponent<CombatManager>().isDead)
         {
-            MoveEnemy();
+
+
+            if (gameObject.tag == "ChargedEnemy" &&
+                    !Physics2D.Raycast(transform.position, direction,
+                    Vector2.Distance(transform.position, player.transform.position), obstacleLayer) &&
+                    Vector2.Distance(transform.position, player.transform.position) <= chargedDistance)
+            {
+                MovementControl = MovementControls.chargedAttack;
+                AttackEnemySettings();
+            }
+            else
+            {
+                MoveEnemy();
+            }
         }
         else
         {
-            if (gameObject.tag == "ChargedEnemy" &&
-                    !Physics2D.Raycast(transform.position, direction,
-                        Vector2.Distance(transform.position, player.transform.position), obstacleLayer))
+            if (!player.GetComponent<CombatManager>().isDead && player != null)
             {
-                // if player is alive enemy will perform attack..
-                if (!player.GetComponent<CombatManager>().isDead && player != null)
+                if (gameObject.tag == "ChargedEnemy")
                 {
                     MovementControl = MovementControls.chargedAttack;
-                    AttackEnemy();
+                    AttackEnemySettings();
                 }
-            }
-            else if (gameObject.tag == "Archer" &&
-                        Vector2.Distance(transform.position, player.transform.position) <= 2f)
-            {
-                Reposition();
-            }
-
-            else if(gameObject.CompareTag("Swordman"))
-            {
-                if(isHealer)
+                 /*if (gameObject.tag == "Archer" &&
+                            Vector2.Distance(transform.position, player.transform.position) <= 2f)
                 {
-                    animator.SetFloat("Speed", 0f);
-                    path.endReachedDistance = 3f;
-                    if ((myCombatManager.currentHealth < myCombatManager.maxHealth) && !healing)
-                    {
-                        healing = true;
+                    Reposition();
+                }*/
 
-                        if (healingCoroutine != null)
+                else if (gameObject.CompareTag("Swordman"))
+                {
+                    if (isHealer)
+                    {
+                        animator.SetFloat("Speed", 0f);
+                        path.endReachedDistance = 3f;
+                        if ((myCombatManager.currentHealth < myCombatManager.maxHealth) && !healing)
                         {
-                            StopCoroutine(healingCoroutine);
+                            healing = true;
+
+                            if (healingCoroutine != null)
+                            {
+                                StopCoroutine(healingCoroutine);
+                            }
+                            healingCoroutine = StartCoroutine(SlowHeal());
                         }
-                        healingCoroutine = StartCoroutine(SlowHeal());
+                    }
+                    else
+                    {
+                        MovementControl = MovementControls.attack;
+                        path.endReachedDistance = 1f;
+                        AttackEnemySettings();
                     }
                 }
+
                 else
                 {
                     MovementControl = MovementControls.attack;
-                    path.endReachedDistance = 1f;
-                    AttackEnemy();
+                    AttackEnemySettings();
                 }
-            }
-
-            else
-            {
-                MovementControl = MovementControls.attack;
-                AttackEnemy();
             }
         }
     }
@@ -417,7 +408,7 @@ public class Movement : MonoBehaviour
         OnFreezeInputEnable();
         rb.velocity = -myFacingDirection * 3f;
 
-        if (Vector2.Distance(transform.position, player.transform.position) >= path.endReachedDistance + 0.1f)
+        if (Vector2.Distance(transform.position, player.transform.position) >= path.endReachedDistance)
         {
             OnFreezeInputDisable();
             enemyPlayerDistanceAdjustment = false;
@@ -427,7 +418,7 @@ public class Movement : MonoBehaviour
     /// <summary>
     /// This is used to set attack animation of enemy and freeze input during attack
     /// </summary>
-    private void AttackEnemy()
+    private void AttackEnemySettings()
     {
         animator.SetFloat("Speed", 0f);
         attackIndex = 0;
@@ -511,7 +502,6 @@ public class Movement : MonoBehaviour
     {
         if (knockTime <= 0)
         {
-            Debug.LogError(0);
             knockTime = startKnockTime;
             rb.velocity = Vector2.zero;
             animator.SetBool("KnockOff", false);
@@ -521,7 +511,6 @@ public class Movement : MonoBehaviour
         }
         else
         {
-            Debug.LogError(1);
             knockTime -= Time.deltaTime;
 
             if (cnt == 0)
@@ -540,26 +529,55 @@ public class Movement : MonoBehaviour
     /// </summary>
     void PerfomChargedAttack()
     {
-        if (chargedAttackTime <= 0)
+        if (!waiting)
         {
-
-            chargedAttackTime = startAttackTime;
-            rb.velocity = Vector2.zero;
-            cnt = 0;
-            stamina -= staminaDecreaseRate;
-        }
-        else
-        {
-
-            myCombatManager.performAttack(attackIndex, startAttackTime);
-            myCombatManager.ChargeAttack();
-            chargedAttackTime -= Time.deltaTime;
-            if (cnt == 0)
+            if (chargedAttackTime <= 0)
             {
-                rb.velocity = myFacingDirection * chargedAttackSpeed;
-                cnt = 1;
+
+                chargedAttackTime = startAttackTime;
+                rb.velocity = Vector2.zero;
+
+                cnt = 0;
+                stamina -= staminaDecreaseRate;
+
+                StartCoroutine(WaitAfterAttack());
+            }
+            else
+            {
+
+                myCombatManager.performAttack(attackIndex, startAttackTime);
+                myCombatManager.ChargeAttack();
+                chargedAttackTime -= Time.deltaTime;
+                if (cnt == 0)
+                {
+                    rb.velocity = myFacingDirection * chargedAttackSpeed;
+                    cnt = 1;
+                }
             }
         }
+    }
+
+    IEnumerator WaitAfterAttack()
+    {
+        waiting = true;
+
+        //Stops enemy movement animation.
+
+        yield return new WaitForSeconds(waitAfterAttackDuration);
+        MovementControl = MovementControls.walk;
+        OnFreezeInputDisable();
+        waiting = false;
+
+        
+    }
+
+    public void OnHitPush()
+    {
+        OnFreezeInputEnable();
+
+        rb.AddForce(otherCharacterFacingDirection * 1000);
+
+        OnFreezeInputDisable();
     }
 
     /// <summary>
