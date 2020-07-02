@@ -23,7 +23,7 @@ public class Movement : MonoBehaviour
     [HideInInspector] public  float characterMoveSpeed;
     float moveSpeed;
 
-    [HideInInspector]public float nextAttackTime, attackIndex;
+    [HideInInspector]public float nextAttackTime, attackIndex, getPushedForce;
 
     [HideInInspector]public float dashSpeed, startDashTime;
     float dashTime;
@@ -37,7 +37,10 @@ public class Movement : MonoBehaviour
     [HideInInspector] public float chargedAttackSpeed, startAttackTime, chargedAttackTime, chargedDistance, waitAfterAttackDuration;
     [SerializeField] public float stamina;
     float staminaDecreaseRate = 20;
-    bool waiting = false;
+    // charged attack var start
+    bool waiting = false; 
+    public bool characterHit = false;
+    // charged attack var end
 
     [SerializeField] LayerMask obstacleLayer;
     [HideInInspector]public float enemyHealingAmount;
@@ -256,7 +259,8 @@ public class Movement : MonoBehaviour
     private void DoEnemyStuffsInUpdate()
       {
         // movement animation
-        AnimateMovementEnemy();
+        if(isCharacterControllable)
+            AnimateMovementEnemy();
 
     }
     private void DoEnemyStuffsInFixedUpdate()
@@ -308,17 +312,16 @@ public class Movement : MonoBehaviour
     private void EnemyPathCheck()
     {
         //if destination reached enemy will play attack animation otherwise play move animation
-        if (!path.reachedDestination && player != null && !player.GetComponent<CombatManager>().isDead)
+        if (!path.reachedDestination && !player.GetComponent<CombatManager>().isDead)
         {
-
 
             if (gameObject.tag == "ChargedEnemy" &&
                     !Physics2D.Raycast(transform.position, direction,
                     Vector2.Distance(transform.position, player.transform.position), obstacleLayer) &&
                     Vector2.Distance(transform.position, player.transform.position) <= chargedDistance)
             {
-                MovementControl = MovementControls.chargedAttack;
                 AttackEnemySettings();
+                animator.SetTrigger("GetCharged");
             }
             else
             {
@@ -327,12 +330,12 @@ public class Movement : MonoBehaviour
         }
         else
         {
-            if (!player.GetComponent<CombatManager>().isDead && player != null)
+            if (!player.GetComponent<CombatManager>().isDead)
             {
                 if (gameObject.tag == "ChargedEnemy")
                 {
-                    MovementControl = MovementControls.chargedAttack;
                     AttackEnemySettings();
+                    animator.SetTrigger("GetCharged");
                 }
                  /*if (gameObject.tag == "Archer" &&
                             Vector2.Distance(transform.position, player.transform.position) <= 2f)
@@ -373,6 +376,16 @@ public class Movement : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// This method makes the enemy to go to charged attack state and do the attack.
+    /// </summary>
+    private void OnChargedAttackEnable()
+    {
+        MovementControl = MovementControls.chargedAttack;
+        
+    }
+
     /// <summary>
     /// Enemy heals slowly (it will wait half a second each time)...
     /// </summary>
@@ -533,7 +546,8 @@ public class Movement : MonoBehaviour
         {
             if (chargedAttackTime <= 0)
             {
-
+                animator.SetBool("Attack", false);
+                characterHit = false;
                 chargedAttackTime = startAttackTime;
                 rb.velocity = Vector2.zero;
 
@@ -545,11 +559,18 @@ public class Movement : MonoBehaviour
             else
             {
 
-                myCombatManager.performAttack(attackIndex, startAttackTime);
-                myCombatManager.ChargeAttack();
+                if (!characterHit)
+                {
+                    
+                    myCombatManager.ChargeAttack();
+                }
+
                 chargedAttackTime -= Time.deltaTime;
+
                 if (cnt == 0)
                 {
+                    animator.SetBool("Attack", true);
+                    animator.SetFloat("AttackIndex", attackIndex);
                     rb.velocity = myFacingDirection * chargedAttackSpeed;
                     cnt = 1;
                 }
@@ -564,18 +585,21 @@ public class Movement : MonoBehaviour
         //Stops enemy movement animation.
 
         yield return new WaitForSeconds(waitAfterAttackDuration);
-        MovementControl = MovementControls.walk;
         OnFreezeInputDisable();
+        MovementControl = MovementControls.walk;
         waiting = false;
 
         
     }
 
+    /// <summary>
+    /// knockback characters.
+    /// </summary>
     public void OnHitPush()
     {
         OnFreezeInputEnable();
 
-        rb.AddForce(otherCharacterFacingDirection * 1000);
+        rb.AddForce(otherCharacterFacingDirection * getPushedForce);
 
         OnFreezeInputDisable();
     }

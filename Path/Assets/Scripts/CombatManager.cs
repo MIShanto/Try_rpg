@@ -16,8 +16,7 @@ public class CombatManager : MonoBehaviour
     [Header("Insert in UP, RIGHT, DOWN, LEFT sequence in hitbox array")]
     [SerializeField][Tooltip("Last hitbox is for charged attack")] Transform[] hitboxes;
 
-    [SerializeField] float hitboxRange;
-    [SerializeField] float midHitboxRange;
+    [SerializeField] float leftHitboxRange, downHitboxRange, rightHitboxRange, upHitboxRange, midHitboxRange;
     [SerializeField] LayerMask hitLayer;
 
     [Header("Health functionality")]
@@ -133,7 +132,7 @@ public class CombatManager : MonoBehaviour
     public void AttackUp()
     {
         Debug.Log("up");
-        Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[0].position, hitboxRange, hitLayer);
+        Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[0].position, upHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
         {
@@ -145,7 +144,7 @@ public class CombatManager : MonoBehaviour
     public void AttackRight()
     {
         Debug.Log("right");
-        Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[1].position, hitboxRange, hitLayer);
+        Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[1].position, rightHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
         {
@@ -157,7 +156,7 @@ public class CombatManager : MonoBehaviour
     public void AttackDown()
     {
         Debug.Log("down");
-        Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[2].position, hitboxRange, hitLayer);
+        Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[2].position, downHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
         {
@@ -169,7 +168,7 @@ public class CombatManager : MonoBehaviour
     public void AttackLeft()
     {
         Debug.Log("left");
-        Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[3].position, hitboxRange, hitLayer);
+        Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[3].position, leftHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
         {
@@ -186,9 +185,10 @@ public class CombatManager : MonoBehaviour
         if (hitObject != null)
         {
             hitObject.GetComponent<CombatManager>().TakeDamage(chargedDamage, this.transform, characterMovement.MovementControl);
-            characterMovement.chargedAttackTime = -1f;
+            characterMovement.characterHit = true;
+            //characterMovement.chargedAttackTime = -1f;
             
-            StopAttack();
+            //StopAttack();
 
         }
 
@@ -199,10 +199,10 @@ public class CombatManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (hitboxes.Length != 0 ) {
-            Gizmos.DrawWireSphere(hitboxes[0].position, hitboxRange);
-            Gizmos.DrawWireSphere(hitboxes[1].position, hitboxRange);
-            Gizmos.DrawWireSphere(hitboxes[2].position, hitboxRange);
-            Gizmos.DrawWireSphere(hitboxes[3].position, hitboxRange);
+            Gizmos.DrawWireSphere(hitboxes[0].position, upHitboxRange);
+            Gizmos.DrawWireSphere(hitboxes[1].position, rightHitboxRange);
+            Gizmos.DrawWireSphere(hitboxes[2].position, downHitboxRange);
+            Gizmos.DrawWireSphere(hitboxes[3].position, leftHitboxRange);
             if(hitboxes.Length == 5)
                 Gizmos.DrawWireSphere(hitboxes[4].position, midHitboxRange);
         }

@@ -10,6 +10,7 @@ public class CharacterManagement : MonoBehaviour
 
     [SerializeField] float movementSpeed_player;
     [SerializeField] float attackDuration_player;
+    [SerializeField] float getPushedForce_player;
     [SerializeField] float dashDuration;
     [SerializeField] float dashVelocity;
     [SerializeField] float rollDuration;
@@ -25,12 +26,14 @@ public class CharacterManagement : MonoBehaviour
     [Header("Archer Section")]
     [SerializeField] GameObject archerPrefab;
     [SerializeField] float attackDuration_archer;
+    [SerializeField] float getPushedForce_archer;
     [SerializeField] float movementSpeed_archer;
 
 
     [Header("Swordsman Section")]
     [SerializeField] GameObject swordsmanPrefab;
     [SerializeField] float attackDuration_swordsman;
+    [SerializeField] float getPushedForce_swordsman;
     [SerializeField] float movementSpeed_swordsman;
     [Tooltip("Applicable for healer only")]
     [SerializeField] float healingAmount;
@@ -39,6 +42,7 @@ public class CharacterManagement : MonoBehaviour
     [Header("Charged enemy Section")]
     [SerializeField] GameObject chargedEnemyPrefab;
     [SerializeField] float attackDuration_chargedEnemy;
+    [SerializeField] float getPushedForce_CE;
     [SerializeField] float chargedAttackDuration_enemy;
     [SerializeField] float chargedAttackVelocity_enemy;
     [SerializeField] float chargedAttackDistance_enemy;
@@ -46,12 +50,13 @@ public class CharacterManagement : MonoBehaviour
 
     [SerializeField] float movementSpeed_CE;
     //charged enemy bug fix korte hobe...
-    private void Start()
+    private void Awake()
     {
         #region player
 
         playerPrefab.GetComponent<Movement>().characterMoveSpeed = movementSpeed_player;
         playerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_player;
+        playerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_player;
         playerPrefab.GetComponent<Movement>().startDashTime = dashDuration;
         playerPrefab.GetComponent<Movement>().dashSpeed = dashVelocity;
         playerPrefab.GetComponent<Movement>().startRollTime = rollDuration;
@@ -59,7 +64,7 @@ public class CharacterManagement : MonoBehaviour
         playerPrefab.GetComponent<Movement>().startKnockTime = knockDuration;
         playerPrefab.GetComponent<Movement>().knockSpeed = knockVelocity;
         playerPrefab.GetComponent<Movement>().startAttackTime = chargedAttackDuration_player;
-        playerPrefab.GetComponent<Movement>().chargedAttackTime = chargedAttackVelocity_player;
+        playerPrefab.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_player;
 
         #endregion
 
@@ -67,6 +72,8 @@ public class CharacterManagement : MonoBehaviour
 
         archerPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_archer;
         archerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
+        archerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_archer;
+
 
         #endregion
 
@@ -76,6 +83,7 @@ public class CharacterManagement : MonoBehaviour
         {
             s_man.GetComponent<AIPath>().maxAcceleration = movementSpeed_swordsman;
             s_man.GetComponent<Movement>().nextAttackTime = attackDuration_swordsman;
+            s_man.GetComponent<Movement>().getPushedForce = getPushedForce_swordsman;
             s_man.GetComponent<Movement>().enemyHealingAmount = healingAmount;
         }
 
@@ -84,8 +92,9 @@ public class CharacterManagement : MonoBehaviour
         #region chargedEnemy
 
         chargedEnemyPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_chargedEnemy;
+        chargedEnemyPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_CE;
         chargedEnemyPrefab.GetComponent<Movement>().startAttackTime = chargedAttackDuration_enemy;
-        chargedEnemyPrefab.GetComponent<Movement>().chargedAttackTime = chargedAttackVelocity_enemy;
+        chargedEnemyPrefab.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_enemy;
         chargedEnemyPrefab.GetComponent<Movement>().chargedDistance = chargedAttackDistance_enemy;
         chargedEnemyPrefab.GetComponent<Movement>().waitAfterAttackDuration = waitAfterAttackDuration;
         chargedEnemyPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_CE;

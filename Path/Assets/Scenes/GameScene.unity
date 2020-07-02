@@ -445,27 +445,31 @@ MonoBehaviour:
   playerPrefab: {fileID: 1543511758}
   movementSpeed_player: 5
   attackDuration_player: 0.25
+  getPushedForce_player: 1000
   dashDuration: 0.1
   dashVelocity: 50
   rollDuration: 0.1
   rollVelocity: 50
   chargedAttackDuration_player: 0.1
   chargedAttackVelocity_player: 50
-  knockDuration: 0.1
-  knockVelocity: 30
+  knockDuration: 0.2
+  knockVelocity: 10
   archerPrefab: {fileID: 11198040}
   attackDuration_archer: 1
+  getPushedForce_archer: 0
   movementSpeed_archer: 2
   swordsmanPrefab: {fileID: 709603596}
   attackDuration_swordsman: 0.25
+  getPushedForce_swordsman: 0
   movementSpeed_swordsman: 2
   healingAmount: 0
   chargedEnemyPrefab: {fileID: 171758831}
   attackDuration_chargedEnemy: 0.25
-  chargedAttackDuration_enemy: 0.25
+  getPushedForce_CE: 0
+  chargedAttackDuration_enemy: 0.1
   chargedAttackVelocity_enemy: 50
   chargedAttackDistance_enemy: 3
-  waitAfterAttackDuration: 10
+  waitAfterAttackDuration: 3
   movementSpeed_CE: 2
 --- !u!4 &748633988
 Transform:
@@ -1021,6 +1025,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2751545782588222256, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.144
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545782588222256, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.004
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545782588222257, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545782802442370, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.042
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545782802442370, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.206
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545782802442371, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2751545783011731716, guid: 980ff0b8ecdd77547953aa37079e16d9,
         type: 3}
       propertyPath: m_Name
@@ -1111,6 +1145,66 @@ PrefabInstance:
       propertyPath: chargedDamage
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: hitboxRange
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: leftHitboxRange
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: downHitboxRange
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: rightHitboxRange
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: upHitboxRange
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783263399736, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783263399743, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.241
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783263399743, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.003
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783614238122, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783614238122, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.065
+      objectReference: {fileID: 0}
+    - target: {fileID: 2751545783614238123, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3315520538776112499, guid: 980ff0b8ecdd77547953aa37079e16d9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 980ff0b8ecdd77547953aa37079e16d9, type: 3}
 --- !u!1001 &2766176847883607534
@@ -1128,7 +1222,7 @@ PrefabInstance:
     - target: {fileID: 1071476332788660314, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
@@ -1200,6 +1294,11 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 981181848}
+    - target: {fileID: 6105746274227998793, guid: 907798e6d7bf6394fb373f72356b14e7,
+        type: 3}
+      propertyPath: maxHealth
+      value: 999999
+      objectReference: {fileID: 0}
     - target: {fileID: 7578091185267511124, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
       propertyPath: m_IsTrigger
@@ -1287,7 +1386,7 @@ PrefabInstance:
     - target: {fileID: 3621261065156082780, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13847c3d98b7a1e49a21ad29cb78bcd0, type: 3}
