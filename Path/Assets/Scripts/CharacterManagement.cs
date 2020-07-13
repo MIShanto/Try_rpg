@@ -47,6 +47,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float chargedAttackVelocity_enemy;
     [SerializeField] float chargedAttackDistance_enemy;
     [SerializeField] float waitAfterAttackDuration;
+    [SerializeField] float lookingRangeDuringCharge;
 
     [SerializeField] float movementSpeed_CE;
     //charged enemy bug fix korte hobe...
@@ -98,6 +99,13 @@ public class CharacterManagement : MonoBehaviour
         chargedEnemyPrefab.GetComponent<Movement>().chargedDistance = chargedAttackDistance_enemy;
         chargedEnemyPrefab.GetComponent<Movement>().waitAfterAttackDuration = waitAfterAttackDuration;
         chargedEnemyPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_CE;
+        chargedEnemyPrefab.GetComponent<Movement>().chargeAndLookoutArea = lookingRangeDuringCharge;
+
+        if(lookingRangeDuringCharge > chargedAttackDistance_enemy)
+        {
+            Debug.LogError("!!!(looking Range During Charge) this distance must be less than charged Distance!!!");
+        }
+
 
         #endregion
     }

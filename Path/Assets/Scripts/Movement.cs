@@ -34,7 +34,8 @@ public class Movement : MonoBehaviour
     [HideInInspector] public float knockSpeed, startKnockTime;
     float knockTime;
 
-    [HideInInspector] public float chargedAttackSpeed, startAttackTime, chargedAttackTime, chargedDistance, waitAfterAttackDuration;
+    [HideInInspector] public float chargedAttackSpeed, startAttackTime, chargedAttackTime, chargedDistance, waitAfterAttackDuration,
+        chargeAndLookoutArea;
     [SerializeField] public float stamina;
     float staminaDecreaseRate = 20;
     // charged attack var start
@@ -259,7 +260,7 @@ public class Movement : MonoBehaviour
     private void DoEnemyStuffsInUpdate()
       {
         // movement animation
-        if(isCharacterControllable)
+        if(isCharacterControllable || Vector2.Distance(transform.position, player.transform.position) <= chargeAndLookoutArea)
             AnimateMovementEnemy();
 
     }

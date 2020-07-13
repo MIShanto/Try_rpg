@@ -468,8 +468,9 @@ MonoBehaviour:
   getPushedForce_CE: 0
   chargedAttackDuration_enemy: 0.1
   chargedAttackVelocity_enemy: 50
-  chargedAttackDistance_enemy: 3
+  chargedAttackDistance_enemy: 5
   waitAfterAttackDuration: 3
+  lookingRangeDuringCharge: 0
   movementSpeed_CE: 2
 --- !u!4 &748633988
 Transform:
