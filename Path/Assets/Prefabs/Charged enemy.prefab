@@ -148,6 +148,7 @@ MonoBehaviour:
   characterMoveSpeed: 0
   nextAttackTime: 0.25
   attackIndex: 0
+  getPushedForce: 0
   dashSpeed: 0
   startDashTime: 0.1
   rollSpeed: 0
@@ -158,7 +159,10 @@ MonoBehaviour:
   startAttackTime: 0.2
   chargedAttackTime: 0
   chargedDistance: 0
+  waitAfterAttackDuration: 0
+  chargeAndLookoutArea: 0
   stamina: 555555
+  characterHit: 0
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -277,19 +281,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5478a661663b72441b76f87f8b5a4cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ArrowPrefab: {fileID: 0}
   hitboxes:
   - {fileID: 2240848259516945896}
   - {fileID: 7907379529901809539}
   - {fileID: 3476139107413961114}
   - {fileID: 8998479499228577554}
   - {fileID: 2766176847811774810}
-  hitboxRange: 0.4
+  leftHitboxRange: 0
+  downHitboxRange: 0
+  rightHitboxRange: 0
+  upHitboxRange: 0
   midHitboxRange: 0.85
   hitLayer:
     serializedVersion: 2
     m_Bits: 1024
-  maxHealth: 500
+  maxHealth: 999999
   currentHealth: 0
   swordDamage: 50
   chargedDamage: 50

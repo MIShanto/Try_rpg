@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  target: {fileID: 2751545783011731723, guid: 980ff0b8ecdd77547953aa37079e16d9, type: 3}
+  target: {fileID: 0}
 --- !u!114 &3621261065156082755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,7 +108,7 @@ MonoBehaviour:
   orientation: 1
   enableRotation: 0
   targetCompatibility: {fileID: 0}
-  maxAcceleration: -2.5
+  maxAcceleration: 10
   rotationSpeed: 360
   slowdownDistance: 6
   pickNextWaypointDist: 1.3
@@ -236,12 +236,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: 1
-  foo: 1
   path: {fileID: 0}
   player: {fileID: 0}
   characterMoveSpeed: 0
   nextAttackTime: 1
   attackIndex: 0
+  getPushedForce: 0
   dashSpeed: 0
   startDashTime: 0.1
   rollSpeed: 0
@@ -251,7 +251,11 @@ MonoBehaviour:
   chargedAttackSpeed: 0
   startAttackTime: 0
   chargedAttackTime: 0
+  chargedDistance: 0
+  waitAfterAttackDuration: 0
+  chargeAndLookoutArea: 0
   stamina: 0
+  characterHit: 0
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -276,10 +280,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5478a661663b72441b76f87f8b5a4cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ArrowPrefab: {fileID: 3407171059142659467, guid: a5a4dceeef08075438d21b1ad42500d0,
-    type: 3}
   hitboxes: []
-  hitboxRange: 0
+  leftHitboxRange: 0
+  downHitboxRange: 0
+  rightHitboxRange: 0
+  upHitboxRange: 0
   midHitboxRange: 0
   hitLayer:
     serializedVersion: 2

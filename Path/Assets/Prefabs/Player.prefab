@@ -59,7 +59,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2751545782588222257}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.02, y: 0.23, z: 0}
+  m_LocalPosition: {x: -0.004, y: 0.144, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3126375047821146191}
@@ -89,7 +89,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2751545782802442371}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: -0.34, z: 0}
+  m_LocalPosition: {x: -0.042, y: -0.206, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3126375047821146191}
@@ -235,24 +235,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: 0
+  path: {fileID: 0}
   player: {fileID: 0}
   characterMoveSpeed: 5
   nextAttackTime: 0.25
   attackIndex: 0
-  dashEffectPrefab: {fileID: 0}
+  getPushedForce: 0
   dashSpeed: 50
   startDashTime: 0.1
   rollSpeed: 50
   startRollTime: 0.1
+  knockSpeed: 50
+  startKnockTime: 0.1
   chargedAttackSpeed: 30
   startAttackTime: 0.2
+  chargedAttackTime: 0
+  chargedDistance: 0
+  waitAfterAttackDuration: 0
+  chargeAndLookoutArea: 0
   stamina: 1e+9
+  characterHit: 0
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 0
+  enemyHealingAmount: 0
   direction: {x: 0, y: 0}
-  facingDirection: {x: 0, y: 0}
+  myFacingDirection: {x: 0, y: 0}
+  otherCharacterFacingDirection: {x: 0, y: 0}
   isCharacterControllable: 1
+  isHealer: 0
+  healing: 0
+  speedFactor: 1
   MovementControl: 0
 --- !u!114 &2751545783011731726
 MonoBehaviour:
@@ -266,14 +279,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5478a661663b72441b76f87f8b5a4cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ArrowPrefab: {fileID: 0}
   hitboxes:
   - {fileID: 2751545782588222256}
   - {fileID: 2751545783614238122}
   - {fileID: 2751545782802442370}
   - {fileID: 2751545783263399743}
   - {fileID: 1954025221578295395}
-  hitboxRange: 0.3
+  leftHitboxRange: 0.7
+  downHitboxRange: 0.7
+  rightHitboxRange: 0.7
+  upHitboxRange: 0.7
   midHitboxRange: 0.65
   hitLayer:
     serializedVersion: 2
@@ -281,8 +296,10 @@ MonoBehaviour:
   maxHealth: 10000
   currentHealth: 0
   swordDamage: 50
+  chargedDamage: 50
   isDead: 0
   isAttacking: 0
+  isBlocked: 0
 --- !u!58 &159104779
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -323,7 +340,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2751545783263399736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3, y: -0.071, z: 0}
+  m_LocalPosition: {x: -0.241, y: -0.003, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3126375047821146191}
@@ -353,7 +370,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2751545783614238123}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.34, y: -0.11, z: 0}
+  m_LocalPosition: {x: 0.18, y: -0.065, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3126375047821146191}
