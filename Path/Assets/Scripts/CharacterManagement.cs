@@ -21,6 +21,9 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float knockDuration;
     [Tooltip("moving velocity during knockedoff")]
     [SerializeField] float knockVelocity;
+    [SerializeField] float health_player;
+    [Range(0,100)]
+    [SerializeField] int criticalHitProbability;
 
 
     [Header("Archer Section")]
@@ -28,6 +31,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float attackDuration_archer;
     [SerializeField] float getPushedForce_archer;
     [SerializeField] float movementSpeed_archer;
+    [SerializeField] float health_archer;
 
 
     [Header("Swordsman Section")]
@@ -35,6 +39,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float attackDuration_swordsman;
     [SerializeField] float getPushedForce_swordsman;
     [SerializeField] float movementSpeed_swordsman;
+    [SerializeField] float health_swordsman;
     [Tooltip("Applicable for healer only")]
     [SerializeField] float healingAmount;
 
@@ -48,64 +53,81 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float chargedAttackDistance_enemy;
     [SerializeField] float waitAfterAttackDuration;
     [SerializeField] float lookingRangeDuringCharge;
-
     [SerializeField] float movementSpeed_CE;
+    [SerializeField] float health_CE;
     //charged enemy bug fix korte hobe...
     private void Awake()
     {
         #region player
-
-        playerPrefab.GetComponent<Movement>().characterMoveSpeed = movementSpeed_player;
-        playerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_player;
-        playerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_player;
-        playerPrefab.GetComponent<Movement>().startDashTime = dashDuration;
-        playerPrefab.GetComponent<Movement>().dashSpeed = dashVelocity;
-        playerPrefab.GetComponent<Movement>().startRollTime = rollDuration;
-        playerPrefab.GetComponent<Movement>().rollSpeed = rollVelocity;
-        playerPrefab.GetComponent<Movement>().startKnockTime = knockDuration;
-        playerPrefab.GetComponent<Movement>().knockSpeed = knockVelocity;
-        playerPrefab.GetComponent<Movement>().startAttackTime = chargedAttackDuration_player;
-        playerPrefab.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_player;
+        if (playerPrefab != null)
+        {
+            playerPrefab.GetComponent<Movement>().characterMoveSpeed = movementSpeed_player;
+            playerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_player;
+            playerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_player;
+            playerPrefab.GetComponent<Movement>().startDashTime = dashDuration;
+            playerPrefab.GetComponent<Movement>().dashSpeed = dashVelocity;
+            playerPrefab.GetComponent<Movement>().startRollTime = rollDuration;
+            playerPrefab.GetComponent<Movement>().rollSpeed = rollVelocity;
+            playerPrefab.GetComponent<Movement>().startKnockTime = knockDuration;
+            playerPrefab.GetComponent<Movement>().knockSpeed = knockVelocity;
+            playerPrefab.GetComponent<Movement>().startAttackTime = chargedAttackDuration_player;
+            playerPrefab.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_player;
+            playerPrefab.GetComponent<CombatManager>().maxHealth = health_player;
+            playerPrefab.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
+            
+            
+        }
 
         #endregion
 
         #region archer
-
-        archerPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_archer;
-        archerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
-        archerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_archer;
+        if (archerPrefab != null)
+        {
+            archerPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_archer;
+            archerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
+            archerPrefab.GetComponent<CombatManager>().maxHealth = health_archer;
+            archerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_archer;
+            archerPrefab.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
+        }
 
 
         #endregion
 
         #region sworsman
-
-        foreach (Transform s_man in swordsmanPrefab.transform)
+        if (swordsmanPrefab != null)
         {
-            s_man.GetComponent<AIPath>().maxAcceleration = movementSpeed_swordsman;
-            s_man.GetComponent<Movement>().nextAttackTime = attackDuration_swordsman;
-            s_man.GetComponent<Movement>().getPushedForce = getPushedForce_swordsman;
-            s_man.GetComponent<Movement>().enemyHealingAmount = healingAmount;
+            foreach (Transform s_man in swordsmanPrefab.transform)
+            {
+                s_man.GetComponent<AIPath>().maxAcceleration = movementSpeed_swordsman;
+                s_man.GetComponent<Movement>().nextAttackTime = attackDuration_swordsman;
+                s_man.GetComponent<Movement>().getPushedForce = getPushedForce_swordsman;
+                s_man.GetComponent<Movement>().enemyHealingAmount = healingAmount;
+                s_man.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
+                s_man.GetComponent<CombatManager>().maxHealth = health_swordsman;
+            }
         }
 
         #endregion
 
         #region chargedEnemy
-
-        chargedEnemyPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_chargedEnemy;
-        chargedEnemyPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_CE;
-        chargedEnemyPrefab.GetComponent<Movement>().startAttackTime = chargedAttackDuration_enemy;
-        chargedEnemyPrefab.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_enemy;
-        chargedEnemyPrefab.GetComponent<Movement>().chargedDistance = chargedAttackDistance_enemy;
-        chargedEnemyPrefab.GetComponent<Movement>().waitAfterAttackDuration = waitAfterAttackDuration;
-        chargedEnemyPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_CE;
-        chargedEnemyPrefab.GetComponent<Movement>().chargeAndLookoutArea = lookingRangeDuringCharge;
-
-        if(lookingRangeDuringCharge > chargedAttackDistance_enemy)
+        if (chargedEnemyPrefab != null)
         {
-            Debug.LogError("!!!(looking Range During Charge) this distance must be less than charged Distance!!!");
-        }
+            chargedEnemyPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_chargedEnemy;
+            chargedEnemyPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_CE;
+            chargedEnemyPrefab.GetComponent<Movement>().startAttackTime = chargedAttackDuration_enemy;
+            chargedEnemyPrefab.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_enemy;
+            chargedEnemyPrefab.GetComponent<Movement>().chargedDistance = chargedAttackDistance_enemy;
+            chargedEnemyPrefab.GetComponent<Movement>().waitAfterAttackDuration = waitAfterAttackDuration;
+            chargedEnemyPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_CE;
+            chargedEnemyPrefab.GetComponent<Movement>().chargeAndLookoutArea = lookingRangeDuringCharge;
+            chargedEnemyPrefab.GetComponent<CombatManager>().maxHealth = health_CE;
+            chargedEnemyPrefab.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
 
+            if (lookingRangeDuringCharge > chargedAttackDistance_enemy)
+            {
+                Debug.LogError("!!!(looking Range During Charge) this distance must be less than charged Distance!!!");
+            }
+        }
 
         #endregion
     }

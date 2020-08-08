@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CombatManager : MonoBehaviour
 {
     ObjectPooler objectPooler;
     Animator animator;
     Movement characterMovement;
+    DamageHandler damageHandler;
     Coroutine attackCoroutine;
     Rigidbody2D rb;
 
@@ -20,13 +23,23 @@ public class CombatManager : MonoBehaviour
     [SerializeField] LayerMask hitLayer;
 
     [Header("Health functionality")]
-    public float maxHealth;
-    public float currentHealth;
-    [SerializeField] int swordDamage;
+    [HideInInspector]public float maxHealth, currentHealth;
     [SerializeField] int chargedDamage;
+    [SerializeField] Slider healthBar;
     
     [HideInInspector] public bool isDead, isAttacking = false, isBlocked;
-    
+
+    [Header("Armor Attack functionality")]
+    [SerializeField]  bool closedRangedArmor;
+    [SerializeField]  bool longRangedArmor;
+    [SerializeField]  bool magicalArmor;
+    int armorType;
+    [SerializeField]  bool closedRangedWeapon;
+    [SerializeField]  bool longRangedWeapon;
+    [SerializeField]  bool magicalWeapon;
+    int weaponType;
+
+    bool isHitCritical = false;
 
     Vector2 playerPos;
     Vector2 arrowPos;
@@ -37,17 +50,45 @@ public class CombatManager : MonoBehaviour
         animator = GetComponent<Animator>();
         characterMovement = GetComponent<Movement>();
         rb = GetComponent<Rigidbody2D>();
+        damageHandler = GetComponent<DamageHandler>();
 
-        currentHealth = maxHealth;
-        isDead = false;
-        isBlocked = false;
+        ResetSession();
     }
 
+    //only for debug mode.
+    private void Update()
+    {
+        //only for debug mode.
+        //armor section
+        if (closedRangedArmor && !longRangedArmor && !magicalArmor)
+            armorType = 1;
+        else if (longRangedArmor && !closedRangedArmor && !magicalArmor)
+            armorType = 2;
+        else if (magicalArmor && !closedRangedArmor && !longRangedArmor)
+            armorType = 3;
+        else
+            armorType = 0;
+
+        //weapon section
+        if (closedRangedWeapon && !longRangedWeapon && !magicalWeapon)
+            weaponType = 1;
+        else if (longRangedWeapon && !closedRangedWeapon && !magicalWeapon)
+            weaponType = 2;
+        else if (magicalWeapon && !closedRangedWeapon && !longRangedWeapon)
+            weaponType = 3;
+        else
+            weaponType = 0;
+    }
     private void FixedUpdate()
     {
-        if(characterMovement.player != null)
-            playerPos = characterMovement.player.transform.position;
-        arrowPos = transform.position;
+        if (!isDead)
+        {
+            if (characterMovement.player != null)
+                playerPos = characterMovement.player.transform.position;
+            arrowPos = transform.position;
+        }
+        //handle health bar ui
+        healthBar.value = currentHealth;
     }
 
 
@@ -131,48 +172,48 @@ public class CombatManager : MonoBehaviour
     /// </summary>
     public void AttackUp()
     {
-        Debug.Log("up");
+        //Debug.Log("up");
         Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[0].position, upHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
         {
-            hitObject.GetComponent<CombatManager>().TakeDamage(swordDamage,this.transform, characterMovement.MovementControl);
+            hitObject.GetComponent<CombatManager>().TakeDamage(weaponType,this.transform, characterMovement.MovementControl);
 
         }
 
     }
     public void AttackRight()
     {
-        Debug.Log("right");
+        //Debug.Log("right");
         Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[1].position, rightHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
         {
-            hitObject.GetComponent<CombatManager>().TakeDamage(swordDamage, this.transform, characterMovement.MovementControl);
+            hitObject.GetComponent<CombatManager>().TakeDamage(weaponType, this.transform, characterMovement.MovementControl);
 
         }
 
     }
     public void AttackDown()
     {
-        Debug.Log("down");
+       // Debug.Log("down");
         Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[2].position, downHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
         {
-            hitObject.GetComponent<CombatManager>().TakeDamage(swordDamage, this.transform, characterMovement.MovementControl);
+            hitObject.GetComponent<CombatManager>().TakeDamage(weaponType, this.transform, characterMovement.MovementControl);
 
         }
 
     }
     public void AttackLeft()
     {
-        Debug.Log("left");
+       // Debug.Log("left");
         Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[3].position, leftHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
         {
-            hitObject.GetComponent<CombatManager>().TakeDamage(swordDamage, this.transform, characterMovement.MovementControl);
+            hitObject.GetComponent<CombatManager>().TakeDamage(weaponType, this.transform, characterMovement.MovementControl);
 
         }
 
@@ -217,20 +258,25 @@ public class CombatManager : MonoBehaviour
     /// This method takes the damage by characters and handles damage afterward animations..
     /// characters dont get damage when blocking is enable
     /// </summary>
-    public void TakeDamage(float damage, Transform otherCharacter, Movement.MovementControls AttackState)
+    /// <param name="damageType"> other character weapon type </param>
+    /// <param name="otherCharacter"></param>
+    /// <param name="AttackState"></param>
+    public void TakeDamage(int damageType, Transform otherCharacter, Movement.MovementControls AttackState)
     {
         // if player hits enemy then this section of codes will activate..
         if(characterMovement.character != Movement.characters.player)
         {
             if (!isDead)
             {
+                isHitCritical = characterMovement.GetHitProb();
+
                 characterMovement.otherCharacterFacingDirection =
                             otherCharacter.GetComponent<Movement>().myFacingDirection;
 
                 if (!isBlocked)
                 {
                     //decrease health..
-                    currentHealth -= damage;
+                    currentHealth -= damageHandler.GetDamageInfo(damageType,armorType,isHitCritical);// get damage info (damage type, armor type)
 
                     // DEMO...(knock off)
                     if (AttackState == Movement.MovementControls.chargedAttack && currentHealth > 0)
@@ -243,16 +289,16 @@ public class CombatManager : MonoBehaviour
                     else
                     {
                         animator.SetTrigger("GetHit");
-                        characterMovement.OnHitPush();
+                        characterMovement.OnHitPush(isHitCritical);
                     }
                 }
                 else
                 {
                     //decrease half health..
-                    currentHealth -= damage*0.5f;
+                    currentHealth -= damageHandler.GetDamageInfo(damageType, armorType,isHitCritical) * 0.5f; // get damage info (damage type, armor type)
 
                     OnBlockDisable();
-                    characterMovement.OnHitPush();
+                    characterMovement.OnHitPush(isHitCritical);
                 }
                 
             }
@@ -262,7 +308,7 @@ public class CombatManager : MonoBehaviour
         {
             if(!isDead)
             { 
-                currentHealth -= damage;
+                currentHealth -= damageHandler.GetDamageInfo(damageType, armorType, false);// get damage info (damage type, armor type, critical hit)
 
                 if (AttackState == Movement.MovementControls.chargedAttack && currentHealth>0)
                 {
@@ -277,7 +323,7 @@ public class CombatManager : MonoBehaviour
                     characterMovement.otherCharacterFacingDirection =
                              otherCharacter.GetComponent<Movement>().myFacingDirection;
                     animator.SetTrigger("GetHit");
-                    characterMovement.OnHitPush();
+                    characterMovement.OnHitPush(false);
                 }
             }
         }
@@ -285,7 +331,8 @@ public class CombatManager : MonoBehaviour
         if (currentHealth <= 0)
         {
             isDead = true;
-            Die();
+            StopAllAvailableCoroutines();
+            StartCoroutine(Die()); //Die()
         }
 
     }
@@ -293,16 +340,21 @@ public class CombatManager : MonoBehaviour
     /// <summary>
     /// Handles death animation of character..
     /// </summary>
-    private void Die()
+    IEnumerator  Die()
     {
         //play die animation..
         animator.SetBool("IsDead", isDead);
-
-        StopAllCoroutines();
-
+        characterMovement.OnFreezeInputEnable();
+        yield return new WaitForSeconds(2f);
         //destroy enemy..
-        if(gameObject.tag != "Player")
-            Destroy(gameObject, 2f);
+
+        if (gameObject.tag != "Player")
+        {
+            characterMovement.RestSession();
+            gameObject.SetActive(false); //Destroy(gameObject, 2f);
+        }
+        else
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 
@@ -349,6 +401,23 @@ public class CombatManager : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// resets everythig of that script
+    /// </summary>
+    public void ResetSession()
+    {
+        currentHealth = maxHealth;
+        healthBar.maxValue = currentHealth;
+        isDead = false;
+        isBlocked = false;
+    }
 
+    void StopAllAvailableCoroutines()
+    {
+        StopAllCoroutines();
+        characterMovement.StopAllCoroutines();
+        damageHandler.StopAllCoroutines();
+
+    }
 
 }

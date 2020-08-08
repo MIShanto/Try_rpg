@@ -14,13 +14,13 @@ public class SwordsmanHandler : MonoBehaviour
         if (swordsman[2] != null)
         {
             swordsman[2].GetComponent<Movement>().isHealer = true;
-            swordsman[2].GetComponent<AIPath>().endReachedDistance = 3f;
+            swordsman[2].GetComponent<AIPath>().endReachedDistance = 5f;
         }
     }
 
     private void Update()
     {
-        if (swordsman[2] != null)
+        if (swordsman[2] != null && swordsman[2].activeSelf)
         {
             if (swordsman[0].GetComponent<CombatManager>().currentHealth <
                 swordsman[0].GetComponent<CombatManager>().maxHealth * 0.5f &&
@@ -54,7 +54,7 @@ public class SwordsmanHandler : MonoBehaviour
         swordsman[1].GetComponent<Movement>().isHealer = false;
         swordsman[2].GetComponent<Movement>().isHealer = true;
 
-        swordsman[2].GetComponent<AIPath>().endReachedDistance = 3f;
+        swordsman[2].GetComponent<AIPath>().endReachedDistance = 5f;
         swordsman[2].GetComponent<Movement>().Reposition();
     }
 
@@ -72,7 +72,7 @@ public class SwordsmanHandler : MonoBehaviour
         swordsman[0].GetComponent<Movement>().isHealer = false;
         swordsman[2].GetComponent<Movement>().isHealer = true;
 
-        swordsman[2].GetComponent<AIPath>().endReachedDistance = 3f;
+        swordsman[2].GetComponent<AIPath>().endReachedDistance = 5f;
         swordsman[2].GetComponent<Movement>().Reposition();
     }
 }

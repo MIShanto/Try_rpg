@@ -66,7 +66,7 @@ public class Projectile : MonoBehaviour
 
             if (!hitCounter)
             {
-                hitObject.GetComponent<CombatManager>().TakeDamage(arrowDamage, this.transform, Movement.MovementControls.none);
+                hitObject.GetComponent<CombatManager>().TakeDamage(2, this.transform, Movement.MovementControls.none);
                 arrowStopped = true;
                 rb.velocity = Vector2.zero;
                 rb.gravityScale = 0;

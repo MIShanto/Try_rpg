@@ -1,0 +1,28 @@
+								*** Instruction note ***
+
+
+*To select weapon type and armor type, select the character game object and on the combat manager script
+ you will find bool value for each action. Toogle this to execute action; [Note: only one weapon and one armor can be selected at a time dont toggle multiple types]
+
+*Max Health value can be set via character management script.
+
+*critical hit probability can be set via character management script. And critical hit will occur only 
+if player hits enemies with sword(closed ranged weapon). It will give 2x damage to enemy
+
+*archer uses long ranged weapon and weapon selection for archer is invalid currently.(they got no armor)
+
+*swordsman uses close ranged weapon and weapon selection for it is invalid currently.(they got no armor) [Use player to test those things]
+
+
+
+*Some values have been hard coded currently:
+
+	//damage section
+	(1) closed weapon damage value = 50
+	(2) long ranged weapon damage value = 100
+	(3) magical damage value = 100 (bleeding damage value = 20 for 3 times after 3 seconds)
+
+	//armor section
+	(1) closed armor damage value reduces by = 25
+	(2) long armor damage value reduces by = 50
+	(3) magical armor damage value prevents the bleeding effect but will do initial damage. 

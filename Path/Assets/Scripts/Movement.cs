@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
@@ -43,6 +42,13 @@ public class Movement : MonoBehaviour
     public bool characterHit = false;
     // charged attack var end
 
+    //critical hit section
+    int[] hitProbTable;
+    int total;
+    [HideInInspector] public int criticalHitProb;
+    
+    //end
+
     [SerializeField] LayerMask obstacleLayer;
     [HideInInspector]public float enemyHealingAmount;
 
@@ -70,12 +76,14 @@ public class Movement : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         path = GetComponent<AIPath>();
 
-        dashTime = startDashTime;
-        rollTime = startRollTime;
-        knockTime = startKnockTime;
-        chargedAttackTime = startAttackTime;
+        //Call reset session method to reset things
+        RestSession();
 
-        MovementControl = MovementControls.walk;
+        //critical hit section
+        hitProbTable = new int[2];
+        hitProbTable[0] = 100 - criticalHitProb;  //non critical hit prob
+        hitProbTable[1] = criticalHitProb; //critical hit prob
+        total = hitProbTable[0] + hitProbTable[1];
 
     }
 
@@ -349,7 +357,7 @@ public class Movement : MonoBehaviour
                     if (isHealer)
                     {
                         animator.SetFloat("Speed", 0f);
-                        path.endReachedDistance = 3f;
+                        path.endReachedDistance = 5f;
                         if ((myCombatManager.currentHealth < myCombatManager.maxHealth) && !healing)
                         {
                             healing = true;
@@ -393,9 +401,10 @@ public class Movement : MonoBehaviour
     /// <returns></returns>
     IEnumerator SlowHeal()
     {
-        while (healing && myCombatManager.currentHealth < myCombatManager.maxHealth)
+        while (healing && myCombatManager.currentHealth > 0f && 
+            myCombatManager.currentHealth < myCombatManager.maxHealth)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.8f);
 
             myCombatManager.currentHealth += enemyHealingAmount;
 
@@ -596,13 +605,26 @@ public class Movement : MonoBehaviour
     /// <summary>
     /// knockback characters.
     /// </summary>
-    public void OnHitPush()
+    public void OnHitPush(bool isHitCritical)
     {
-        OnFreezeInputEnable();
+        if (myCombatManager.currentHealth >= 1f)
+        {
+            float hitMultiplier = 1f;
 
-        rb.AddForce(otherCharacterFacingDirection * getPushedForce);
+            if (isHitCritical)
+            {
+                hitMultiplier = 5f;
+                CinemachineShake.Instance.ShakeCamera(5, .2f); // parameter (intensity, shake time)
+            }
+            else
+                hitMultiplier = 1f;
 
-        OnFreezeInputDisable();
+            OnFreezeInputEnable();
+
+            rb.AddForce(otherCharacterFacingDirection * getPushedForce * hitMultiplier);
+
+            OnFreezeInputDisable();
+        }
     }
 
     /// <summary>
@@ -621,6 +643,35 @@ public class Movement : MonoBehaviour
             speedFactor = 0.5f;
             animator.SetFloat("SpeedChanger", speedFactor);
         }
+    }
+
+    /// <summary>
+    /// returns the probability of critical hit
+    /// </summary>
+    public bool GetHitProb()
+    {
+        int randomNumber = Random.Range(0, total);
+
+        for (int i = 0; i < hitProbTable.Length; i++)
+        {
+            if (randomNumber <= hitProbTable[i])
+            {
+                if (i == 0)
+                {
+                    Debug.Log("Non critical hit occured!!");
+                }
+
+                else
+                {
+                    Debug.Log("Critical hit occcured!!");
+                    return true;
+                }
+
+            }
+            else
+                randomNumber -= hitProbTable[i];
+        }
+        return false;
     }
 
     #endregion
@@ -643,9 +694,29 @@ public class Movement : MonoBehaviour
     {
         isCharacterControllable = false;
         direction = Vector2.zero;
-
+        rb.velocity = Vector2.zero;
         if (path != null)
             path.enabled = false;
     }
     #endregion
+    
+    /// <summary>
+    /// resets the stats of character
+    /// </summary>
+    public void RestSession()
+    {
+        OnFreezeInputDisable();
+
+        dashTime = startDashTime;
+        rollTime = startRollTime;
+        knockTime = startKnockTime;
+        chargedAttackTime = startAttackTime;
+
+        MovementControl = MovementControls.walk;
+        animator = GetComponent<Animator>();
+        animator.SetBool("IsDead", false);
+
+        //reset associated scripts
+        myCombatManager.ResetSession();
+    }
 }
