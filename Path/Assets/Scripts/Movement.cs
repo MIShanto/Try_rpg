@@ -19,7 +19,7 @@ public class Movement : MonoBehaviour
     Rigidbody2D rb;
     Animator animator;
 
-    [HideInInspector] public  float characterMoveSpeed;
+    [HideInInspector] public  float characterMoveSpeed, speedMultiplierDuringAttack, moveSpeedMultiplierDuringAttack = 1;
     float moveSpeed;
 
     [HideInInspector]public float nextAttackTime, attackIndex, getPushedForce;
@@ -179,7 +179,7 @@ public class Movement : MonoBehaviour
     /// </summary>
     private void MovePlayer()
     {
-        rb.velocity = direction * characterMoveSpeed * speedFactor;
+        rb.velocity = direction * characterMoveSpeed * speedFactor * moveSpeedMultiplierDuringAttack;
 
     }
 
@@ -209,7 +209,8 @@ public class Movement : MonoBehaviour
             {
                 MovementControl = MovementControls.attack;
                 attackIndex = 0;
-                OnFreezeInputEnable();
+                moveSpeedMultiplierDuringAttack = speedMultiplierDuringAttack;
+                //OnFreezeInputEnable();
             }
             
             //Input for doing charged attack

@@ -817,6 +817,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 981181847}
   movementSpeed_player: 5
+  speedMultiplierDuringAttack: 0.5
   attackDuration_player: 0.25
   getPushedForce_player: 1000
   dashDuration: 0.1
@@ -1117,6 +1118,7 @@ MonoBehaviour:
   - {fileID: 1901364828}
   - {fileID: 1011027579}
   - {fileID: 59861839}
+  spawnInterval: 5
 --- !u!4 &1393633153
 Transform:
   m_ObjectHideFlags: 0

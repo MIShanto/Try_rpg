@@ -135,7 +135,9 @@ public class CombatManager : MonoBehaviour
                 characterMovement.MovementControl = Movement.MovementControls.walk;
                 characterMovement.OnFreezeInputDisable();
             }
-            
+            characterMovement.moveSpeedMultiplierDuringAttack = 1f;
+
+
         }
     }
 

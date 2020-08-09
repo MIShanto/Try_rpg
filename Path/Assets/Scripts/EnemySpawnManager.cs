@@ -9,6 +9,9 @@ public class EnemySpawnManager : MonoBehaviour
     public Transform[] spawnPositions;
     ObjectPooler objectPooler;
 
+    [Tooltip("In seconds")]
+    public float spawnInterval;
+
     private void Start()
     {
         objectPooler = ObjectPooler.Instance;
@@ -19,7 +22,7 @@ public class EnemySpawnManager : MonoBehaviour
     IEnumerator WaitToSpawn()
     {
         
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(spawnInterval);
         SpawnEnemy();
         StartCoroutine(WaitToSpawn());
     }

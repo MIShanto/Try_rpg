@@ -9,6 +9,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
 
     [SerializeField] float movementSpeed_player;
+    [SerializeField] float speedMultiplierDuringAttack;
     [SerializeField] float attackDuration_player;
     [SerializeField] float getPushedForce_player;
     [SerializeField] float dashDuration;
@@ -62,6 +63,7 @@ public class CharacterManagement : MonoBehaviour
         if (playerPrefab != null)
         {
             playerPrefab.GetComponent<Movement>().characterMoveSpeed = movementSpeed_player;
+            playerPrefab.GetComponent<Movement>().speedMultiplierDuringAttack = speedMultiplierDuringAttack;
             playerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_player;
             playerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_player;
             playerPrefab.GetComponent<Movement>().startDashTime = dashDuration;
