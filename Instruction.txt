@@ -20,7 +20,7 @@ if player hits enemies with sword(closed ranged weapon). It will give 2x damage 
 	//damage section
 	(1) closed weapon damage value = 50
 	(2) long ranged weapon damage value = 100
-	(3) magical damage value = 100 (bleeding damage value = 20 for 3 times after 3 seconds)
+	(3) magical damage value = 100 (bleeding damage value = 50 for 3 times after 2 seconds)
 
 	//armor section
 	(1) closed armor damage value reduces by = 25
