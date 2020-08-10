@@ -13,6 +13,8 @@ public class CombatManager : MonoBehaviour
     DamageHandler damageHandler;
     Coroutine attackCoroutine;
     Rigidbody2D rb;
+    [SerializeField] EnemySpawnManager enemySpawnManager;
+
 
 
     [Header("Hitbox section")]
@@ -348,10 +350,22 @@ public class CombatManager : MonoBehaviour
         animator.SetBool("IsDead", isDead);
         characterMovement.OnFreezeInputEnable();
         yield return new WaitForSeconds(2f);
-        //destroy enemy..
 
         if (gameObject.tag != "Player")
         {
+            // decrease counter off enemy spawner
+            if (gameObject.tag == "Swordman")
+            {
+                if (enemySpawnManager != null)
+                    enemySpawnManager.HandleSwordman();
+            }
+            else
+            {
+                if (enemySpawnManager != null)
+                    enemySpawnManager.HandleOther();
+            }
+
+            //destroy enemy..
             characterMovement.RestSession();
             gameObject.SetActive(false); //Destroy(gameObject, 2f);
         }

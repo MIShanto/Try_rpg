@@ -241,7 +241,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.0000076293945}
   m_SizeDelta: {x: 0, y: -0.0000061989}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -394,7 +394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3621261065156082779
 Transform:
   m_ObjectHideFlags: 0
@@ -610,6 +610,8 @@ MonoBehaviour:
   path: {fileID: 0}
   player: {fileID: 0}
   characterMoveSpeed: 0
+  speedMultiplierDuringAttack: 0
+  moveSpeedMultiplierDuringAttack: 1
   nextAttackTime: 1
   attackIndex: 0
   getPushedForce: 0
@@ -652,6 +654,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5478a661663b72441b76f87f8b5a4cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySpawnManager: {fileID: 0}
   hitboxes: []
   leftHitboxRange: 0
   downHitboxRange: 0

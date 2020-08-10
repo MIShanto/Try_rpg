@@ -583,6 +583,8 @@ MonoBehaviour:
   path: {fileID: 0}
   player: {fileID: 0}
   characterMoveSpeed: 0
+  speedMultiplierDuringAttack: 0
+  moveSpeedMultiplierDuringAttack: 1
   nextAttackTime: 0
   attackIndex: 0
   getPushedForce: 0
@@ -719,6 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5478a661663b72441b76f87f8b5a4cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemySpawnManager: {fileID: 0}
   hitboxes:
   - {fileID: 1227923591}
   - {fileID: 1991847168}
@@ -734,7 +737,6 @@ MonoBehaviour:
     m_Bits: 1024
   maxHealth: 10000
   currentHealth: 0
-  swordDamage: 50
   chargedDamage: 0
   healthBar: {fileID: 5600908043391218682}
   isDead: 0
@@ -746,7 +748,6 @@ MonoBehaviour:
   closedRangedWeapon: 1
   longRangedWeapon: 0
   magicalWeapon: 0
-  weaponLevel: 0
 --- !u!114 &4088405484995274639
 MonoBehaviour:
   m_ObjectHideFlags: 0
