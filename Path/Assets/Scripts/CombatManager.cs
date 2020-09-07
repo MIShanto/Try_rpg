@@ -416,6 +416,19 @@ public class CombatManager : MonoBehaviour
     }
 
     #endregion
+    #region Missile thrower
+
+    /// <summary>
+    /// this method is called during archer attack animation via trigger..
+    /// </summary>
+    public void LaunchMissile()
+    {
+        objectPooler.SpawnFromPool("Missile", transform.position, Quaternion.identity);
+
+       
+    }
+
+    #endregion
 
     /// <summary>
     /// resets everythig of that script

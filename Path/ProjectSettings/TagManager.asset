@@ -9,6 +9,7 @@ TagManager:
   - ChargedEnemy
   - Archer
   - Swordman
+  - MissileThrower
   layers:
   - Default
   - TransparentFX

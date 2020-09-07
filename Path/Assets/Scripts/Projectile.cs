@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField] Transform arrowHead;
+    [SerializeField] Transform head;
+    [SerializeField] Transform targetForMissile;
     Rigidbody2D rb;
-    [SerializeField] float arrowHeadRange, arrowDamage;
+    [SerializeField] float headRange, arrowDamage, missileSpeed, missileRotationSpeed;
+
     bool hitCounter = false, arrowStopped = false;
     [SerializeField] LayerMask hitLayer;
 
@@ -15,7 +17,7 @@ public class Projectile : MonoBehaviour
     Vector2 playerPos;
     public enum throwables
     {
-        arrow
+        arrow, missile
     }
     public throwables projectile;
 
@@ -29,11 +31,36 @@ public class Projectile : MonoBehaviour
             performRotation();
 
     }
+    private void FixedUpdate()
+    {
+        if (projectile == throwables.missile)
+        {
+            OnMissileLaunch();
+            HitManagement();
+        }
+    }
+
+    private void OnMissileLaunch()
+    {
+        Vector2 direction = (Vector2)targetForMissile.position - rb.position;
+
+        direction.Normalize();
+
+        float rotateAmount = Vector3.Cross(direction, transform.up).z;
+
+        rb.angularVelocity = -rotateAmount * missileRotationSpeed;
+
+        rb.velocity = transform.up * missileSpeed;
+    }
+
     private void OnEnable()
     {
-        hitCounter = false;
-        arrowStopped = false;
-        GetComponent<Rigidbody2D>().gravityScale = 1;
+        if (projectile == throwables.arrow)
+        {
+            hitCounter = false;
+            arrowStopped = false;
+            GetComponent<Rigidbody2D>().gravityScale = 1;
+        }
     }
     #region Arrow
 
@@ -49,7 +76,7 @@ public class Projectile : MonoBehaviour
             angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
 
             //Used to manage arrow hit
-            hitManagement();
+            HitManagement();
         }
     }
 
@@ -57,25 +84,36 @@ public class Projectile : MonoBehaviour
     /// checks if hits or not.
     /// if not then stop arrow in previous player position
     /// </summary>
-    private void hitManagement()
+    private void HitManagement()
     {
-        Collider2D hitObject = Physics2D.OverlapCircle(arrowHead.position, arrowHeadRange, hitLayer);
+        Collider2D hitObject = Physics2D.OverlapCircle(head.position, headRange, hitLayer);
 
         if (hitObject != null)
         {
 
             if (!hitCounter)
             {
-                hitObject.GetComponent<CombatManager>().TakeDamage(2, this.transform, Movement.MovementControls.none);
-                arrowStopped = true;
-                rb.velocity = Vector2.zero;
-                rb.gravityScale = 0;
-                hitCounter = true;
-                StartCoroutine(waitToDeactive());
+                if (projectile == throwables.arrow)
+                {
+                    hitObject.GetComponent<CombatManager>().TakeDamage(2, this.transform, Movement.MovementControls.none);
+                    arrowStopped = true;
+                    rb.velocity = Vector2.zero;
+                    rb.gravityScale = 0;
+                    hitCounter = true;
+                    StartCoroutine(waitToDeactive());
+                }
+                else if (projectile == throwables.missile)
+                {
+                    hitObject.GetComponent<CombatManager>().TakeDamage(2, this.transform, Movement.MovementControls.none);
+                   
+                   
+
+                    gameObject.SetActive(false);
+                }
 
             }
         }
-        else if (Vector2.Distance((Vector2)arrowHead.position, playerPos) <= .5f)
+        else if (Vector2.Distance((Vector2)head.position, playerPos) <= .5f)
         {
             arrowStopped = true;
             rb.velocity = Vector2.zero;
@@ -106,7 +144,8 @@ public class Projectile : MonoBehaviour
     #region Gizmos
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(arrowHead.position, arrowHeadRange);
+        Gizmos.DrawWireSphere(head.position, headRange);
+
     }
     #endregion
 }
