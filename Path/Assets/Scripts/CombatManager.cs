@@ -10,7 +10,6 @@ public class CombatManager : MonoBehaviour
     ObjectPooler objectPooler;
     Animator animator;
     Movement characterMovement;
-    DamageHandler damageHandler;
     Coroutine attackCoroutine;
     Rigidbody2D rb;
     [SerializeField] EnemySpawnManager enemySpawnManager;
@@ -31,14 +30,18 @@ public class CombatManager : MonoBehaviour
     
     [HideInInspector] public bool isDead, isAttacking = false, isBlocked;
 
-    [Header("Armor Attack functionality")]
+    [Header("Armor functionality")]
     [SerializeField]  bool closedRangedArmor;
     [SerializeField]  bool longRangedArmor;
     [SerializeField]  bool magicalArmor;
     int armorType;
-    [SerializeField]  bool closedRangedWeapon;
-    [SerializeField]  bool longRangedWeapon;
-    [SerializeField]  bool magicalWeapon;
+
+    [Header("Weapon functionality")]
+    [SerializeField]  bool playerSword;
+    [SerializeField]  bool swordsmanSword;
+    [SerializeField]  bool arrow;
+    [SerializeField]  bool missile;
+    [SerializeField]  bool poison;
     int weaponType;
 
     bool isHitCritical = false;
@@ -52,7 +55,6 @@ public class CombatManager : MonoBehaviour
         animator = GetComponent<Animator>();
         characterMovement = GetComponent<Movement>();
         rb = GetComponent<Rigidbody2D>();
-        damageHandler = GetComponent<DamageHandler>();
 
         ResetSession();
     }
@@ -72,14 +74,21 @@ public class CombatManager : MonoBehaviour
             armorType = 0;
 
         //weapon section
-        if (closedRangedWeapon && !longRangedWeapon && !magicalWeapon)
+        if (swordsmanSword && !arrow && !poison && !missile && !playerSword)
             weaponType = 1;
-        else if (longRangedWeapon && !closedRangedWeapon && !magicalWeapon)
+        else if (arrow && !missile && !poison && !swordsmanSword && !playerSword)
             weaponType = 2;
-        else if (magicalWeapon && !closedRangedWeapon && !longRangedWeapon)
+        else if (poison && !arrow && !missile && !swordsmanSword && !playerSword)
             weaponType = 3;
+        else if (missile && !arrow && !poison && !swordsmanSword && !playerSword)
+            weaponType = 4;
+        else if (playerSword && !arrow && !poison && !swordsmanSword && !missile)
+            weaponType = 5;
         else
             weaponType = 0;
+
+
+
     }
     private void FixedUpdate()
     {
@@ -91,6 +100,7 @@ public class CombatManager : MonoBehaviour
         }
         //handle health bar ui
         healthBar.value = currentHealth;
+
     }
 
 
@@ -176,7 +186,7 @@ public class CombatManager : MonoBehaviour
     /// </summary>
     public void AttackUp()
     {
-        //Debug.Log("up");
+        Debug.Log("up");
         Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[0].position, upHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
@@ -188,7 +198,7 @@ public class CombatManager : MonoBehaviour
     }
     public void AttackRight()
     {
-        //Debug.Log("right");
+        Debug.Log("right");
         Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[1].position, rightHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
@@ -200,7 +210,7 @@ public class CombatManager : MonoBehaviour
     }
     public void AttackDown()
     {
-       // Debug.Log("down");
+        Debug.Log("down");
         Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[2].position, downHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
@@ -212,7 +222,7 @@ public class CombatManager : MonoBehaviour
     }
     public void AttackLeft()
     {
-       // Debug.Log("left");
+        Debug.Log("left");
         Collider2D[] hitArea = Physics2D.OverlapCircleAll(hitboxes[3].position, leftHitboxRange, hitLayer);
 
         foreach (Collider2D hitObject in hitArea)
@@ -280,7 +290,8 @@ public class CombatManager : MonoBehaviour
                 if (!isBlocked)
                 {
                     //decrease health..
-                    currentHealth -= damageHandler.GetDamageInfo(damageType,armorType,isHitCritical);// get damage info (damage type, armor type)
+
+                    currentHealth -= DamageHandler.Instance.GetDamageInfo(damageType,armorType,isHitCritical);// get damage info (damage type, armor type)
 
                     // DEMO...(knock off)
                     if (AttackState == Movement.MovementControls.chargedAttack && currentHealth > 0)
@@ -299,7 +310,7 @@ public class CombatManager : MonoBehaviour
                 else
                 {
                     //decrease half health..
-                    currentHealth -= damageHandler.GetDamageInfo(damageType, armorType,isHitCritical) * 0.5f; // get damage info (damage type, armor type)
+                    currentHealth -= DamageHandler.Instance.GetDamageInfo(damageType, armorType,isHitCritical) * 0.5f; // get damage info (damage type, armor type)
 
                     OnBlockDisable();
                     characterMovement.OnHitPush(isHitCritical);
@@ -312,7 +323,7 @@ public class CombatManager : MonoBehaviour
         {
             if(!isDead)
             { 
-                currentHealth -= damageHandler.GetDamageInfo(damageType, armorType, false);// get damage info (damage type, armor type, critical hit)
+                currentHealth -= DamageHandler.Instance.GetDamageInfo(damageType, armorType, false);// get damage info (damage type, armor type, critical hit)
 
                 if (AttackState == Movement.MovementControls.chargedAttack && currentHealth>0)
                 {
@@ -424,7 +435,6 @@ public class CombatManager : MonoBehaviour
     public void LaunchMissile()
     {
         objectPooler.SpawnFromPool("Missile", transform.position, Quaternion.identity);
-
        
     }
 
@@ -445,7 +455,7 @@ public class CombatManager : MonoBehaviour
     {
         StopAllCoroutines();
         characterMovement.StopAllCoroutines();
-        damageHandler.StopAllCoroutines();
+        DamageHandler.Instance.StopAllCoroutines();
 
     }
 

@@ -25,6 +25,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float health_player;
     [Range(0,100)]
     [SerializeField] int criticalHitProbability;
+    [SerializeField] int playerSwordDamage;
 
 
     [Header("Archer Section")]
@@ -33,6 +34,15 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float getPushedForce_archer;
     [SerializeField] float movementSpeed_archer;
     [SerializeField] float health_archer;
+    [SerializeField] int arrowDamage;
+    
+    [Header("missile thrower Section")]
+    [SerializeField] GameObject MTPrefab;
+    [SerializeField] float attackDuration_MT;
+    [SerializeField] float getPushedForce_MT;
+    [SerializeField] float movementSpeed_MT;
+    [SerializeField] float health_MT;
+    [SerializeField] int missileDamage;
 
 
     [Header("Swordsman Section")]
@@ -43,6 +53,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float health_swordsman;
     [Tooltip("Applicable for healer only")]
     [SerializeField] float healingAmount;
+    [SerializeField] int swordDamage;
 
 
     [Header("Charged enemy Section")]
@@ -57,6 +68,9 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float movementSpeed_CE;
     [SerializeField] float health_CE;
     //charged enemy bug fix korte hobe...
+
+    [Header("poison damage")]
+    [SerializeField] int poisonDamage;
     private void Awake()
     {
         #region player
@@ -89,7 +103,18 @@ public class CharacterManagement : MonoBehaviour
             archerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
             archerPrefab.GetComponent<CombatManager>().maxHealth = health_archer;
             archerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_archer;
-            archerPrefab.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
+        }
+
+
+        #endregion
+
+        #region missile thrower
+        if (MTPrefab != null)
+        {
+            MTPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_MT;
+            MTPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_MT;
+            MTPrefab.GetComponent<CombatManager>().maxHealth = health_MT;
+            MTPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_MT;
         }
 
 
@@ -130,6 +155,21 @@ public class CharacterManagement : MonoBehaviour
                 Debug.LogError("!!!(looking Range During Charge) this distance must be less than charged Distance!!!");
             }
         }
+
+        #endregion
+
+      
+    }
+
+    private void Start()
+    {
+        #region Damage Handler Class
+
+        DamageHandler.Instance.swordDamage = swordDamage;
+        DamageHandler.Instance.arrowDamage = arrowDamage;
+        DamageHandler.Instance.poisonDamage = poisonDamage;
+        DamageHandler.Instance.missileDamage = missileDamage;
+        DamageHandler.Instance.playerSwordDamage = playerSwordDamage;
 
         #endregion
     }

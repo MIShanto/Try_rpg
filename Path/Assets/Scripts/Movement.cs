@@ -89,10 +89,12 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
+       
         if (!myCombatManager.isDead)
         {
             if (character == characters.player)
             {
+
                 DoPlayerStuffsInUpdate();
             }
             else if (character == characters.enemy)
@@ -164,6 +166,7 @@ public class Movement : MonoBehaviour
     /// </summary>
     private void AnimateMovementPlayer()
     {
+
         if (direction != Vector2.zero)
         {
             animator.SetFloat("Horizontal", direction.x);
@@ -231,6 +234,8 @@ public class Movement : MonoBehaviour
                 direction.Normalize();
 
                 moveSpeed = Mathf.Clamp(direction.magnitude, 0.0f, 1.0f);
+
+              
 
                 MovementControl = MovementControls.walk;
             }
@@ -304,14 +309,56 @@ public class Movement : MonoBehaviour
     private void AnimateMovementEnemy()
     {
         // aro better kisu paile replace kore nite hobe..(need optimization).. 
+        //direction = new Vector2(rb.velocity.x, rb.velocity.y);
         direction = (player.transform.position - transform.position);
 
         direction.Normalize();
+
+        // for making animation not to overlap
+        if (direction.x > 0)
+        {
+            if (direction.y > 0.5f)
+            {
+                direction.y = 1;
+                direction.x = 0;
+            }
+            else if (direction.y < -0.5f)
+            {
+                direction.y = -1;
+                direction.x = 0;
+            }
+            else
+            {
+                direction.y = 0;
+                direction.x = 1;
+            }
+        }
+        else if (direction.x < 0)
+        {
+            if (direction.y > 0.5f)
+            {
+                direction.y = 1;
+                direction.x = 0;
+            }
+            else if (direction.y < -0.5f)
+            {
+                direction.y = -1;
+                direction.x = 0;
+            }
+            else
+            {
+                direction.y = 0;
+                direction.x = -1;
+            }
+        }
+
+
         // used to set enemy face to the last direction
         if (direction != Vector2.zero)
         {
             animator.SetFloat("Horizontal", direction.x);
             animator.SetFloat("Vertical", direction.y);
+
             myFacingDirection = direction;
         }
     }

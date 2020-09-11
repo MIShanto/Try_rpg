@@ -424,6 +424,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966903, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: leftHitboxRange
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966904, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Enabled

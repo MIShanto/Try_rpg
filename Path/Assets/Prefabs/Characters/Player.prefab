@@ -479,7 +479,6 @@ GameObject:
   - component: {fileID: 2751545783011731722}
   - component: {fileID: 2751545783011731726}
   - component: {fileID: 159104779}
-  - component: {fileID: 8323007858390303880}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -678,9 +677,11 @@ MonoBehaviour:
   closedRangedArmor: 0
   longRangedArmor: 0
   magicalArmor: 0
-  closedRangedWeapon: 1
-  longRangedWeapon: 0
-  magicalWeapon: 0
+  playerSword: 1
+  swordsmanSword: 0
+  arrow: 0
+  missile: 0
+  poison: 0
 --- !u!58 &159104779
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -697,18 +698,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.3
---- !u!114 &8323007858390303880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2751545783011731716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 299077e9709b18440998688b8f3ae763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2751545783263399736
 GameObject:
   m_ObjectHideFlags: 0

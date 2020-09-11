@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] Transform head;
     [SerializeField] Transform targetForMissile;
     Rigidbody2D rb;
-    [SerializeField] float headRange, arrowDamage, missileSpeed, missileRotationSpeed;
+    [SerializeField] float headRange, missileSpeed, missileRotationSpeed;
 
     bool hitCounter = false, arrowStopped = false;
     [SerializeField] LayerMask hitLayer;
@@ -57,10 +57,10 @@ public class Projectile : MonoBehaviour
     {
         if (projectile == throwables.arrow)
         {
-            hitCounter = false;
             arrowStopped = false;
             GetComponent<Rigidbody2D>().gravityScale = 1;
         }
+        hitCounter = false;
     }
     #region Arrow
 
@@ -104,9 +104,9 @@ public class Projectile : MonoBehaviour
                 }
                 else if (projectile == throwables.missile)
                 {
-                    hitObject.GetComponent<CombatManager>().TakeDamage(2, this.transform, Movement.MovementControls.none);
-                   
-                   
+                    hitObject.GetComponent<CombatManager>().TakeDamage(4, this.transform, Movement.MovementControls.none);
+                    hitCounter = true;
+
 
                     gameObject.SetActive(false);
                 }

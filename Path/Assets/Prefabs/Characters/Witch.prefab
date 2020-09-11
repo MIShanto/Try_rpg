@@ -453,7 +453,6 @@ GameObject:
   - component: {fileID: 8921415669450966905}
   - component: {fileID: 8921415669450966904}
   - component: {fileID: 8921415669450966903}
-  - component: {fileID: 4088405484995274639}
   m_Layer: 9
   m_Name: Witch
   m_TagString: Enemy
@@ -727,10 +726,10 @@ MonoBehaviour:
   - {fileID: 1991847168}
   - {fileID: 1252246989}
   - {fileID: 1720424616}
-  leftHitboxRange: 0
-  downHitboxRange: 0
-  rightHitboxRange: 0
-  upHitboxRange: 0
+  leftHitboxRange: 0.6
+  downHitboxRange: 0.6
+  rightHitboxRange: 0.6
+  upHitboxRange: 0.6
   midHitboxRange: 0
   hitLayer:
     serializedVersion: 2
@@ -745,21 +744,11 @@ MonoBehaviour:
   closedRangedArmor: 0
   longRangedArmor: 0
   magicalArmor: 0
-  closedRangedWeapon: 1
-  longRangedWeapon: 0
-  magicalWeapon: 0
---- !u!114 &4088405484995274639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8921415669450966881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 299077e9709b18440998688b8f3ae763, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  playerSword: 0
+  swordsmanSword: 1
+  arrow: 0
+  missile: 0
+  poison: 0
 --- !u!1 &8956652795981694691
 GameObject:
   m_ObjectHideFlags: 0

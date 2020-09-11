@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DamageHandler : MonoBehaviour
 {
+    public static DamageHandler Instance { get;  set; }
     struct ArmorHandler
     {
         public int minIndex;
@@ -13,9 +14,25 @@ public class DamageHandler : MonoBehaviour
     Dictionary<int, int> damageTypes = new Dictionary<int, int>();
     Dictionary<int, ArmorHandler> armorTypes = new Dictionary<int, ArmorHandler>();
 
+    [HideInInspector] public int playerSwordDamage, swordDamage, arrowDamage, poisonDamage, missileDamage;
+
     CombatManager myCombatManager;
 
     int bleedingAttackCounter = 0;
+
+    private void Awake()
+    {
+        // if the singleton hasn't been initialized yet
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;//Avoid doing anything else
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     /// <summary>
     /// Assigns the associated damage value and armor defence value;
     /// </summary>
@@ -26,9 +43,11 @@ public class DamageHandler : MonoBehaviour
         #region damage section
 
         damageTypes.Add(0, 0); // nothing
-        damageTypes.Add(1, 50); //sword
-        damageTypes.Add(2, 100); // arrow
-        damageTypes.Add(3, 100); // poison
+        damageTypes.Add(1, swordDamage); //swordsman sword
+        damageTypes.Add(2, arrowDamage); // arrow
+        damageTypes.Add(3, poisonDamage); // poison
+        damageTypes.Add(4, missileDamage); // missile
+        damageTypes.Add(5, playerSwordDamage); // player sword
 
         #endregion
         #region armor section
@@ -69,22 +88,35 @@ public class DamageHandler : MonoBehaviour
             armorDefenceValue = armorTypes[armorType].damageValueToDecrease; 
         }
 
-        if(damageType == 1) // TODO: this indexes will be hard coded 
-        {
-            if(isHitCritical)
-                return tmpDamageValue * 2 - armorDefenceValue;
-            else
-                return tmpDamageValue - armorDefenceValue;
-        }
-        else if(damageType == 2)
+        if (damageType == 1)  // TODO: this indexes will be hard coded 
             return tmpDamageValue - armorDefenceValue;
+
+        else if (damageType == 2)
+            return tmpDamageValue - armorDefenceValue;
+        
         else if (damageType == 3)
         {
             //if there is no armor do bleeding
-            if(armorDefenceValue == 0)
+            if (armorDefenceValue == 0)
                 StartCoroutine(DoBleedingAction());
             return tmpDamageValue;
         }
+        
+        else if (damageType == 4)
+            return tmpDamageValue - armorDefenceValue;
+        
+        else if (damageType == 5)
+        {
+
+            if (isHitCritical)
+                return tmpDamageValue * 2 - armorDefenceValue;
+            else
+            {
+
+                return tmpDamageValue - armorDefenceValue;
+            }
+        }
+
         return 0;
 
     }
@@ -101,4 +133,5 @@ public class DamageHandler : MonoBehaviour
         else
             bleedingAttackCounter = 0;
     }
+
 }
