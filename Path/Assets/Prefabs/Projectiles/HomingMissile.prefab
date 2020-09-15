@@ -129,9 +129,10 @@ MonoBehaviour:
   head: {fileID: 1123771996246853882}
   targetForMissile: {fileID: 0}
   headRange: 0.2
-  arrowDamage: 50
-  missileSpeed: 10
-  missileRotationSpeed: 800
+  missileSpeed: 4
+  missileRotationSpeed: 100
+  isSelfDestroyable: 0
+  selfDestroyTime: 0
   hitLayer:
     serializedVersion: 2
     m_Bits: 1024
