@@ -64,14 +64,12 @@ MonoBehaviour:
   getPushedForce_archer: 1000
   movementSpeed_archer: 2
   health_archer: 100
-  arrowDamage: 20
   MTPrefab: {fileID: 7952596589723609999, guid: f39e663e9b41b994fbdb8e63cca78589,
     type: 3}
   attackDuration_MT: 1
   getPushedForce_MT: 1000
   movementSpeed_MT: 2
   health_MT: 150
-  missileDamage: 10
   swordsmanPrefab: {fileID: 0}
   attackDuration_swordsman: 0.25
   getPushedForce_swordsman: 1000
@@ -90,3 +88,11 @@ MonoBehaviour:
   movementSpeed_CE: 2
   health_CE: 0
   poisonDamage: 0
+  arrowPrefab: {fileID: 0}
+  arrowDamage: 20
+  SelfDestroyableArrow: 0
+  selfDestroyTimeArrow: 0
+  missilePrefab: {fileID: 0}
+  missileDamage: 10
+  SelfDestroyableMissile: 0
+  selfDestroyTimeMissile: 0

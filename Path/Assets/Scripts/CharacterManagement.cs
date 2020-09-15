@@ -34,7 +34,6 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float getPushedForce_archer;
     [SerializeField] float movementSpeed_archer;
     [SerializeField] float health_archer;
-    [SerializeField] int arrowDamage;
     
     [Header("missile thrower Section")]
     [SerializeField] GameObject MTPrefab;
@@ -42,8 +41,6 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float getPushedForce_MT;
     [SerializeField] float movementSpeed_MT;
     [SerializeField] float health_MT;
-    [SerializeField] int missileDamage;
-
 
     [Header("Swordsman Section")]
     [SerializeField] GameObject swordsmanPrefab;
@@ -71,6 +68,18 @@ public class CharacterManagement : MonoBehaviour
 
     [Header("poison damage")]
     [SerializeField] int poisonDamage;
+
+    [Header("Projectile Section")]
+    [SerializeField] GameObject arrowPrefab;
+    [SerializeField] int arrowDamage;
+    [SerializeField] bool SelfDestroyableArrow;
+    [SerializeField] float selfDestroyTimeArrow;
+    [Space]
+    [SerializeField] GameObject missilePrefab;
+    [SerializeField] int missileDamage;
+    [SerializeField] bool SelfDestroyableMissile;
+    [SerializeField] float selfDestroyTimeMissile;
+
     private void Awake()
     {
         #region player
@@ -158,7 +167,28 @@ public class CharacterManagement : MonoBehaviour
 
         #endregion
 
-      
+        #region arrow
+
+        if (arrowPrefab != null)
+        {
+            arrowPrefab.GetComponent<Projectile>().isSelfDestroyable = SelfDestroyableArrow;
+            arrowPrefab.GetComponent<Projectile>().selfDestroyTime = selfDestroyTimeArrow;
+           
+        }
+
+        #endregion
+
+        #region missile
+
+        if (missilePrefab != null)
+        {
+            missilePrefab.GetComponent<Projectile>().isSelfDestroyable = SelfDestroyableMissile;
+            missilePrefab.GetComponent<Projectile>().selfDestroyTime = selfDestroyTimeMissile;
+
+        }
+
+        #endregion
+
     }
 
     private void Start()

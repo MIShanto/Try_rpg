@@ -9,7 +9,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] Transform targetForMissile;
     Rigidbody2D rb;
     [SerializeField] float headRange, missileSpeed, missileRotationSpeed;
-
+    [HideInInspector]public  bool isSelfDestroyable;
+    [HideInInspector]public float selfDestroyTime;
     bool hitCounter = false, arrowStopped = false;
     [SerializeField] LayerMask hitLayer;
 
@@ -24,7 +25,17 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (isSelfDestroyable)
+            StartCoroutine(RunSelfDestroy());
     }
+
+    IEnumerator RunSelfDestroy()
+    {
+        yield return new WaitForSeconds(selfDestroyTime);
+        gameObject.SetActive(false);
+    }
+
     void LateUpdate()
     {
         if(projectile == throwables.arrow)
