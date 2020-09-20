@@ -12,8 +12,12 @@ public class Movement : MonoBehaviour
     public characters character;
 
     [HideInInspector] public AIPath path;
+    AIDestinationSetter aIDestinationSetter;
+    [SerializeField] Transform destinationTarget;
+
     [HideInInspector]
-    public GameObject player;
+    public Transform player;
+    
     CombatManager myCombatManager;
 
     Rigidbody2D rb;
@@ -33,13 +37,12 @@ public class Movement : MonoBehaviour
     [HideInInspector] public float knockSpeed, startKnockTime;
     float knockTime;
 
-    [HideInInspector] public float chargedAttackSpeed, startAttackTime, chargedAttackTime, chargedDistance, waitAfterAttackDuration,
-        chargeAndLookoutArea;
-    [SerializeField] public float stamina;
-    float staminaDecreaseRate = 20;
+    [HideInInspector] public float chargedAttackSpeed, startAttackTime, chargedAttackTime, chargedDistance,
+        waitAfterAttackDuration,  chargeAndLookoutArea, stamina, staminaDecreaseRate;
+
     // charged attack var start
     bool waiting = false; 
-    public bool characterHit = false;
+    [HideInInspector]public bool characterHit = false;
     // charged attack var end
 
     //critical hit section
@@ -52,29 +55,36 @@ public class Movement : MonoBehaviour
     [SerializeField] LayerMask obstacleLayer;
     [HideInInspector]public float enemyHealingAmount;
 
-    [HideInInspector] public Vector2 direction, myFacingDirection, otherCharacterFacingDirection;
+    [HideInInspector] public Vector2 direction, myFacingDirection, otherCharacterFacingDirection,  targetForDirection; // target for enemy direction;
     [HideInInspector] public bool isCharacterControllable = true, isHealer = false, healing = false;
     [HideInInspector] public float speedFactor = 1;
     int cnt = 0;
     bool enemyPlayerDistanceAdjustment = false;
     Coroutine healingCoroutine;
 
+    [SerializeField] bool isCutsceneModeOn;
+    [SerializeField] bool cutsceneFixedFaceMode;
+    float mainEndDistance, angle = 0;
+
 
     //movement states..
     public  enum MovementControls
     {
-        walk, dash, roll, attack, block, chargedAttack, knockedOff, none
+        walk, dash, roll, attack, block, chargedAttack, knockedOff, cutscene, none
     }
     public  MovementControls MovementControl;
 
     private void Start()
     {
+        aIDestinationSetter = GetComponent<AIDestinationSetter>();
         rb = GetComponent<Rigidbody2D>();
         myCombatManager = GetComponent<CombatManager>();
         animator = GetComponent<Animator>();
 
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = (GameObject.FindGameObjectWithTag("Player")).transform;
         path = GetComponent<AIPath>();
+        if(path != null)
+            mainEndDistance = path.endReachedDistance;
 
         //Call reset session method to reset things
         RestSession();
@@ -310,7 +320,7 @@ public class Movement : MonoBehaviour
     {
         // aro better kisu paile replace kore nite hobe..(need optimization).. 
         //direction = new Vector2(rb.velocity.x, rb.velocity.y);
-        direction = (player.transform.position - transform.position);
+        direction = (targetForDirection - (Vector2)transform.position);
 
         direction.Normalize();
 
@@ -368,71 +378,127 @@ public class Movement : MonoBehaviour
     /// </summary>
     private void EnemyPathCheck()
     {
-        //if destination reached enemy will play attack animation otherwise play move animation
-        if (!path.reachedDestination && !player.GetComponent<CombatManager>().isDead)
+       
+        if (isCutsceneModeOn)
         {
-
-            if (gameObject.tag == "ChargedEnemy" &&
-                    !Physics2D.Raycast(transform.position, direction,
-                    Vector2.Distance(transform.position, player.transform.position), obstacleLayer) &&
-                    Vector2.Distance(transform.position, player.transform.position) <= chargedDistance)
-            {
-                AttackEnemySettings();
-                animator.SetTrigger("GetCharged");
-            }
-            else
-            {
-                MoveEnemy();
-            }
+            //set end reach distance to 1
+            path.endReachedDistance = 1;
+            CutsceneMode(cutsceneFixedFaceMode, destinationTarget);
         }
         else
         {
-            if (!player.GetComponent<CombatManager>().isDead)
+            //set end distance to previous one
+            path.endReachedDistance = mainEndDistance;
+            aIDestinationSetter.target = player;
+            targetForDirection = player.position;
+
+            //if destination reached enemy will play attack animation otherwise play move animation
+            if (!path.reachedDestination && !player.GetComponent<CombatManager>().isDead)
             {
-                if (gameObject.tag == "ChargedEnemy")
+
+                if (gameObject.tag == "ChargedEnemy" &&
+                        !Physics2D.Raycast(transform.position, direction,
+                        Vector2.Distance(transform.position, player.transform.position), obstacleLayer) &&
+                        Vector2.Distance(transform.position, player.transform.position) <= chargedDistance)
                 {
                     AttackEnemySettings();
                     animator.SetTrigger("GetCharged");
                 }
-                 /*if (gameObject.tag == "Archer" &&
-                            Vector2.Distance(transform.position, player.transform.position) <= 2f)
+                else
                 {
-                    Reposition();
-                }*/
-
-                else if (gameObject.CompareTag("Swordman"))
+                    MoveEnemy();
+                }
+            }
+            else
+            {
+                if (!player.GetComponent<CombatManager>().isDead)
                 {
-                    if (isHealer)
+                    if (gameObject.tag == "ChargedEnemy")
                     {
-                        animator.SetFloat("Speed", 0f);
-                        path.endReachedDistance = 5f;
-                        if ((myCombatManager.currentHealth < myCombatManager.maxHealth) && !healing)
-                        {
-                            healing = true;
+                        AttackEnemySettings();
+                        animator.SetTrigger("GetCharged");
+                    }
+                    /*if (gameObject.tag == "Archer" &&
+                               Vector2.Distance(transform.position, player.transform.position) <= 2f)
+                   {
+                       Reposition();
+                   }*/
 
-                            if (healingCoroutine != null)
+                    else if (gameObject.CompareTag("Swordman"))
+                    {
+                        if (isHealer)
+                        {
+                            animator.SetFloat("Speed", 0f);
+                            path.endReachedDistance = 5f;
+                            if ((myCombatManager.currentHealth < myCombatManager.maxHealth) && !healing)
                             {
-                                StopCoroutine(healingCoroutine);
+                                healing = true;
+
+                                if (healingCoroutine != null)
+                                {
+                                    StopCoroutine(healingCoroutine);
+                                }
+                                healingCoroutine = StartCoroutine(SlowHeal());
                             }
-                            healingCoroutine = StartCoroutine(SlowHeal());
+                        }
+                        else
+                        {
+                            MovementControl = MovementControls.attack;
+                            path.endReachedDistance = 1f;
+                            AttackEnemySettings();
                         }
                     }
+
                     else
                     {
                         MovementControl = MovementControls.attack;
-                        path.endReachedDistance = 1f;
                         AttackEnemySettings();
                     }
-                }
-
-                else
-                {
-                    MovementControl = MovementControls.attack;
-                    AttackEnemySettings();
                 }
             }
         }
     }
+
+    /// <summary>
+    /// This is for cutscene mode 
+    /// </summary>
+    /// <param name="fixedFaceMode"></param>
+    /// <param name="aiTarget"></param>
+    void CutsceneMode(bool fixedFaceMode, Transform aiTarget)
+    {
+
+        if (GetComponent<AIPath>().reachedDestination)
+        {
+            animator.SetFloat("Speed", 0f);
+
+            if (!fixedFaceMode)
+            {
+
+                float speed = (2 * Mathf.PI) / 15;  //2*PI in degress is 360, so you get 5 seconds to complete a circle
+                float radius = 50;
+
+                angle += speed * Time.deltaTime; //if you want to switch direction, use -= instead of +=
+                float x = Mathf.Cos(angle) * radius;
+                float y = Mathf.Sin(angle) * radius;
+
+                targetForDirection = new Vector2(x, y);
+                
+            }
+            else
+            {
+                targetForDirection = player.position;
+            }
+
+        }
+        else
+        {
+            MoveEnemy();
+            aIDestinationSetter.target = aiTarget;
+            targetForDirection = aiTarget.position;
+        }
+
+    }
+
 
     /// <summary>
     /// This method makes the enemy to go to charged attack state and do the attack.

@@ -90,9 +90,12 @@ MonoBehaviour:
   poisonDamage: 0
   arrowPrefab: {fileID: 0}
   arrowDamage: 20
-  SelfDestroyableArrow: 0
-  selfDestroyTimeArrow: 0
+  SelfDestroyableArrow: 1
+  selfDestroyTimeArrow: 2.5
+  flightTime: 1
   missilePrefab: {fileID: 0}
-  missileDamage: 10
-  SelfDestroyableMissile: 0
-  selfDestroyTimeMissile: 0
+  missileDamage: 25
+  missileSpeed: 10
+  missileRotationSpeed: 400
+  SelfDestroyableMissile: 1
+  selfDestroyTimeMissile: 5

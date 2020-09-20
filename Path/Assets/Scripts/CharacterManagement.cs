@@ -8,7 +8,7 @@ public class CharacterManagement : MonoBehaviour
     [Header("Player Section")]
     [SerializeField] GameObject playerPrefab;
 
-    [SerializeField] float movementSpeed_player;
+    [SerializeField] float movementSpeed_player, stamina, staminaDecreaseRate;
     [SerializeField] float speedMultiplierDuringAttack;
     [SerializeField] float attackDuration_player;
     [SerializeField] float getPushedForce_player;
@@ -73,10 +73,11 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] GameObject arrowPrefab;
     [SerializeField] int arrowDamage;
     [SerializeField] bool SelfDestroyableArrow;
-    [SerializeField] float selfDestroyTimeArrow;
+    [SerializeField] float selfDestroyTimeArrow, flightTime;
     [Space]
     [SerializeField] GameObject missilePrefab;
     [SerializeField] int missileDamage;
+    [SerializeField] float missileSpeed, missileRotationSpeed;
     [SerializeField] bool SelfDestroyableMissile;
     [SerializeField] float selfDestroyTimeMissile;
 
@@ -86,6 +87,8 @@ public class CharacterManagement : MonoBehaviour
         if (playerPrefab != null)
         {
             playerPrefab.GetComponent<Movement>().characterMoveSpeed = movementSpeed_player;
+            playerPrefab.GetComponent<Movement>().stamina = stamina;
+            playerPrefab.GetComponent<Movement>().staminaDecreaseRate = staminaDecreaseRate;
             playerPrefab.GetComponent<Movement>().speedMultiplierDuringAttack = speedMultiplierDuringAttack;
             playerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_player;
             playerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_player;
@@ -111,6 +114,7 @@ public class CharacterManagement : MonoBehaviour
             archerPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_archer;
             archerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
             archerPrefab.GetComponent<CombatManager>().maxHealth = health_archer;
+            archerPrefab.GetComponent<CombatManager>().arrowFlightTime = flightTime;
             archerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_archer;
         }
 
@@ -184,6 +188,8 @@ public class CharacterManagement : MonoBehaviour
         {
             missilePrefab.GetComponent<Projectile>().isSelfDestroyable = SelfDestroyableMissile;
             missilePrefab.GetComponent<Projectile>().selfDestroyTime = selfDestroyTimeMissile;
+            missilePrefab.GetComponent<Projectile>().missileRotationSpeed = missileRotationSpeed;
+            missilePrefab.GetComponent<Projectile>().missileSpeed = missileSpeed;
 
         }
 

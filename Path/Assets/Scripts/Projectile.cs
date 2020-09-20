@@ -8,9 +8,9 @@ public class Projectile : MonoBehaviour
     [SerializeField] Transform head;
     [SerializeField] Transform targetForMissile;
     Rigidbody2D rb;
-    [SerializeField] float headRange, missileSpeed, missileRotationSpeed;
+    [SerializeField] float headRange;
     [HideInInspector]public  bool isSelfDestroyable;
-    [HideInInspector]public float selfDestroyTime;
+    [HideInInspector]public float selfDestroyTime, missileSpeed, missileRotationSpeed;
     bool hitCounter = false, arrowStopped = false;
     [SerializeField] LayerMask hitLayer;
 

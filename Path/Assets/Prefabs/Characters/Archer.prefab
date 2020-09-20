@@ -387,7 +387,6 @@ GameObject:
   - component: {fileID: 3621261065156082777}
   - component: {fileID: 3621261064660041041}
   - component: {fileID: 3621261065156082778}
-  - component: {fileID: 2795281863556366481}
   m_Layer: 9
   m_Name: Archer
   m_TagString: Archer
@@ -608,6 +607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: 1
   path: {fileID: 0}
+  destinationTarget: {fileID: 0}
   player: {fileID: 0}
   characterMoveSpeed: 0
   speedMultiplierDuringAttack: 0
@@ -628,6 +628,7 @@ MonoBehaviour:
   waitAfterAttackDuration: 0
   chargeAndLookoutArea: 0
   stamina: 0
+  staminaDecreaseRate: 0
   characterHit: 0
   criticalHitProb: 0
   obstacleLayer:
@@ -637,10 +638,13 @@ MonoBehaviour:
   direction: {x: 0, y: 0}
   myFacingDirection: {x: 0, y: 0}
   otherCharacterFacingDirection: {x: 0, y: 0}
+  targetForDirection: {x: 0, y: 0}
   isCharacterControllable: 1
   isHealer: 0
   healing: 0
   speedFactor: 1
+  isCutsceneModeOn: 0
+  cutsceneFixedFaceMode: 0
   MovementControl: 0
 --- !u!114 &3621261065156082778
 MonoBehaviour:
@@ -671,6 +675,7 @@ MonoBehaviour:
   isDead: 0
   isAttacking: 0
   isBlocked: 0
+  arrowFlightTime: 0
   closedRangedArmor: 0
   longRangedArmor: 0
   magicalArmor: 0
@@ -679,19 +684,3 @@ MonoBehaviour:
   arrow: 1
   missile: 0
   poison: 0
---- !u!70 &2795281863556366481
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3621261065156082780}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.0000026415119, y: -0.49193704}
-  m_Size: {x: 0.39534748, y: 0.24807607}
-  m_Direction: 1

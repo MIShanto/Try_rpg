@@ -29,6 +29,7 @@ public class CombatManager : MonoBehaviour
     [SerializeField] Slider healthBar;
     
     [HideInInspector] public bool isDead, isAttacking = false, isBlocked;
+    [HideInInspector] public float arrowFlightTime;
 
     [Header("Armor functionality")]
     [SerializeField]  bool closedRangedArmor;
@@ -396,7 +397,7 @@ public class CombatManager : MonoBehaviour
     {
         GameObject arrow = objectPooler.SpawnFromPool("Arrow", arrowPos, Quaternion.identity);
 
-        Vector2 Vo = calculateVelocity(arrowPos, playerPos, 1);
+        Vector2 Vo = calculateVelocity(arrowPos, playerPos, arrowFlightTime);
 
         arrow.GetComponent<Rigidbody2D>().velocity = Vo;
 
