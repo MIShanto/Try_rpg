@@ -13,8 +13,9 @@ public  class EnemySpawnManager : MonoBehaviour
     [Tooltip("In seconds")]
     public float spawnInterval;
     public float spawnLimit;
-    int i = 0;
-    int swordmanCount = 0;
+
+    private int enemyCount = 0;
+    private int swordmanCount = 0;
     private void Start()
     {
         objectPooler = ObjectPooler.Instance;
@@ -32,7 +33,7 @@ public  class EnemySpawnManager : MonoBehaviour
 
     void SpawnEnemy()
     {
-        if (i < spawnLimit)
+        if (enemyCount < spawnLimit)
         {
             int spawnObjectIndex = UnityEngine.Random.Range(0, spawnObject.Length);
             int spawnPositionIndex = UnityEngine.Random.Range(0, spawnPositions.Length);
@@ -41,12 +42,17 @@ public  class EnemySpawnManager : MonoBehaviour
 
             if (spawnObject[spawnObjectIndex].name == "Witch unit")
             {
+                Debug.Log("WHY???");
                 for (int i = 0; i < currentObject.transform.childCount; i++)
                 {
                     currentObject.transform.GetChild(i).gameObject.SetActive(true);
                 }
+                enemyCount += 3;
             }
-            i++;
+            else
+            {
+                enemyCount++;
+            }
         }
     }
 
@@ -55,12 +61,12 @@ public  class EnemySpawnManager : MonoBehaviour
         swordmanCount++;
         if(swordmanCount == 3)
         {
-            i--;
+            enemyCount--;
             swordmanCount = 0;
         }
     }
     internal void HandleOther()
     {
-        i--;
+        enemyCount--;
     }
 }
