@@ -45,36 +45,46 @@ public  class EnemySpawnManager : MonoBehaviour
 
     void SpawnEnemy()
     {
-        if (enemyCount < spawnLimit)
+        int loopVar = 0;
+        int limit = 50;
+
+        while (loopVar < limit)
         {
-            int spawnObjectIndex = UnityEngine.Random.Range(0, spawnObject.Length);
-
-            if (spawnObject[spawnObjectIndex].checkLimit < spawnObject[spawnObjectIndex].limit)
+            if (enemyCount < spawnLimit)
             {
-                int spawnPositionIndex = UnityEngine.Random.Range(0, spawnPositions.Length);
-                //objectPooler.SpawnFromPool("Arrow", new Vector2(0,0), Quaternion.identity);
-                GameObject currentObject = objectPooler.SpawnFromPool(spawnObject[spawnObjectIndex].characterObject.name, (Vector2)spawnPositions[spawnPositionIndex].position, Quaternion.identity) as GameObject;
+                int spawnObjectIndex = UnityEngine.Random.Range(0, spawnObject.Length);
 
-                //increase limit
-                spawnObject[spawnObjectIndex].checkLimit++;
-
-                if (spawnObject[spawnObjectIndex].characterObject.name == "Witch unit")
+                if (spawnObject[spawnObjectIndex].checkLimit < spawnObject[spawnObjectIndex].limit)
                 {
-                    for (int i = 0; i < currentObject.transform.childCount; i++)
+                    int spawnPositionIndex = UnityEngine.Random.Range(0, spawnPositions.Length);
+                    //objectPooler.SpawnFromPool("Arrow", new Vector2(0,0), Quaternion.identity);
+                    GameObject currentObject = objectPooler.SpawnFromPool(spawnObject[spawnObjectIndex].characterObject.name, (Vector2)spawnPositions[spawnPositionIndex].position, Quaternion.identity) as GameObject;
+
+                    //increase limit
+                    spawnObject[spawnObjectIndex].checkLimit++;
+
+                    Debug.Log("name :" + spawnObject[spawnObjectIndex].characterObject.name);
+
+                    if (spawnObject[spawnObjectIndex].characterObject.name == "Witch unit")
                     {
-                        currentObject.transform.GetChild(i).gameObject.SetActive(true);
+                        for (int i = 0; i < currentObject.transform.childCount; i++)
+                        {
+                            currentObject.transform.GetChild(i).gameObject.SetActive(true);
+                        }
+                        enemyCount += 3;
                     }
+                    else
+                    {
+                        enemyCount++;
+                    }
+
+                    break;
                 }
-                
-                enemyCount++;
-                
+              
             }
-            else
-            {
-                Debug.LogError("outside");
-                SpawnEnemy();
-            }
+            loopVar++;
         }
+        
         //spawn again
         StartCoroutine(WaitToSpawn());
     }
