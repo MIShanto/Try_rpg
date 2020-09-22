@@ -1158,8 +1158,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnObject:
   - checkLimit: 0
-    limit: 3
+    limit: 2
     characterObject: {fileID: 11198040}
+  - checkLimit: 0
+    limit: 1
+    characterObject: {fileID: 2082002664}
+  - checkLimit: 0
+    limit: 2
+    characterObject: {fileID: 709603596}
   spawnPositions:
   - {fileID: 741534555}
   - {fileID: 1901364828}

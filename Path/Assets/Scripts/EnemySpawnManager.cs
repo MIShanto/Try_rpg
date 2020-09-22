@@ -40,6 +40,7 @@ public  class EnemySpawnManager : MonoBehaviour
         
         yield return new WaitForSeconds(spawnInterval);
         SpawnEnemy();
+       
     }
 
     void SpawnEnemy()
@@ -66,8 +67,7 @@ public  class EnemySpawnManager : MonoBehaviour
                 }
                 
                 enemyCount++;
-                //spawn again
-                StartCoroutine(WaitToSpawn());
+                
             }
             else
             {
@@ -75,6 +75,8 @@ public  class EnemySpawnManager : MonoBehaviour
                 SpawnEnemy();
             }
         }
+        //spawn again
+        StartCoroutine(WaitToSpawn());
     }
 
     internal void HandleEnemyForCount(GameObject myGameObject)
