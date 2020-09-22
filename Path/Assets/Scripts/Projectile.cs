@@ -10,9 +10,11 @@ public class Projectile : MonoBehaviour
     Rigidbody2D rb;
     [SerializeField] float headRange;
     [HideInInspector]public  bool isSelfDestroyable;
+
     [HideInInspector]public float selfDestroyTime, missileSpeed, missileRotationSpeed;
     bool hitCounter = false, arrowStopped = false;
     [SerializeField] LayerMask hitLayer;
+    [HideInInspector] public GameObject MT;
 
     float angle;
     Vector2 playerPos;
@@ -34,6 +36,9 @@ public class Projectile : MonoBehaviour
     {
         yield return new WaitForSeconds(selfDestroyTime);
         gameObject.SetActive(false);
+        if(projectile == throwables.missile)
+            MT.GetComponent<CombatManager>().missileCount--;
+
     }
 
     void LateUpdate()
@@ -71,6 +76,7 @@ public class Projectile : MonoBehaviour
             arrowStopped = false;
             GetComponent<Rigidbody2D>().gravityScale = 1;
         }
+       
         hitCounter = false;
     }
     #region Arrow
@@ -90,6 +96,10 @@ public class Projectile : MonoBehaviour
             HitManagement();
         }
     }
+
+    #endregion
+
+    #region hit manager
 
     /// <summary>
     /// checks if hits or not.
@@ -117,7 +127,7 @@ public class Projectile : MonoBehaviour
                 {
                     hitObject.GetComponent<CombatManager>().TakeDamage(4, this.transform, Movement.MovementControls.none);
                     hitCounter = true;
-
+                    MT.GetComponent<CombatManager>().missileCount--;
 
                     gameObject.SetActive(false);
                 }

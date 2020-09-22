@@ -1157,8 +1157,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnObject:
-  - {fileID: 7952596589723609999, guid: f39e663e9b41b994fbdb8e63cca78589, type: 3}
-  - {fileID: 3621261065156082780, guid: 13847c3d98b7a1e49a21ad29cb78bcd0, type: 3}
+  - checkLimit: 0
+    limit: 3
+    characterObject: {fileID: 11198040}
   spawnPositions:
   - {fileID: 741534555}
   - {fileID: 1901364828}
@@ -2102,7 +2103,7 @@ PrefabInstance:
     - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
         type: 3}
       propertyPath: missileSpeed
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
         type: 3}
@@ -2123,6 +2124,16 @@ PrefabInstance:
         type: 3}
       propertyPath: health_MT
       value: 130
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: missileLimit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: selfDestroyTimeMissile
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5098450398515338324, guid: 81e8bea2d28795842925b2daabba5117,
         type: 3}

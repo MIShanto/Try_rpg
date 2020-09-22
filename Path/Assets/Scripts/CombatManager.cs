@@ -14,7 +14,7 @@ public class CombatManager : MonoBehaviour
     Rigidbody2D rb;
     [SerializeField] EnemySpawnManager enemySpawnManager;
 
-
+    [HideInInspector] public int missileLimit, missileCount = 0;
 
     [Header("Hitbox section")]
     [Header("Insert in UP, RIGHT, DOWN, LEFT sequence in hitbox array")]
@@ -366,16 +366,8 @@ public class CombatManager : MonoBehaviour
         if (gameObject.tag != "Player")
         {
             // decrease counter off enemy spawner
-            if (gameObject.tag == "Swordman")
-            {
-                if (enemySpawnManager != null)
-                    enemySpawnManager.HandleSwordman();
-            }
-            else
-            {
-                if (enemySpawnManager != null)
-                    enemySpawnManager.HandleOther();
-            }
+            if (enemySpawnManager != null)
+                enemySpawnManager.HandleEnemyForCount(this.gameObject);
 
             //destroy enemy..
             characterMovement.RestSession();
@@ -435,7 +427,15 @@ public class CombatManager : MonoBehaviour
     /// </summary>
     public void LaunchMissile()
     {
-        objectPooler.SpawnFromPool("Missile", transform.position, Quaternion.identity);
+        
+        if (missileCount < missileLimit)
+        {
+            missileCount++;
+            GameObject missile = objectPooler.SpawnFromPool("Missile", transform.position, Quaternion.identity);
+            missile.GetComponent<Projectile>().MT = this.gameObject;
+        }
+        
+       
        
     }
 

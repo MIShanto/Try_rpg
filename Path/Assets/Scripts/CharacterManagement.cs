@@ -76,7 +76,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float selfDestroyTimeArrow, flightTime;
     [Space]
     [SerializeField] GameObject missilePrefab;
-    [SerializeField] int missileDamage;
+    [SerializeField] int missileDamage, missileLimit;
     [SerializeField] float missileSpeed, missileRotationSpeed;
     [SerializeField] bool SelfDestroyableMissile;
     [SerializeField] float selfDestroyTimeMissile;
@@ -127,6 +127,7 @@ public class CharacterManagement : MonoBehaviour
             MTPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_MT;
             MTPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_MT;
             MTPrefab.GetComponent<CombatManager>().maxHealth = health_MT;
+            MTPrefab.GetComponent<CombatManager>().missileLimit = missileLimit;
             MTPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_MT;
         }
 

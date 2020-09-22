@@ -5,7 +5,15 @@ using UnityEngine;
 
 public  class EnemySpawnManager : MonoBehaviour
 {
-    public GameObject[] spawnObject;
+   
+    [Serializable]
+    public struct SpawnObjects
+    {
+        [HideInInspector]public int checkLimit;
+        public int limit;
+        public GameObject characterObject;
+    }
+    public SpawnObjects[] spawnObject;
 
     public Transform[] spawnPositions;
     ObjectPooler objectPooler;
@@ -18,9 +26,13 @@ public  class EnemySpawnManager : MonoBehaviour
     private int swordmanCount = 0;
     private void Start()
     {
+        for (int i = 0; i < spawnObject.Length; i++)
+        {
+            spawnObject[i].checkLimit = 0;
+        }
+        
         objectPooler = ObjectPooler.Instance;
         SpawnEnemy();
-        StartCoroutine(WaitToSpawn());
     }
 
     IEnumerator WaitToSpawn()
@@ -28,7 +40,6 @@ public  class EnemySpawnManager : MonoBehaviour
         
         yield return new WaitForSeconds(spawnInterval);
         SpawnEnemy();
-        StartCoroutine(WaitToSpawn());
     }
 
     void SpawnEnemy()
@@ -36,37 +47,60 @@ public  class EnemySpawnManager : MonoBehaviour
         if (enemyCount < spawnLimit)
         {
             int spawnObjectIndex = UnityEngine.Random.Range(0, spawnObject.Length);
-            int spawnPositionIndex = UnityEngine.Random.Range(0, spawnPositions.Length);
-            //objectPooler.SpawnFromPool("Arrow", new Vector2(0,0), Quaternion.identity);
-            GameObject currentObject = objectPooler.SpawnFromPool(spawnObject[spawnObjectIndex].name, (Vector2)spawnPositions[spawnPositionIndex].position, Quaternion.identity) as GameObject;
 
-            if (spawnObject[spawnObjectIndex].name == "Witch unit")
+            if (spawnObject[spawnObjectIndex].checkLimit < spawnObject[spawnObjectIndex].limit)
             {
-                Debug.Log("WHY???");
-                for (int i = 0; i < currentObject.transform.childCount; i++)
+                int spawnPositionIndex = UnityEngine.Random.Range(0, spawnPositions.Length);
+                //objectPooler.SpawnFromPool("Arrow", new Vector2(0,0), Quaternion.identity);
+                GameObject currentObject = objectPooler.SpawnFromPool(spawnObject[spawnObjectIndex].characterObject.name, (Vector2)spawnPositions[spawnPositionIndex].position, Quaternion.identity) as GameObject;
+
+                //increase limit
+                spawnObject[spawnObjectIndex].checkLimit++;
+
+                if (spawnObject[spawnObjectIndex].characterObject.name == "Witch unit")
                 {
-                    currentObject.transform.GetChild(i).gameObject.SetActive(true);
+                    for (int i = 0; i < currentObject.transform.childCount; i++)
+                    {
+                        currentObject.transform.GetChild(i).gameObject.SetActive(true);
+                    }
                 }
-                enemyCount += 3;
+                
+                enemyCount++;
+                //spawn again
+                StartCoroutine(WaitToSpawn());
             }
             else
             {
-                enemyCount++;
+                Debug.LogError("outside");
+                SpawnEnemy();
             }
         }
     }
 
-    internal void HandleSwordman()
+    internal void HandleEnemyForCount(GameObject myGameObject)
     {
-        swordmanCount++;
-        if(swordmanCount == 3)
+        for (int i = 0; i < spawnObject.Length; i++)
+        {
+
+            if (myGameObject.tag == spawnObject[i].characterObject.tag)
+            {
+                spawnObject[i].checkLimit--;
+                Debug.LogError(spawnObject[i].checkLimit);
+            }
+            
+        }
+        if (myGameObject.tag == "Swordman")
+        {
+            swordmanCount++;
+            if (swordmanCount == 3)
+            {
+                enemyCount--;
+                swordmanCount = 0;
+            }
+        }
+        else
         {
             enemyCount--;
-            swordmanCount = 0;
         }
-    }
-    internal void HandleOther()
-    {
-        enemyCount--;
     }
 }
