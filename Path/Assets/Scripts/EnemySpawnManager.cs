@@ -46,9 +46,9 @@ public  class EnemySpawnManager : MonoBehaviour
     void SpawnEnemy()
     {
         int loopVar = 0;
-        int limit = 50;
+        int loopLimit = 50;
 
-        while (loopVar < limit)
+        while (loopVar < loopLimit)
         {
             if (enemyCount < spawnLimit)
             {
@@ -57,7 +57,7 @@ public  class EnemySpawnManager : MonoBehaviour
                 if (spawnObject[spawnObjectIndex].checkLimit < spawnObject[spawnObjectIndex].limit)
                 {
                     int spawnPositionIndex = UnityEngine.Random.Range(0, spawnPositions.Length);
-                    //objectPooler.SpawnFromPool("Arrow", new Vector2(0,0), Quaternion.identity);
+
                     GameObject currentObject = objectPooler.SpawnFromPool(spawnObject[spawnObjectIndex].characterObject.name, (Vector2)spawnPositions[spawnPositionIndex].position, Quaternion.identity) as GameObject;
 
                     //increase limit
@@ -101,7 +101,8 @@ public  class EnemySpawnManager : MonoBehaviour
             }
             
         }
-        if (myGameObject.tag == "Swordman")
+        enemyCount--;
+       /* if (myGameObject.tag == "Swordman")
         {
             swordmanCount++;
             if (swordmanCount == 3)
@@ -113,6 +114,6 @@ public  class EnemySpawnManager : MonoBehaviour
         else
         {
             enemyCount--;
-        }
+        }*/
     }
 }

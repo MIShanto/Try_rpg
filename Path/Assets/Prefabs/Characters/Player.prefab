@@ -479,7 +479,10 @@ GameObject:
   - component: {fileID: 2751545783011731722}
   - component: {fileID: 2751545783011731726}
   - component: {fileID: 159104779}
-  - component: {fileID: 8721243127943434257}
+  - component: {fileID: 981181856}
+  - component: {fileID: 981181857}
+  - component: {fileID: 981181858}
+  - component: {fileID: 981181859}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -606,11 +609,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: 0
+  previousCharacter: 0
   path: {fileID: 0}
+  cutsceneDestinationTarget: {fileID: 0}
   player: {fileID: 0}
-  characterMoveSpeed: 5
   speedMultiplierDuringAttack: 0
   moveSpeedMultiplierDuringAttack: 1
+  characterMoveSpeed: 5
   nextAttackTime: 0.25
   attackIndex: 0
   getPushedForce: 0
@@ -627,19 +632,29 @@ MonoBehaviour:
   waitAfterAttackDuration: 0
   chargeAndLookoutArea: 0
   stamina: 1e+9
+  staminaDecreaseRate: 0
   characterHit: 0
   criticalHitProb: 0
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   enemyHealingAmount: 0
   direction: {x: 0, y: 0}
   myFacingDirection: {x: 0, y: 0}
   otherCharacterFacingDirection: {x: 0, y: 0}
+  targetForDirection: {x: 0, y: 0}
   isCharacterControllable: 1
   isHealer: 0
   healing: 0
   speedFactor: 1
+  isCutsceneModeOn: 0
+  cutsceneFixedFaceMode: 0
+  npcStartWaitTime: 3
+  minX: {fileID: 0}
+  maxX: {fileID: 0}
+  minY: {fileID: 0}
+  maxY: {fileID: 0}
+  npcMoveSpeed: 2
   MovementControl: 0
 --- !u!114 &2751545783011731726
 MonoBehaviour:
@@ -654,6 +669,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemySpawnManager: {fileID: 0}
+  missileLimit: 0
+  missileCount: 0
   hitboxes:
   - {fileID: 2751545782588222256}
   - {fileID: 2751545783614238122}
@@ -675,6 +692,7 @@ MonoBehaviour:
   isDead: 0
   isAttacking: 0
   isBlocked: 0
+  arrowFlightTime: 0
   closedRangedArmor: 0
   longRangedArmor: 0
   magicalArmor: 0
@@ -699,22 +717,112 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.3
---- !u!70 &8721243127943434257
-CapsuleCollider2D:
+--- !u!114 &981181856
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2751545783011731716}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.0015051675, y: -0.3025943}
-  m_Size: {x: 0.19582035, y: 0.123680405}
-  m_Direction: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9679e68a0f1144e79c664d9a11ca121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  target: {fileID: 0}
+--- !u!114 &981181857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2751545783011731716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
+--- !u!114 &981181858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2751545783011731716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6eb1402c17e84a9282a7f0f62eb584f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 2
+  radius: 0.45
+  height: 1
+  repathRate: 0.5
+  canSearch: 1
+  canMove: 1
+  maxSpeed: 2
+  gravity: {x: 0, y: 0, z: 0}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  centerOffsetCompatibility: NaN
+  orientation: 1
+  enableRotation: 0
+  targetCompatibility: {fileID: 0}
+  maxAcceleration: -2.5
+  rotationSpeed: 360
+  slowdownDistance: 0.6
+  pickNextWaypointDist: 1.3
+  endReachedDistance: 1
+  alwaysDrawGizmos: 0
+  slowWhenNotFacingTarget: 1
+  whenCloseToDestination: 0
+  constrainInsideGraph: 0
+--- !u!114 &981181859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2751545783011731716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
 --- !u!1 &2751545783263399736
 GameObject:
   m_ObjectHideFlags: 0

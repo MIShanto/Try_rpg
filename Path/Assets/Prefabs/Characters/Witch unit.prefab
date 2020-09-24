@@ -57,6 +57,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2051667850926170402}
     m_Modifications:
+    - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
@@ -147,6 +157,21 @@ PrefabInstance:
       propertyPath: isHealer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: characterMoveSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: npcStartWaitTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: npcMoveSpeed
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966910, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -228,6 +253,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2051667850926170402}
     m_Modifications:
+    - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
@@ -302,6 +337,21 @@ PrefabInstance:
         type: 3}
       propertyPath: enemyHealingAmount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: characterMoveSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: npcStartWaitTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: npcMoveSpeed
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966910, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -384,6 +434,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2051667850926170402}
     m_Modifications:
+    - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
@@ -434,6 +494,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966905, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: detailedGizmos
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: nextAttackTime
@@ -463,6 +528,21 @@ PrefabInstance:
         type: 3}
       propertyPath: enemyHealingAmount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: characterMoveSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: npcStartWaitTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: npcMoveSpeed
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966910, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}

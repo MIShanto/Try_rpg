@@ -48,7 +48,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1830567694777876504
 Transform:
   m_ObjectHideFlags: 0
@@ -129,13 +129,14 @@ MonoBehaviour:
   head: {fileID: 1123771996246853882}
   targetForMissile: {fileID: 0}
   headRange: 0.2
-  missileSpeed: 4
-  missileRotationSpeed: 100
   isSelfDestroyable: 0
   selfDestroyTime: 0
+  missileSpeed: 4
+  missileRotationSpeed: 100
   hitLayer:
     serializedVersion: 2
     m_Bits: 1024
+  MT: {fileID: 0}
   projectile: 1
 --- !u!50 &3136305503795163309
 Rigidbody2D:

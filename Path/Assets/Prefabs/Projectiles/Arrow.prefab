@@ -129,12 +129,14 @@ MonoBehaviour:
   head: {fileID: 1346238168}
   targetForMissile: {fileID: 0}
   headRange: 0.15
-  arrowDamage: 50
+  isSelfDestroyable: 0
+  selfDestroyTime: 0
   missileSpeed: 0
   missileRotationSpeed: 0
   hitLayer:
     serializedVersion: 2
     m_Bits: 1024
+  MT: {fileID: 0}
   projectile: 0
 --- !u!50 &2602541343964040847
 Rigidbody2D:

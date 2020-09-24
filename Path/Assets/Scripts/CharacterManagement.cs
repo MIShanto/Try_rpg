@@ -8,7 +8,7 @@ public class CharacterManagement : MonoBehaviour
     [Header("Player Section")]
     [SerializeField] GameObject playerPrefab;
 
-    [SerializeField] float movementSpeed_player, stamina, staminaDecreaseRate;
+    [SerializeField] float stamina, staminaDecreaseRate;
     [SerializeField] float speedMultiplierDuringAttack;
     [SerializeField] float attackDuration_player;
     [SerializeField] float getPushedForce_player;
@@ -86,7 +86,6 @@ public class CharacterManagement : MonoBehaviour
         #region player
         if (playerPrefab != null)
         {
-            playerPrefab.GetComponent<Movement>().characterMoveSpeed = movementSpeed_player;
             playerPrefab.GetComponent<Movement>().stamina = stamina;
             playerPrefab.GetComponent<Movement>().staminaDecreaseRate = staminaDecreaseRate;
             playerPrefab.GetComponent<Movement>().speedMultiplierDuringAttack = speedMultiplierDuringAttack;

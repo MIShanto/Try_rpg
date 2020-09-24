@@ -45,6 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 0}
   movementSpeed_player: 5
+  stamina: 1000
+  staminaDecreaseRate: 20
   speedMultiplierDuringAttack: 0.5
   attackDuration_player: 0.25
   getPushedForce_player: 1000
@@ -58,7 +60,7 @@ MonoBehaviour:
   knockVelocity: 10
   health_player: 300
   criticalHitProbability: 20
-  playerSwordDamage: 100
+  playerSwordDamage: 35
   archerPrefab: {fileID: 0}
   attackDuration_archer: 1
   getPushedForce_archer: 1000
@@ -69,12 +71,12 @@ MonoBehaviour:
   attackDuration_MT: 1
   getPushedForce_MT: 1000
   movementSpeed_MT: 2
-  health_MT: 150
+  health_MT: 130
   swordsmanPrefab: {fileID: 0}
   attackDuration_swordsman: 0.25
   getPushedForce_swordsman: 1000
   movementSpeed_swordsman: 2
-  health_swordsman: 500
+  health_swordsman: 150
   healingAmount: 10
   swordDamage: 20
   chargedEnemyPrefab: {fileID: 0}
@@ -95,7 +97,8 @@ MonoBehaviour:
   flightTime: 1
   missilePrefab: {fileID: 0}
   missileDamage: 25
-  missileSpeed: 10
-  missileRotationSpeed: 400
+  missileLimit: 3
+  missileSpeed: 1
+  missileRotationSpeed: 150
   SelfDestroyableMissile: 1
-  selfDestroyTimeMissile: 5
+  selfDestroyTimeMissile: 10

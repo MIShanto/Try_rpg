@@ -241,7 +241,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.0000076293945}
   m_SizeDelta: {x: 0, y: -0.0000061989}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -436,7 +436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  drawGizmos: 0
+  drawGizmos: 1
   detailedGizmos: 0
   startEndModifier:
     addPoints: 0
@@ -605,13 +605,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a2a6f407f2f6654bb6d24c8aa81e2db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: 1
+  character: 0
+  previousCharacter: 0
   path: {fileID: 0}
-  destinationTarget: {fileID: 0}
+  cutsceneDestinationTarget: {fileID: 0}
   player: {fileID: 0}
-  characterMoveSpeed: 0
   speedMultiplierDuringAttack: 0
   moveSpeedMultiplierDuringAttack: 1
+  characterMoveSpeed: 5
   nextAttackTime: 1
   attackIndex: 0
   getPushedForce: 0
@@ -645,6 +646,12 @@ MonoBehaviour:
   speedFactor: 1
   isCutsceneModeOn: 0
   cutsceneFixedFaceMode: 0
+  npcStartWaitTime: 3
+  minX: {fileID: 0}
+  maxX: {fileID: 0}
+  minY: {fileID: 0}
+  maxY: {fileID: 0}
+  npcMoveSpeed: 2
   MovementControl: 0
 --- !u!114 &3621261065156082778
 MonoBehaviour:
@@ -659,6 +666,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemySpawnManager: {fileID: 0}
+  missileLimit: 0
+  missileCount: 0
   hitboxes: []
   leftHitboxRange: 0
   downHitboxRange: 0

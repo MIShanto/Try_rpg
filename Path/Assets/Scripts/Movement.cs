@@ -2,29 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using System;
 
 public class Movement : MonoBehaviour
 {
     public enum characters
     {
-        player,enemy
+        player,enemy, npc, none
     }
     public characters character;
+    [HideInInspector] public characters previousCharacter;
+
 
     [HideInInspector] public AIPath path;
     AIDestinationSetter aIDestinationSetter;
-    [SerializeField] Transform destinationTarget;
-
-    [HideInInspector]
-    public Transform player;
-    
+    Seeker seeker;
     CombatManager myCombatManager;
 
     Rigidbody2D rb;
     Animator animator;
 
-    [HideInInspector] public  float characterMoveSpeed, speedMultiplierDuringAttack, moveSpeedMultiplierDuringAttack = 1;
+    [SerializeField] Transform cutsceneDestinationTarget;
+
+    [HideInInspector]
+    public Transform player;
+
+    [HideInInspector] public  float speedMultiplierDuringAttack, moveSpeedMultiplierDuringAttack = 1;
     float moveSpeed;
+    public float characterMoveSpeed;
+
 
     [HideInInspector]public float nextAttackTime, attackIndex, getPushedForce;
 
@@ -64,25 +70,37 @@ public class Movement : MonoBehaviour
 
     [SerializeField] bool isCutsceneModeOn;
     [SerializeField] bool cutsceneFixedFaceMode;
-    float mainEndDistance, angle = 0;
+    bool isReadyToSavePreviousState;
+    bool isReadyToGetNPCRandomDirection = true;
+    float mainEndDistance, angle = 0, npcWaitTime;
+    [Tooltip("NPC wait time at the self position after destination reached")]
+    [SerializeField] float npcStartWaitTime;
+    public Transform minX;
+    public Transform maxX;
+    public Transform minY;
+    public Transform maxY;
+    [SerializeField] float npcMoveSpeed;
 
 
     //movement states..
     public  enum MovementControls
     {
-        walk, dash, roll, attack, block, chargedAttack, knockedOff, cutscene, none
+        walk, dash, roll, attack, block, chargedAttack, knockedOff, none
     }
-    public  MovementControls MovementControl;
+    [HideInInspector]public  MovementControls MovementControl;
 
     private void Start()
     {
+        previousCharacter = character;
+        player = (GameObject.FindGameObjectWithTag("Player")).transform;
+
         aIDestinationSetter = GetComponent<AIDestinationSetter>();
+        seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
         myCombatManager = GetComponent<CombatManager>();
+        path = GetComponent<AIPath>();
         animator = GetComponent<Animator>();
 
-        player = (GameObject.FindGameObjectWithTag("Player")).transform;
-        path = GetComponent<AIPath>();
         if(path != null)
             mainEndDistance = path.endReachedDistance;
 
@@ -94,6 +112,15 @@ public class Movement : MonoBehaviour
         hitProbTable[0] = 100 - criticalHitProb;  //non critical hit prob
         hitProbTable[1] = criticalHitProb; //critical hit prob
         total = hitProbTable[0] + hitProbTable[1];
+
+        npcWaitTime = npcStartWaitTime;
+        if (minX != null && minY != null && maxX != null && maxY != null)
+        {
+            targetForDirection = new Vector2(UnityEngine.Random.Range(minX.position.x, maxX.position.x), UnityEngine.Random.Range(minY.position.y, maxY.position.y));  
+        }
+        else
+            Debug.LogError("Set boundary for npc movement " + gameObject.name);
+
 
     }
 
@@ -107,9 +134,43 @@ public class Movement : MonoBehaviour
 
                 DoPlayerStuffsInUpdate();
             }
-            else if (character == characters.enemy)
+
+            else if (character == characters.npc)
             {
-                DoEnemyStuffsInUpdate();
+                DoNPCStuffsInUpdate();
+            }
+
+            if (isCharacterControllable || Vector2.Distance(transform.position, player.transform.position) <= chargeAndLookoutArea)
+                AnimateMovement();
+
+            if (isCutsceneModeOn)
+            {
+                if(isReadyToSavePreviousState)
+                    previousCharacter = character;
+                isReadyToSavePreviousState = false;
+
+                character = characters.none;
+                //set end reach distance to 1
+                path.endReachedDistance = 1;
+                CutsceneMode(cutsceneFixedFaceMode, cutsceneDestinationTarget);
+            }
+            else
+            {
+
+                if (!isReadyToSavePreviousState)
+                {
+                    character = previousCharacter;
+                    isReadyToGetNPCRandomDirection = true;
+                }
+                isReadyToSavePreviousState = true;
+
+                if (character == characters.enemy)
+                {
+                    //set end distance to previous one for enemy
+                    path.endReachedDistance = mainEndDistance;
+                    aIDestinationSetter.target = player;
+                    targetForDirection = player.position;
+                }
             }
         }
     }
@@ -143,8 +204,6 @@ public class Movement : MonoBehaviour
         if (MovementControl == MovementControls.attack)
             myCombatManager.performAttack(attackIndex, nextAttackTime / speedFactor);
 
-        AnimateMovementPlayer();
-
        
     }
 
@@ -154,6 +213,10 @@ public class Movement : MonoBehaviour
 
     private void DoPlayerStuffsInFixedUpdate()
     {
+        path.enabled = false;
+        aIDestinationSetter.enabled = false;
+        seeker.enabled = false;
+
         if (MovementControl == MovementControls.walk && isCharacterControllable)
             MovePlayer();
         else if (MovementControl == MovementControls.dash)
@@ -167,24 +230,6 @@ public class Movement : MonoBehaviour
         else if (MovementControl == MovementControls.knockedOff)
             PerfomKnockOff(otherCharacterFacingDirection);
 
-    }
-
-
-
-    /// <summary>
-    /// Method to Animate player sprites during movement.
-    /// </summary>
-    private void AnimateMovementPlayer()
-    {
-
-        if (direction != Vector2.zero)
-        {
-            animator.SetFloat("Horizontal", direction.x);
-            animator.SetFloat("Vertical", direction.y);
-            myFacingDirection = direction;
-            
-        }
-        animator.SetFloat("Speed",moveSpeed);
     }
 
     /// <summary>
@@ -276,20 +321,67 @@ public class Movement : MonoBehaviour
 
     #endregion
 
+    #region npc
+
+    private void DoNPCStuffsInUpdate()
+    {
+        if (path.enabled && aIDestinationSetter.enabled && seeker.enabled)
+        {
+            path.enabled = false;
+            aIDestinationSetter.enabled = false;
+            seeker.enabled = false;
+        }
+        NPCRandomMove();
+    }
+    /// <summary>
+    /// randomly move within the boundary
+    /// </summary>
+    private void NPCRandomMove()
+    {
+        path.enabled = false;
+        aIDestinationSetter.enabled = false;
+        seeker.enabled = false;
+
+        if (isReadyToGetNPCRandomDirection)
+        {
+            targetForDirection = new Vector2(UnityEngine.Random.Range(minX.position.x, maxX.position.x), UnityEngine.Random.Range(minY.position.y, maxY.position.y));
+            isReadyToGetNPCRandomDirection = false;
+        }
+
+
+        transform.position = Vector2.MoveTowards(transform.position, targetForDirection, npcMoveSpeed * Time.deltaTime);
+
+        animator.SetFloat("Speed", 1f);
+
+
+        if (Vector2.Distance(transform.position, targetForDirection) <= 0.2f)
+        {
+            if (npcWaitTime <= 0)
+            {
+
+                isReadyToGetNPCRandomDirection = true;
+                npcWaitTime = npcStartWaitTime;
+            }
+            else
+            {
+                npcWaitTime -= Time.deltaTime;
+                animator.SetFloat("Speed", 0f);
+            }
+        }
+    }
+
+    #endregion
+
     #region enemy
 
-    /// <summary>
-    /// Actions will perfoem if character is enemy selected..
-    /// </summary>
-    private void DoEnemyStuffsInUpdate()
-      {
-        // movement animation
-        if(isCharacterControllable || Vector2.Distance(transform.position, player.transform.position) <= chargeAndLookoutArea)
-            AnimateMovementEnemy();
-
-    }
     private void DoEnemyStuffsInFixedUpdate()
     {
+
+        path.enabled = true;
+        aIDestinationSetter.enabled = true;
+        seeker.enabled = true;
+
+
         if (isCharacterControllable && MovementControl == MovementControls.walk)
         {
             EnemyPathCheck();
@@ -312,66 +404,6 @@ public class Movement : MonoBehaviour
             HandlePath();
     }
 
-    /// <summary>
-    /// Animates the enemy character during movement..
-    /// This need to polish.. will cover aste aste
-    /// </summary>
-    private void AnimateMovementEnemy()
-    {
-        // aro better kisu paile replace kore nite hobe..(need optimization).. 
-        //direction = new Vector2(rb.velocity.x, rb.velocity.y);
-        direction = (targetForDirection - (Vector2)transform.position);
-
-        direction.Normalize();
-
-        // for making animation not to overlap
-        if (direction.x > 0)
-        {
-            if (direction.y > 0.5f)
-            {
-                direction.y = 1;
-                direction.x = 0;
-            }
-            else if (direction.y < -0.5f)
-            {
-                direction.y = -1;
-                direction.x = 0;
-            }
-            else
-            {
-                direction.y = 0;
-                direction.x = 1;
-            }
-        }
-        else if (direction.x < 0)
-        {
-            if (direction.y > 0.5f)
-            {
-                direction.y = 1;
-                direction.x = 0;
-            }
-            else if (direction.y < -0.5f)
-            {
-                direction.y = -1;
-                direction.x = 0;
-            }
-            else
-            {
-                direction.y = 0;
-                direction.x = -1;
-            }
-        }
-
-
-        // used to set enemy face to the last direction
-        if (direction != Vector2.zero)
-        {
-            animator.SetFloat("Horizontal", direction.x);
-            animator.SetFloat("Vertical", direction.y);
-
-            myFacingDirection = direction;
-        }
-    }
 
     /// <summary>
     /// This checks if enemy has reached destination or not..
@@ -379,19 +411,6 @@ public class Movement : MonoBehaviour
     private void EnemyPathCheck()
     {
        
-        if (isCutsceneModeOn)
-        {
-            //set end reach distance to 1
-            path.endReachedDistance = 1;
-            CutsceneMode(cutsceneFixedFaceMode, destinationTarget);
-        }
-        else
-        {
-            //set end distance to previous one
-            path.endReachedDistance = mainEndDistance;
-            aIDestinationSetter.target = player;
-            targetForDirection = player.position;
-
             //if destination reached enemy will play attack animation otherwise play move animation
             if (!path.reachedDestination && !player.GetComponent<CombatManager>().isDead)
             {
@@ -456,48 +475,10 @@ public class Movement : MonoBehaviour
                     }
                 }
             }
-        }
+        
     }
 
-    /// <summary>
-    /// This is for cutscene mode 
-    /// </summary>
-    /// <param name="fixedFaceMode"></param>
-    /// <param name="aiTarget"></param>
-    void CutsceneMode(bool fixedFaceMode, Transform aiTarget)
-    {
-
-        if (GetComponent<AIPath>().reachedDestination)
-        {
-            animator.SetFloat("Speed", 0f);
-
-            if (!fixedFaceMode)
-            {
-
-                float speed = (2 * Mathf.PI) / 15;  //2*PI in degress is 360, so you get 5 seconds to complete a circle
-                float radius = 50;
-
-                angle += speed * Time.deltaTime; //if you want to switch direction, use -= instead of +=
-                float x = Mathf.Cos(angle) * radius;
-                float y = Mathf.Sin(angle) * radius;
-
-                targetForDirection = new Vector2(x, y);
-                
-            }
-            else
-            {
-                targetForDirection = player.position;
-            }
-
-        }
-        else
-        {
-            MoveEnemy();
-            aIDestinationSetter.target = aiTarget;
-            targetForDirection = aiTarget.position;
-        }
-
-    }
+   
 
 
     /// <summary>
@@ -576,6 +557,122 @@ public class Movement : MonoBehaviour
     #endregion
 
     #region Other operations 
+
+    /// <summary>
+    /// Method to Animate player sprites during movement.
+    /// </summary>
+    private void AnimateMovement()
+    {
+        if (character == characters.player)
+        {
+
+            animator.SetFloat("Speed", moveSpeed);
+        }
+
+        else
+        {
+            // aro better kisu paile replace kore nite hobe..(need optimization).. 
+            //direction = new Vector2(rb.velocity.x, rb.velocity.y);
+            direction = (targetForDirection - (Vector2)transform.position);
+
+            direction.Normalize();
+
+            // for making animation not to overlap
+            if (direction.x > 0)
+            {
+                if (direction.y > 0.5f)
+                {
+                    direction.y = 1;
+                    direction.x = 0;
+                }
+                else if (direction.y < -0.5f)
+                {
+                    direction.y = -1;
+                    direction.x = 0;
+                }
+                else
+                {
+                    direction.y = 0;
+                    direction.x = 1;
+                }
+            }
+            else if (direction.x < 0)
+            {
+                if (direction.y > 0.5f)
+                {
+                    direction.y = 1;
+                    direction.x = 0;
+                }
+                else if (direction.y < -0.5f)
+                {
+                    direction.y = -1;
+                    direction.x = 0;
+                }
+                else
+                {
+                    direction.y = 0;
+                    direction.x = -1;
+                }
+            }
+        }
+
+        if (direction != Vector2.zero)
+        {
+            animator.SetFloat("Horizontal", direction.x);
+            animator.SetFloat("Vertical", direction.y);
+            myFacingDirection = direction;
+
+        }
+
+        
+
+    }
+
+    /// <summary>
+    /// This is for cutscene mode 
+    /// </summary>
+    /// <param name="fixedFaceMode"></param>
+    /// <param name="aiTarget"></param>
+    void CutsceneMode(bool fixedFaceMode, Transform aiTarget)
+    {
+        if (!path.enabled && !aIDestinationSetter.enabled && !seeker.enabled)
+        {
+            path.enabled = true;
+            aIDestinationSetter.enabled = true;
+            seeker.enabled = true;
+        }
+
+        if (GetComponent<AIPath>().reachedDestination)
+        {
+            animator.SetFloat("Speed", 0f);
+
+            if (!fixedFaceMode)
+            {
+
+                float speed = (2 * Mathf.PI) / 15;  //2*PI in degress is 360, so 15 seconds to complete a circle
+                float radius = 50;
+
+                angle += speed * Time.deltaTime; // to switch direction, use -= instead of +=
+                float x = Mathf.Cos(angle) * radius;
+                float y = Mathf.Sin(angle) * radius;
+
+                targetForDirection = new Vector2(x, y);
+
+            }
+            else
+            {
+                targetForDirection = player.position;
+            }
+
+        }
+        else
+        {
+            MoveEnemy();
+            aIDestinationSetter.target = aiTarget;
+            targetForDirection = aiTarget.position;
+        }
+
+    }
 
     /// <summary>
     /// This method completes roll in the last facing direction.
@@ -764,7 +861,7 @@ public class Movement : MonoBehaviour
     /// </summary>
     public bool GetHitProb()
     {
-        int randomNumber = Random.Range(0, total);
+        int randomNumber = UnityEngine.Random.Range(0, total);
 
         for (int i = 0; i < hitProbTable.Length; i++)
         {
