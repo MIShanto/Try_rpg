@@ -6,106 +6,105 @@ using System;
 
 public class Movement : MonoBehaviour
 {
+    /// Need to polish FOV.. TODO:.. 
+    #region enums
+
+    //character states..
     public enum characters
     {
-        player,enemy, npc, none
+        player, enemy, npc, boss, cutsceneCharacter, none
     }
     public characters character;
     [HideInInspector] public characters previousCharacter;
 
+    //movement states..
+    public enum MovementControls
+    {
+        walk, patrol, dash, roll, attack, block, chargedAttack, knockedOff, none
+    }
+    public MovementControls MovementControl, previousState;
 
-    [HideInInspector] public AIPath path;
-    AIDestinationSetter aIDestinationSetter;
-    Seeker seeker;
-    CombatManager myCombatManager;
+    #endregion
 
-    Rigidbody2D rb;
-    Animator animator;
+    #region Primitives
+
+    //[HideInInspector] public float playerInteractionDistance; //TODO:..
+    public float characterMoveSpeed; // used for player speed
+
+    private int[] hitProbTable;
+    private int destPoint = 0, total, cnt = 0; // for patrol enemies.. // total for critical hit
+    private bool isReadyToGetNPCRandomDirection = true, waiting = false, enemyPlayerDistanceAdjustment = false, isReadyToSavePreviousState,
+                 isReadyToThrow = true; // waiting is for charged attack waiting..
+    private float tmpMoveSpeed, moveSpeed, angle = 0, npcWaitTime, mainEndDistance, dashTime, rollTime, knockTime; // mainEndDistance is the distance fixed at the start via inspector.. // movespeed used for player animation..
+
+    [SerializeField] bool isCutsceneModeOn, cutsceneFixedFaceMode;
+    [SerializeField] float npcStartWaitTime; // how much seconds npc will wait..
+
+    [HideInInspector] public int criticalHitProb;
+    [HideInInspector] public bool isCharacterControllable = true, isHealer = false, healing = false, characterHit = false, doInvestigation; // character hit for charged attack hit..
+    [HideInInspector]
+    public float callGangRadius, speedMultiplierDuringAttack, moveSpeedMultiplierDuringAttack = 1, nextAttackTime, attackIndex, getPushedForce,
+                 dashSpeed, startDashTime, rollSpeed, startRollTime, waitTimeForThrow, knockSpeed, startKnockTime, chargedAttackSpeed, startAttackTime,
+                 chargedAttackTime, chargedDistance, waitAfterAttackDuration, chargeAndLookoutArea, stamina, staminaDecreaseRate, speedFactor = 1,
+                 enemyHealingAmount, fov, viewDistanceBack, viewDistanceFront;
+
+    #endregion
+
+    #region Non Primitives
+
+    [HideInInspector] public Vector2 direction, myFacingDirection, otherCharacterFacingDirection, targetForDirection; // target for enemy direction;
+    [SerializeField] LayerMask obstacleLayer;
+    #endregion
+
+    #region Components
 
     [SerializeField] Transform cutsceneDestinationTarget;
-
-    [HideInInspector]
-    public Transform player;
-
-    [HideInInspector] public  float speedMultiplierDuringAttack, moveSpeedMultiplierDuringAttack = 1;
-    float moveSpeed;
-    public float characterMoveSpeed;
-
-
-    [HideInInspector]public float nextAttackTime, attackIndex, getPushedForce;
-
-    [HideInInspector]public float dashSpeed, startDashTime;
-    float dashTime;
-
-    [HideInInspector] public float rollSpeed, startRollTime;
-    float rollTime;
-
-    [HideInInspector] public float knockSpeed, startKnockTime;
-    float knockTime;
-
-    [HideInInspector] public float chargedAttackSpeed, startAttackTime, chargedAttackTime, chargedDistance,
-        waitAfterAttackDuration,  chargeAndLookoutArea, stamina, staminaDecreaseRate;
-
-    // charged attack var start
-    bool waiting = false; 
-    [HideInInspector]public bool characterHit = false;
-    // charged attack var end
-
-    //critical hit section
-    int[] hitProbTable;
-    int total;
-    [HideInInspector] public int criticalHitProb;
-    
-    //end
-
-    [SerializeField] LayerMask obstacleLayer;
-    [HideInInspector]public float enemyHealingAmount;
-
-    [HideInInspector] public Vector2 direction, myFacingDirection, otherCharacterFacingDirection,  targetForDirection; // target for enemy direction;
-    [HideInInspector] public bool isCharacterControllable = true, isHealer = false, healing = false;
-    [HideInInspector] public float speedFactor = 1;
-    int cnt = 0;
-    bool enemyPlayerDistanceAdjustment = false;
-    Coroutine healingCoroutine;
-
-    [SerializeField] bool isCutsceneModeOn;
-    [SerializeField] bool cutsceneFixedFaceMode;
-    bool isReadyToSavePreviousState;
-    bool isReadyToGetNPCRandomDirection = true;
-    float mainEndDistance, angle = 0, npcWaitTime;
+    [SerializeField] Transform[] patrolPoints;
     [Tooltip("NPC wait time at the self position after destination reached")]
-    [SerializeField] float npcStartWaitTime;
     public Transform minX;
     public Transform maxX;
     public Transform minY;
     public Transform maxY;
-    [SerializeField] float npcMoveSpeed;
+    Transform targetForDirection_Transform;
+    [HideInInspector]
+    public Transform player;
 
 
-    //movement states..
-    public  enum MovementControls
-    {
-        walk, dash, roll, attack, block, chargedAttack, knockedOff, none
-    }
-    [HideInInspector]public  MovementControls MovementControl;
+
+    #endregion
+
+    #region Classes
+
+    Coroutine healingCoroutine;
+    CombatManager myCombatManager;
+    AIDestinationSetter aIDestinationSetter;
+    Seeker seeker;
+    Rigidbody2D rb;
+    Animator animator;
+    [HideInInspector] public AIPath path;
+    [SerializeField] FieldOfView m_Fov;
+
+    #endregion
 
     private void Start()
     {
-        previousCharacter = character;
+        m_Fov = Instantiate(m_Fov, Vector3.zero, Quaternion.identity);
+        m_Fov.SetFoV(fov);
+        m_Fov.SetFrontViewDistance(viewDistanceFront);
+        m_Fov.SetBackViewDistance(viewDistanceBack);
+        GetComponentsAtStart();
+
+        targetForDirection_Transform = new GameObject().transform;
+
         player = (GameObject.FindGameObjectWithTag("Player")).transform;
 
-        aIDestinationSetter = GetComponent<AIDestinationSetter>();
-        seeker = GetComponent<Seeker>();
-        rb = GetComponent<Rigidbody2D>();
-        myCombatManager = GetComponent<CombatManager>();
-        path = GetComponent<AIPath>();
-        animator = GetComponent<Animator>();
+        //previousCharacter = character;
+        //previousState = MovementControl;
 
-        if(path != null)
+        if (path != null)
+        {
             mainEndDistance = path.endReachedDistance;
-
-        //Call reset session method to reset things
-        RestSession();
+        }
 
         //critical hit section
         hitProbTable = new int[2];
@@ -113,98 +112,99 @@ public class Movement : MonoBehaviour
         hitProbTable[1] = criticalHitProb; //critical hit prob
         total = hitProbTable[0] + hitProbTable[1];
 
-        npcWaitTime = npcStartWaitTime;
-        if (minX != null && minY != null && maxX != null && maxY != null)
+        if (character == characters.enemy)
         {
-            targetForDirection = new Vector2(UnityEngine.Random.Range(minX.position.x, maxX.position.x), UnityEngine.Random.Range(minY.position.y, maxY.position.y));  
+            MovementControl = MovementControls.patrol;
         }
-        else
-            Debug.LogError("Set boundary for npc movement " + gameObject.name);
 
+        if (character == characters.npc)
+        {
+            npcWaitTime = npcStartWaitTime;
+            GetRandomPointToMoveNPC();
+        }
+
+        ResetSession();
 
     }
 
-    void Update()
+
+    private void Update()
     {
-       
         if (!myCombatManager.isDead)
         {
-            if (character == characters.player)
-            {
-
-                DoPlayerStuffsInUpdate();
-            }
-
-            else if (character == characters.npc)
-            {
-                DoNPCStuffsInUpdate();
-            }
 
             if (isCharacterControllable || Vector2.Distance(transform.position, player.transform.position) <= chargeAndLookoutArea)
                 AnimateMovement();
 
-            if (isCutsceneModeOn)
+            if (!isCutsceneModeOn)
             {
-                if(isReadyToSavePreviousState)
-                    previousCharacter = character;
-                isReadyToSavePreviousState = false;
 
-                character = characters.none;
-                //set end reach distance to 1
-                path.endReachedDistance = 1;
-                CutsceneMode(cutsceneFixedFaceMode, cutsceneDestinationTarget);
+                if (character == characters.player)
+                {
+                    DoPlayerStuffsInUpdate();
+                }
+
+                else if (character == characters.npc)
+                {
+                    DoNPCStuffsInUpdate();
+
+                }
+
+                else if (character == characters.enemy)
+                {
+                    DoEnemyStuffsInUpdate();
+
+                }
+
             }
             else
             {
-
-                if (!isReadyToSavePreviousState)
-                {
-                    character = previousCharacter;
-                    isReadyToGetNPCRandomDirection = true;
-                }
-                isReadyToSavePreviousState = true;
-
-                if (character == characters.enemy)
-                {
-                    //set end distance to previous one for enemy
-                    path.endReachedDistance = mainEndDistance;
-                    aIDestinationSetter.target = player;
-                    targetForDirection = player.position;
-                }
+                CutsceneMode(cutsceneFixedFaceMode, cutsceneDestinationTarget);
             }
+
         }
+        if (character == characters.enemy && MovementControl == MovementControls.patrol && !isCutsceneModeOn && !myCombatManager.isDead)
+            m_Fov.gameObject.SetActive(true);
+        else
+            m_Fov.gameObject.SetActive(false);
+
+
     }
 
     private void FixedUpdate()
     {
         if (!myCombatManager.isDead)
         {
-            if (character == characters.player)
+            if (!isCutsceneModeOn)
             {
-                DoPlayerStuffsInFixedUpdate();
-            }
-            else if (character == characters.enemy)
-            {
-                DoEnemyStuffsInFixedUpdate();
+
+                if (character == characters.player)
+                {
+                    DoPlayerStuffsInFixedUpdate();
+                }
+
+                else if (character == characters.enemy)
+                {
+                    DoEnemyStuffsInFixedUpdate();
+                }
+
             }
         }
     }
 
-
-    #region player
+    #region Player
 
     /// <summary>
     /// Actions will perfoem if character is player selected in update..
     /// </summary>
     private void DoPlayerStuffsInUpdate()
     {
-        if(isCharacterControllable)
-                 ProcessInput();
+
+        if (isCharacterControllable)
+            ProcessInput();
 
         if (MovementControl == MovementControls.attack)
             myCombatManager.performAttack(attackIndex, nextAttackTime / speedFactor);
-
-       
     }
 
     /// <summary>
@@ -233,15 +233,6 @@ public class Movement : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves the player..
-    /// </summary>
-    private void MovePlayer()
-    {
-        rb.velocity = direction * characterMoveSpeed * speedFactor * moveSpeedMultiplierDuringAttack;
-
-    }
-
-    /// <summary>
     /// Handles the input for player..
     /// </summary>
     private void ProcessInput()
@@ -265,12 +256,12 @@ public class Movement : MonoBehaviour
             //Input for doing attack
             else if (Input.GetKeyDown(KeyCode.RightShift))
             {
-                MovementControl = MovementControls.attack;
                 attackIndex = 0;
                 moveSpeedMultiplierDuringAttack = speedMultiplierDuringAttack;
+                MovementControl = MovementControls.attack;
                 //OnFreezeInputEnable();
             }
-            
+
             //Input for doing charged attack
             else if (Input.GetKeyDown(KeyCode.P) && stamina >= staminaDecreaseRate)
             {
@@ -278,7 +269,34 @@ public class Movement : MonoBehaviour
                 MovementControl = MovementControls.chargedAttack;
                 OnFreezeInputEnable();
             }
-           
+
+            //Input for distraction mode.. 
+            else if (Input.GetKey(KeyCode.Z) && isReadyToThrow)
+            {
+                //hold player on spot..
+                if (characterMoveSpeed != 0)
+                    tmpMoveSpeed = characterMoveSpeed;
+                characterMoveSpeed = 0;
+
+                //face player toward mouse position..
+                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                direction = (mousePos - (Vector2)transform.position);
+
+                direction.Normalize();
+
+                //click to fire..
+                if (Input.GetMouseButtonDown(0))
+                {
+                    myCombatManager.LaunchDistractibleObject(mousePos);
+                    StartCoroutine(WaitForAnotherThrow(tmpMoveSpeed));
+                }
+
+            }
+            else if (Input.GetKeyUp(KeyCode.Z))
+            {
+                characterMoveSpeed = tmpMoveSpeed;
+            }
+
             //Input for movement of the player..
             else
             {
@@ -290,7 +308,6 @@ public class Movement : MonoBehaviour
 
                 moveSpeed = Mathf.Clamp(direction.magnitude, 0.0f, 1.0f);
 
-              
 
                 MovementControl = MovementControls.walk;
             }
@@ -303,7 +320,7 @@ public class Movement : MonoBehaviour
         }
         else if (Input.GetKeyUp(KeyCode.B))
         {
-            if(myCombatManager.isBlocked)
+            if (myCombatManager.isBlocked)
                 myCombatManager.OnBlockDisable();
         }
         //Input for change speed
@@ -311,175 +328,205 @@ public class Movement : MonoBehaviour
         {
             ChangeSpeed();
         }
-        
 
     }
 
     /// <summary>
-    /// This method performs the attack operation
+    /// Moves the player..
     /// </summary>
-
-    #endregion
-
-    #region npc
-
-    private void DoNPCStuffsInUpdate()
+    private void MovePlayer()
     {
-        if (path.enabled && aIDestinationSetter.enabled && seeker.enabled)
-        {
-            path.enabled = false;
-            aIDestinationSetter.enabled = false;
-            seeker.enabled = false;
-        }
-        NPCRandomMove();
+        rb.MovePosition((Vector2)transform.position +
+            (direction * characterMoveSpeed * speedFactor * moveSpeedMultiplierDuringAttack * Time.deltaTime));
+
     }
-    /// <summary>
-    /// randomly move within the boundary
-    /// </summary>
-    private void NPCRandomMove()
-    {
-        path.enabled = false;
-        aIDestinationSetter.enabled = false;
-        seeker.enabled = false;
 
-        if (isReadyToGetNPCRandomDirection)
-        {
-            targetForDirection = new Vector2(UnityEngine.Random.Range(minX.position.x, maxX.position.x), UnityEngine.Random.Range(minY.position.y, maxY.position.y));
-            isReadyToGetNPCRandomDirection = false;
-        }
-
-
-        transform.position = Vector2.MoveTowards(transform.position, targetForDirection, npcMoveSpeed * Time.deltaTime);
-
-        animator.SetFloat("Speed", 1f);
-
-
-        if (Vector2.Distance(transform.position, targetForDirection) <= 0.2f)
-        {
-            if (npcWaitTime <= 0)
-            {
-
-                isReadyToGetNPCRandomDirection = true;
-                npcWaitTime = npcStartWaitTime;
-            }
-            else
-            {
-                npcWaitTime -= Time.deltaTime;
-                animator.SetFloat("Speed", 0f);
-            }
-        }
-    }
 
     #endregion
 
     #region enemy
 
-    private void DoEnemyStuffsInFixedUpdate()
-    {
 
+    void DoEnemyStuffsInUpdate()
+    {
         path.enabled = true;
         aIDestinationSetter.enabled = true;
         seeker.enabled = true;
 
 
-        if (isCharacterControllable && MovementControl == MovementControls.walk)
+
+        if (MovementControl == MovementControls.patrol)
         {
-            EnemyPathCheck();
+            m_Fov.SetAimDirection(myFacingDirection);
+            m_Fov.SetOrigin(transform.position);
+            m_Fov.SetCharacter(this.gameObject);
+
+            PerfomPatrol();
         }
-        else if (MovementControl == MovementControls.chargedAttack)
+
+        if (isCharacterControllable && MovementControl == MovementControls.walk) // target maramari kora.. :3
         {
-            PerfomChargedAttack();
+            EnemyPathCheckForPlayer();
         }
-        else if (MovementControl == MovementControls.knockedOff)
-        {
-            PerfomKnockOff(otherCharacterFacingDirection);
-        }
-        else if (MovementControl == MovementControls.block)
+        if (MovementControl == MovementControls.block)
             myCombatManager.OnBlockEnable();
-        else if (MovementControl == MovementControls.attack)
+        if (MovementControl == MovementControls.attack)
         {
             myCombatManager.performAttack(attackIndex, nextAttackTime);
         }
-        if(enemyPlayerDistanceAdjustment)
+
+        if (enemyPlayerDistanceAdjustment)
             HandlePath();
+
+        //for animation purpose get direction..
+        targetForDirection = aIDestinationSetter.target.transform.position;
+    }
+    private void DoEnemyStuffsInFixedUpdate()
+    {
+
+
+        if (MovementControl == MovementControls.chargedAttack)
+        {
+            PerfomChargedAttack();
+        }
+
+        if (MovementControl == MovementControls.knockedOff)
+        {
+            PerfomKnockOff(otherCharacterFacingDirection);
+        }
+
+    }
+
+    private void PerfomPatrol()
+    {
+        if (patrolPoints != null && !doInvestigation)
+        {
+            path.endReachedDistance = 0.01f;
+
+            if (Array.IndexOf(patrolPoints, aIDestinationSetter.target) < 0 || aIDestinationSetter.target == null)
+                GotoNextPoint();
+            // Choose the next destination point when the enemy gets
+            // close to the current one.                
+            if (path.reachedDestination && Vector2.Distance(transform.position, aIDestinationSetter.target.position) < 0.01f)
+            {
+                //isCutsceneModeOn = true;
+                GotoNextPoint();
+            }
+            // play move animation if more than one point..
+            if (patrolPoints.Length > 1)
+                MoveEnemy();
+            else
+                animator.SetFloat("Speed", 0);
+
+        }
+        else if(doInvestigation)
+        {
+            //aIDestinationSetter.target = 
+            if (path.remainingDistance < 100f)
+            {
+                if(path.reachedDestination && Vector2.Distance(transform.position, aIDestinationSetter.target.position) < 0.01f)
+                {
+                    doInvestigation = false;
+                }
+                else
+                    MoveEnemy();
+            }
+            else
+                doInvestigation = false;
+        }
+    }
+    void GotoNextPoint()
+    {
+        // Returns if no points have been set up
+        if (patrolPoints.Length == 0)
+            return;
+
+
+        // Set the enemy to go to the currently selected destination.
+        aIDestinationSetter.target = patrolPoints[destPoint];
+
+        // Choose the next point in the array as the destination,
+        // cycling to the start if necessary.
+        if (patrolPoints.Length > 1)
+            destPoint = (destPoint + 1) % patrolPoints.Length;
+
     }
 
 
     /// <summary>
     /// This checks if enemy has reached destination or not..
     /// </summary>
-    private void EnemyPathCheck()
+    private void EnemyPathCheckForPlayer()
     {
-       
-            //if destination reached enemy will play attack animation otherwise play move animation
-            if (!path.reachedDestination && !player.GetComponent<CombatManager>().isDead)
-            {
+        aIDestinationSetter.target = player;
+        path.endReachedDistance = mainEndDistance;
 
-                if (gameObject.tag == "ChargedEnemy" &&
-                        !Physics2D.Raycast(transform.position, direction,
-                        Vector2.Distance(transform.position, player.transform.position), obstacleLayer) &&
-                        Vector2.Distance(transform.position, player.transform.position) <= chargedDistance)
+        //if destination reached enemy will play attack animation otherwise play move animation
+        if (!path.reachedDestination && !player.GetComponent<CombatManager>().isDead)
+        {
+
+            if (gameObject.tag == "ChargedEnemy" &&
+                    !Physics2D.Raycast(transform.position, direction,
+                    Vector2.Distance(transform.position, player.transform.position), obstacleLayer) &&
+                    Vector2.Distance(transform.position, player.transform.position) <= chargedDistance)
+            {
+                AttackEnemySettings();
+                animator.SetTrigger("GetCharged");
+            }
+            else
+            {
+                MoveEnemy();
+            }
+        }
+        else
+        {
+            if (!player.GetComponent<CombatManager>().isDead)
+            {
+                if (gameObject.tag == "ChargedEnemy")
                 {
                     AttackEnemySettings();
                     animator.SetTrigger("GetCharged");
                 }
-                else
+                if (gameObject.tag == "Archer" &&
+                           Vector2.Distance(transform.position, player.transform.position) <= 2f)
                 {
-                    MoveEnemy();
+                    Reposition();
                 }
-            }
-            else
-            {
-                if (!player.GetComponent<CombatManager>().isDead)
+
+                else if (gameObject.CompareTag("Swordman"))
                 {
-                    if (gameObject.tag == "ChargedEnemy")
+                    if (isHealer)
                     {
-                        AttackEnemySettings();
-                        animator.SetTrigger("GetCharged");
-                    }
-                    /*if (gameObject.tag == "Archer" &&
-                               Vector2.Distance(transform.position, player.transform.position) <= 2f)
-                   {
-                       Reposition();
-                   }*/
-
-                    else if (gameObject.CompareTag("Swordman"))
-                    {
-                        if (isHealer)
+                        animator.SetFloat("Speed", 0f);
+                        path.endReachedDistance = 5f;
+                        if ((myCombatManager.currentHealth < myCombatManager.maxHealth) && !healing)
                         {
-                            animator.SetFloat("Speed", 0f);
-                            path.endReachedDistance = 5f;
-                            if ((myCombatManager.currentHealth < myCombatManager.maxHealth) && !healing)
+                            healing = true;
+
+                            if (healingCoroutine != null)
                             {
-                                healing = true;
-
-                                if (healingCoroutine != null)
-                                {
-                                    StopCoroutine(healingCoroutine);
-                                }
-                                healingCoroutine = StartCoroutine(SlowHeal());
+                                StopCoroutine(healingCoroutine);
                             }
-                        }
-                        else
-                        {
-                            MovementControl = MovementControls.attack;
-                            path.endReachedDistance = 1f;
-                            AttackEnemySettings();
+                            healingCoroutine = StartCoroutine(SlowHeal());
                         }
                     }
-
                     else
                     {
                         MovementControl = MovementControls.attack;
+                        path.endReachedDistance = 1f;
                         AttackEnemySettings();
                     }
                 }
+
+                else
+                {
+                    MovementControl = MovementControls.attack;
+                    AttackEnemySettings();
+                }
             }
-        
+        }
+
     }
-
-   
-
 
     /// <summary>
     /// This method makes the enemy to go to charged attack state and do the attack.
@@ -487,7 +534,7 @@ public class Movement : MonoBehaviour
     private void OnChargedAttackEnable()
     {
         MovementControl = MovementControls.chargedAttack;
-        
+
     }
 
     /// <summary>
@@ -496,7 +543,7 @@ public class Movement : MonoBehaviour
     /// <returns></returns>
     IEnumerator SlowHeal()
     {
-        while (healing && myCombatManager.currentHealth > 0f && 
+        while (healing && myCombatManager.currentHealth > 0f &&
             myCombatManager.currentHealth < myCombatManager.maxHealth)
         {
             yield return new WaitForSeconds(0.8f);
@@ -549,14 +596,68 @@ public class Movement : MonoBehaviour
     private void MoveEnemy()
     {
         myCombatManager.StopAttack();
-        if (MovementControl != MovementControls.walk)
-            MovementControl = MovementControls.walk;
+
         animator.SetFloat("Speed", 1f);
     }
 
     #endregion
 
-    #region Other operations 
+    #region npc
+
+    private void DoNPCStuffsInUpdate()
+    {
+        NPCRandomMove();
+    }
+
+    /// <summary>
+    /// randomly move within the boundary
+    /// </summary>
+    private void NPCRandomMove()
+    {
+        path.enabled = true;
+        aIDestinationSetter.enabled = true;
+        seeker.enabled = true;
+        path.endReachedDistance = 0.01f;
+
+
+        if (isReadyToGetNPCRandomDirection)
+        {
+            GetRandomPointToMoveNPC();
+            isReadyToGetNPCRandomDirection = false;
+        }
+
+
+        aIDestinationSetter.target = targetForDirection_Transform;
+        targetForDirection = aIDestinationSetter.target.transform.position;
+        //transform.position = Vector2.MoveTowards(transform.position, targetForDirection, npcMoveSpeed * Time.deltaTime);
+
+        animator.SetFloat("Speed", 1f);
+
+
+        if (path.remainingDistance <= 0.01f)
+        {
+            if (npcWaitTime <= 0)
+            {
+
+                isReadyToGetNPCRandomDirection = true;
+                npcWaitTime = npcStartWaitTime;
+            }
+            else
+            {
+                npcWaitTime -= Time.deltaTime;
+                animator.SetFloat("Speed", 0f);
+            }
+        }
+    }
+
+    private void GetRandomPointToMoveNPC()
+    {
+        targetForDirection_Transform.position = new Vector2(UnityEngine.Random.Range(minX.position.x, maxX.position.x), UnityEngine.Random.Range(minY.position.y, maxY.position.y));
+    }
+
+    #endregion
+
+    #region Other Operations
 
     /// <summary>
     /// Method to Animate player sprites during movement.
@@ -624,85 +725,9 @@ public class Movement : MonoBehaviour
 
         }
 
-        
+
 
     }
-
-    /// <summary>
-    /// This is for cutscene mode 
-    /// </summary>
-    /// <param name="fixedFaceMode"></param>
-    /// <param name="aiTarget"></param>
-    void CutsceneMode(bool fixedFaceMode, Transform aiTarget)
-    {
-        if (!path.enabled && !aIDestinationSetter.enabled && !seeker.enabled)
-        {
-            path.enabled = true;
-            aIDestinationSetter.enabled = true;
-            seeker.enabled = true;
-        }
-
-        if (GetComponent<AIPath>().reachedDestination)
-        {
-            animator.SetFloat("Speed", 0f);
-
-            if (!fixedFaceMode)
-            {
-
-                float speed = (2 * Mathf.PI) / 15;  //2*PI in degress is 360, so 15 seconds to complete a circle
-                float radius = 50;
-
-                angle += speed * Time.deltaTime; // to switch direction, use -= instead of +=
-                float x = Mathf.Cos(angle) * radius;
-                float y = Mathf.Sin(angle) * radius;
-
-                targetForDirection = new Vector2(x, y);
-
-            }
-            else
-            {
-                targetForDirection = player.position;
-            }
-
-        }
-        else
-        {
-            MoveEnemy();
-            aIDestinationSetter.target = aiTarget;
-            targetForDirection = aiTarget.position;
-        }
-
-    }
-
-    /// <summary>
-    /// This method completes roll in the last facing direction.
-    /// </summary>
-    private void PerfomRoll()
-    {
-        if (rollTime <= 0)
-        {
-            rollTime = startRollTime;
-            rb.velocity = Vector2.zero;
-            animator.SetBool("Roll", false);
-            cnt = 0;
-            GetComponent<Movement>().MovementControl = MovementControls.walk;
-            OnFreezeInputDisable();
-        }
-        else
-        {
-            
-            rollTime -= Time.deltaTime;
-
-            if (cnt == 0)
-            {
-                animator.SetBool("Roll", true);
-                rb.velocity = myFacingDirection * rollSpeed;
-                cnt = 1;
-            }
-            
-        }
-    }
-
     /// <summary>
     /// This method completes the dash in the last facing direction.
     /// </summary>
@@ -713,8 +738,9 @@ public class Movement : MonoBehaviour
             dashTime = startDashTime;
             rb.velocity = Vector2.zero;
             cnt = 0;
-            GetComponent<Movement>().MovementControl = MovementControls.walk;
+            MovementControl = MovementControls.walk;
             OnFreezeInputDisable();
+
         }
         else
         {
@@ -729,32 +755,31 @@ public class Movement : MonoBehaviour
     }
 
     /// <summary>
-    /// Performs the knockOff oeration for character..
-    /// Add a foce to hit direction
+    /// This method completes roll in the last facing direction.
     /// </summary>
-    void PerfomKnockOff(Vector2 knockDirection)
+    private void PerfomRoll()
     {
-        if (knockTime <= 0)
+        if (rollTime <= 0)
         {
-            knockTime = startKnockTime;
+            rollTime = startRollTime;
             rb.velocity = Vector2.zero;
-            animator.SetBool("KnockOff", false);
+            animator.SetBool("Roll", false);
             cnt = 0;
-            GetComponent<Movement>().MovementControl = MovementControls.walk;
+            MovementControl = MovementControls.walk;
             OnFreezeInputDisable();
         }
         else
         {
-            knockTime -= Time.deltaTime;
+
+            rollTime -= Time.deltaTime;
 
             if (cnt == 0)
             {
-
-                animator.SetBool("KnockOff", true);
-                rb.velocity = knockDirection * knockSpeed;
+                animator.SetBool("Roll", true);
+                rb.velocity = myFacingDirection * rollSpeed;
                 cnt = 1;
             }
-            
+
         }
     }
 
@@ -782,7 +807,7 @@ public class Movement : MonoBehaviour
 
                 if (!characterHit)
                 {
-                    
+
                     myCombatManager.ChargeAttack();
                 }
 
@@ -802,15 +827,74 @@ public class Movement : MonoBehaviour
     IEnumerator WaitAfterAttack()
     {
         waiting = true;
+        OnFreezeInputDisable();
 
         //Stops enemy movement animation.
 
         yield return new WaitForSeconds(waitAfterAttackDuration);
-        OnFreezeInputDisable();
         MovementControl = MovementControls.walk;
         waiting = false;
 
-        
+
+    }
+
+    /// <summary>
+    /// Performs the knockOff oeration for character..
+    /// Add a foce to hit direction
+    /// </summary>
+    void PerfomKnockOff(Vector2 knockDirection)
+    {
+        if (knockTime <= 0)
+        {
+            knockTime = startKnockTime;
+            rb.velocity = Vector2.zero;
+            animator.SetBool("KnockOff", false);
+            cnt = 0;
+            MovementControl = MovementControls.walk;
+            OnFreezeInputDisable();
+        }
+        else
+        {
+            knockTime -= Time.deltaTime;
+
+            if (cnt == 0)
+            {
+
+                animator.SetBool("KnockOff", true);
+                rb.velocity = knockDirection * knockSpeed;
+                cnt = 1;
+            }
+
+        }
+    }
+
+    /// <summary>
+    /// returns the probability of critical hit
+    /// </summary>
+    public bool GetHitProb()
+    {
+        int randomNumber = UnityEngine.Random.Range(0, total);
+
+        for (int i = 0; i < hitProbTable.Length; i++)
+        {
+            if (randomNumber <= hitProbTable[i])
+            {
+                if (i == 0)
+                {
+                    Debug.Log("Non critical hit occured!!");
+                }
+
+                else
+                {
+                    Debug.Log("Critical hit occcured!!");
+                    return true;
+                }
+
+            }
+            else
+                randomNumber -= hitProbTable[i];
+        }
+        return false;
     }
 
     /// <summary>
@@ -857,35 +941,72 @@ public class Movement : MonoBehaviour
     }
 
     /// <summary>
-    /// returns the probability of critical hit
+    /// This method prevents to throw anything till time limit pass..
     /// </summary>
-    public bool GetHitProb()
+    IEnumerator WaitForAnotherThrow(float previousSpeed)
     {
-        int randomNumber = UnityEngine.Random.Range(0, total);
+        isReadyToThrow = false;
+        characterMoveSpeed = previousSpeed;
+        yield return new WaitForSeconds(waitTimeForThrow);
+        isReadyToThrow = true;
 
-        for (int i = 0; i < hitProbTable.Length; i++)
+
+    }
+
+    /// <summary>
+    /// This is for cutscene mode 
+    /// </summary>
+    /// <param name="fixedFaceMode"></param>
+    /// <param name="aiTarget"></param>
+    void CutsceneMode(bool fixedFaceMode, Transform aiTarget)
+    {
+        //disable fov..
+        m_Fov.gameObject.SetActive(false);
+        //enable AI if disabled..
+        if (!path.enabled && !aIDestinationSetter.enabled && !seeker.enabled)
         {
-            if (randomNumber <= hitProbTable[i])
-            {
-                if (i == 0)
-                {
-                    Debug.Log("Non critical hit occured!!");
-                }
+            path.enabled = true;
+            aIDestinationSetter.enabled = true;
+            seeker.enabled = true;
+        }
+        path.endReachedDistance = 0.5f;
 
-                else
-                {
-                    Debug.Log("Critical hit occcured!!");
-                    return true;
-                }
+        aIDestinationSetter.target = aiTarget;
+
+        if (path.reachedDestination)
+        {
+            animator.SetFloat("Speed", 0f);
+
+            if (!fixedFaceMode)
+            {
+
+                float speed = (2 * Mathf.PI) / 15;  //2*PI in degress is 360, so 15 seconds to complete a circle
+                float radius = 50;
+
+                angle += speed * Time.deltaTime; // to switch direction, use -= instead of +=
+                float x = Mathf.Cos(angle) * radius;
+                float y = Mathf.Sin(angle) * radius;
+
+                targetForDirection = new Vector2(x, y);
 
             }
             else
-                randomNumber -= hitProbTable[i];
+            {
+                targetForDirection = player.position;
+            }
+
         }
-        return false;
+        else
+        {
+            MoveEnemy();
+            targetForDirection = aiTarget.position;
+        }
+
     }
 
     #endregion
+
+
 
     #region Vulnerability 
     /// <summary>
@@ -910,11 +1031,11 @@ public class Movement : MonoBehaviour
             path.enabled = false;
     }
     #endregion
-    
+
     /// <summary>
     /// resets the stats of character
     /// </summary>
-    public void RestSession()
+    public void ResetSession()
     {
         OnFreezeInputDisable();
 
@@ -923,11 +1044,21 @@ public class Movement : MonoBehaviour
         knockTime = startKnockTime;
         chargedAttackTime = startAttackTime;
 
-        MovementControl = MovementControls.walk;
+        //MovementControl = MovementControls.walk;
         animator = GetComponent<Animator>();
         animator.SetBool("IsDead", false);
 
         //reset associated scripts
         myCombatManager.ResetSession();
     }
+    private void GetComponentsAtStart()
+    {
+        myCombatManager = GetComponent<CombatManager>();
+        aIDestinationSetter = GetComponent<AIDestinationSetter>();
+        seeker = GetComponent<Seeker>();
+        rb = GetComponent<Rigidbody2D>();
+        path = GetComponent<AIPath>();
+        animator = GetComponent<Animator>();
+    }
+
 }

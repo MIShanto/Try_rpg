@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class Projectile : MonoBehaviour
 {
@@ -9,18 +10,19 @@ public class Projectile : MonoBehaviour
     [SerializeField] Transform targetForMissile;
     Rigidbody2D rb;
     [SerializeField] float headRange;
-    [HideInInspector]public  bool isSelfDestroyable;
+    [HideInInspector] public bool isSelfDestroyable;
 
-    [HideInInspector]public float selfDestroyTime, missileSpeed, missileRotationSpeed;
+    [HideInInspector] public float selfDestroyTime, missileSpeed, missileRotationSpeed, flightTime,
+                                   dis_ObjPrimaryRange, dis_ObjSecondaryRange;
     bool hitCounter = false, arrowStopped = false;
-    [SerializeField] LayerMask hitLayer;
+    [SerializeField] LayerMask hitLayer, enemyLayer, obstacleLayer;
     [HideInInspector] public GameObject MT;
 
     float angle;
     Vector2 playerPos;
     public enum throwables
     {
-        arrow, missile
+        arrow, missile, distractionObject
     }
     public throwables projectile;
 
@@ -36,17 +38,25 @@ public class Projectile : MonoBehaviour
     {
         yield return new WaitForSeconds(selfDestroyTime);
         gameObject.SetActive(false);
-        if(projectile == throwables.missile)
+        if (projectile == throwables.missile)
             MT.GetComponent<CombatManager>().missileCount--;
 
     }
 
     void LateUpdate()
     {
-        if(projectile == throwables.arrow)
+        if (projectile == throwables.arrow & !arrowStopped)
+        {
             performRotation();
+            //Used to manage arrow hit
+            HitManagement();
+        }
+        else if (projectile == throwables.distractionObject)
+        {
+            performRotation();
+        }
 
-    }
+        }
     private void FixedUpdate()
     {
         if (projectile == throwables.missile)
@@ -76,7 +86,7 @@ public class Projectile : MonoBehaviour
             arrowStopped = false;
             GetComponent<Rigidbody2D>().gravityScale = 1;
         }
-       
+
         hitCounter = false;
     }
     #region Arrow
@@ -86,18 +96,55 @@ public class Projectile : MonoBehaviour
     /// </summary>
     private void performRotation()
     {
-        if (!arrowStopped)
-        {
-            transform.eulerAngles = new Vector3(0f, 0f, angle);
-            Vector2 velocity = GetComponent<Rigidbody2D>().velocity;
-            angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+        transform.eulerAngles = new Vector3(0f, 0f, angle);
+        Vector2 velocity = GetComponent<Rigidbody2D>().velocity;
+        angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
 
-            //Used to manage arrow hit
-            HitManagement();
-        }
     }
 
     #endregion
+
+    public void SetFlightTime(float time)
+    {
+        flightTime = time;
+        StartCoroutine(PerformNextTasksForDistraction());
+    }
+    IEnumerator PerformNextTasksForDistraction()
+    {
+        yield return new WaitForSeconds(flightTime);
+
+        StopAndDisable();
+
+        Collider2D[] hitObjects = Physics2D.OverlapCircleAll(transform.position, dis_ObjPrimaryRange, enemyLayer);
+
+        foreach (Collider2D obj in hitObjects)
+        {
+            
+            RaycastHit2D ray = Physics2D.Raycast(transform.position, obj.gameObject.transform.position,
+                Vector2.Distance(transform.position, obj.gameObject.transform.position), obstacleLayer);
+            if (ray.collider != null)
+            {
+                // if find collider check for secondary distance..
+                if (Vector2.Distance(transform.position, obj.gameObject.transform.position) <= dis_ObjSecondaryRange)
+                {
+                    PrepareForInvestigation(obj);
+
+                }
+            }
+            else
+            {
+                PrepareForInvestigation(obj);
+            }
+        }
+           
+
+    }
+
+    private void PrepareForInvestigation(Collider2D obj)
+    {
+        obj.GetComponent<Movement>().doInvestigation = true;
+        obj.GetComponent<AIDestinationSetter>().target = this.gameObject.transform;
+    }
 
     #region hit manager
 
@@ -137,11 +184,17 @@ public class Projectile : MonoBehaviour
         else if (Vector2.Distance((Vector2)head.position, playerPos) <= .5f)
         {
             arrowStopped = true;
-            rb.velocity = Vector2.zero;
-            rb.gravityScale = 0;
-            StartCoroutine(waitToDeactive());
+            StopAndDisable();
         }
     }
+
+    private void StopAndDisable()
+    {
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 0;
+        StartCoroutine(waitToDeactive());
+    }
+
     IEnumerator waitToDeactive()
     {
         transform.eulerAngles = new Vector3(0f, 0f, angle);
@@ -165,7 +218,8 @@ public class Projectile : MonoBehaviour
     #region Gizmos
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(head.position, headRange);
+        if (head != null)
+            Gizmos.DrawWireSphere(head.position, headRange);
 
     }
     #endregion

@@ -60,12 +60,12 @@ PrefabInstance:
     - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -124,23 +124,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
-      propertyPath: nextAttackTime
-      value: 0.25
+      propertyPath: patrolPoints.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
-      propertyPath: MovementControl
+      propertyPath: nextAttackTime
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
+      propertyPath: MovementControl
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
       propertyPath: startKnockTime
-      value: 0.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: knockSpeed
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -150,12 +155,12 @@ PrefabInstance:
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: enemyHealingAmount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: isHealer
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -171,6 +176,36 @@ PrefabInstance:
         type: 3}
       propertyPath: npcMoveSpeed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: previousState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: startDashTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: startRollTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: fov
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: viewDistanceBack
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: viewDistanceFront
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966910, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -256,12 +291,12 @@ PrefabInstance:
     - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -310,23 +345,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
-      propertyPath: nextAttackTime
-      value: 0.25
+      propertyPath: patrolPoints.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
-      propertyPath: MovementControl
+      propertyPath: nextAttackTime
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
+      propertyPath: MovementControl
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
       propertyPath: startKnockTime
-      value: 0.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: knockSpeed
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -336,7 +376,7 @@ PrefabInstance:
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: enemyHealingAmount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -352,6 +392,36 @@ PrefabInstance:
         type: 3}
       propertyPath: npcMoveSpeed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: previousState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: startDashTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: startRollTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: fov
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: viewDistanceBack
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: viewDistanceFront
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966910, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -437,12 +507,12 @@ PrefabInstance:
     - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4879804043169893955, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -501,23 +571,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
-      propertyPath: nextAttackTime
-      value: 0.25
+      propertyPath: patrolPoints.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
-      propertyPath: MovementControl
+      propertyPath: nextAttackTime
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
+      propertyPath: MovementControl
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
       propertyPath: startKnockTime
-      value: 0.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: knockSpeed
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -527,7 +602,7 @@ PrefabInstance:
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: enemyHealingAmount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -543,6 +618,36 @@ PrefabInstance:
         type: 3}
       propertyPath: npcMoveSpeed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: previousState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: startDashTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: startRollTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: fov
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: viewDistanceBack
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: viewDistanceFront
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966910, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}

@@ -63,8 +63,6 @@ public  class EnemySpawnManager : MonoBehaviour
                     //increase limit
                     spawnObject[spawnObjectIndex].checkLimit++;
 
-                    Debug.Log("name :" + spawnObject[spawnObjectIndex].characterObject.name);
-
                     if (spawnObject[spawnObjectIndex].characterObject.name == "Witch unit")
                     {
                         for (int i = 0; i < currentObject.transform.childCount; i++)
@@ -97,23 +95,11 @@ public  class EnemySpawnManager : MonoBehaviour
             if (myGameObject.tag == spawnObject[i].characterObject.tag)
             {
                 spawnObject[i].checkLimit--;
-                Debug.LogError(spawnObject[i].checkLimit);
+
             }
             
         }
         enemyCount--;
-       /* if (myGameObject.tag == "Swordman")
-        {
-            swordmanCount++;
-            if (swordmanCount == 3)
-            {
-                enemyCount--;
-                swordmanCount = 0;
-            }
-        }
-        else
-        {
-            enemyCount--;
-        }*/
+       
     }
 }

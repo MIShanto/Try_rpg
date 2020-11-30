@@ -12,37 +12,38 @@ public class CombatManager : MonoBehaviour
     Movement characterMovement;
     Coroutine attackCoroutine;
     Rigidbody2D rb;
+    [HideInInspector] public GameObject distractibleObject; // for player..
     [SerializeField] EnemySpawnManager enemySpawnManager;
 
     [HideInInspector] public int missileLimit, missileCount = 0;
 
     [Header("Hitbox section")]
     [Header("Insert in UP, RIGHT, DOWN, LEFT sequence in hitbox array")]
-    [SerializeField][Tooltip("Last hitbox is for charged attack")] Transform[] hitboxes;
+    [SerializeField] [Tooltip("Last hitbox is for charged attack")] Transform[] hitboxes;
 
     [SerializeField] float leftHitboxRange, downHitboxRange, rightHitboxRange, upHitboxRange, midHitboxRange;
     [SerializeField] LayerMask hitLayer;
 
     [Header("Health functionality")]
-    [HideInInspector]public float maxHealth, currentHealth;
+    [HideInInspector] public float maxHealth, currentHealth;
     [SerializeField] int chargedDamage;
     [SerializeField] Slider healthBar;
-    
+
     [HideInInspector] public bool isDead, isAttacking = false, isBlocked;
     [HideInInspector] public float arrowFlightTime;
 
     [Header("Armor functionality")]
-    [SerializeField]  bool closedRangedArmor;
-    [SerializeField]  bool longRangedArmor;
-    [SerializeField]  bool magicalArmor;
+    [SerializeField] bool closedRangedArmor;
+    [SerializeField] bool longRangedArmor;
+    [SerializeField] bool magicalArmor;
     int armorType;
 
     [Header("Weapon functionality")]
-    [SerializeField]  bool playerSword;
-    [SerializeField]  bool swordsmanSword;
-    [SerializeField]  bool arrow;
-    [SerializeField]  bool missile;
-    [SerializeField]  bool poison;
+    [SerializeField] bool playerSword;
+    [SerializeField] bool swordsmanSword;
+    [SerializeField] bool arrow;
+    [SerializeField] bool missile;
+    [SerializeField] bool poison;
     int weaponType;
 
     bool isHitCritical = false;
@@ -109,8 +110,8 @@ public class CombatManager : MonoBehaviour
     #region Combat
     public void performAttack(float attackIndex, float nextAttackTime)
     {
-        if(!isAttacking)
-            attackCoroutine = StartCoroutine(StartAttack(attackIndex,nextAttackTime));
+        if (!isAttacking)
+            attackCoroutine = StartCoroutine(StartAttack(attackIndex, nextAttackTime));
     }
 
     /// <summary>
@@ -136,7 +137,7 @@ public class CombatManager : MonoBehaviour
     /// </summary>
     public void StopAttack()
     {
-       
+
         if (attackCoroutine != null)
         {
             StopCoroutine(attackCoroutine);
@@ -192,7 +193,7 @@ public class CombatManager : MonoBehaviour
 
         foreach (Collider2D hitObject in hitArea)
         {
-            hitObject.GetComponent<CombatManager>().TakeDamage(weaponType,this.transform, characterMovement.MovementControl);
+            hitObject.GetComponent<CombatManager>().TakeDamage(weaponType, this.transform, characterMovement.MovementControl);
 
         }
 
@@ -243,7 +244,7 @@ public class CombatManager : MonoBehaviour
             hitObject.GetComponent<CombatManager>().TakeDamage(chargedDamage, this.transform, characterMovement.MovementControl);
             characterMovement.characterHit = true;
             //characterMovement.chargedAttackTime = -1f;
-            
+
             //StopAttack();
 
         }
@@ -254,12 +255,13 @@ public class CombatManager : MonoBehaviour
     //Get visuals of the hitboxes area..
     private void OnDrawGizmos()
     {
-        if (hitboxes.Length != 0 ) {
+        if (hitboxes.Length != 0)
+        {
             Gizmos.DrawWireSphere(hitboxes[0].position, upHitboxRange);
             Gizmos.DrawWireSphere(hitboxes[1].position, rightHitboxRange);
             Gizmos.DrawWireSphere(hitboxes[2].position, downHitboxRange);
             Gizmos.DrawWireSphere(hitboxes[3].position, leftHitboxRange);
-            if(hitboxes.Length == 5)
+            if (hitboxes.Length == 5)
                 Gizmos.DrawWireSphere(hitboxes[4].position, midHitboxRange);
         }
     }
@@ -279,7 +281,7 @@ public class CombatManager : MonoBehaviour
     public void TakeDamage(int damageType, Transform otherCharacter, Movement.MovementControls AttackState)
     {
         // if player hits enemy then this section of codes will activate..
-        if(characterMovement.character != Movement.characters.player)
+        if (characterMovement.character != Movement.characters.player)
         {
             if (!isDead)
             {
@@ -292,7 +294,7 @@ public class CombatManager : MonoBehaviour
                 {
                     //decrease health..
 
-                    currentHealth -= DamageHandler.Instance.GetDamageInfo(damageType,armorType,isHitCritical);// get damage info (damage type, armor type)
+                    currentHealth -= DamageHandler.Instance.GetDamageInfo(damageType, armorType, isHitCritical);// get damage info (damage type, armor type)
 
                     // DEMO...(knock off)
                     if (AttackState == Movement.MovementControls.chargedAttack && currentHealth > 0)
@@ -311,22 +313,22 @@ public class CombatManager : MonoBehaviour
                 else
                 {
                     //decrease half health..
-                    currentHealth -= DamageHandler.Instance.GetDamageInfo(damageType, armorType,isHitCritical) * 0.5f; // get damage info (damage type, armor type)
+                    currentHealth -= DamageHandler.Instance.GetDamageInfo(damageType, armorType, isHitCritical) * 0.5f; // get damage info (damage type, armor type)
 
                     OnBlockDisable();
                     characterMovement.OnHitPush(isHitCritical);
                 }
-                
+
             }
         }
         // if enemy hits player then this section of codes will activate..
         else
         {
-            if(!isDead)
-            { 
+            if (!isDead)
+            {
                 currentHealth -= DamageHandler.Instance.GetDamageInfo(damageType, armorType, false);// get damage info (damage type, armor type, critical hit)
 
-                if (AttackState == Movement.MovementControls.chargedAttack && currentHealth>0)
+                if (AttackState == Movement.MovementControls.chargedAttack && currentHealth > 0)
                 {
                     //Debug.Log(otherCharacter.GetComponent<Movement>().facingDirection); 
                     characterMovement.otherCharacterFacingDirection =
@@ -356,7 +358,7 @@ public class CombatManager : MonoBehaviour
     /// <summary>
     /// Handles death animation of character..
     /// </summary>
-    IEnumerator  Die()
+    IEnumerator Die()
     {
         //play die animation..
         animator.SetBool("IsDead", isDead);
@@ -370,7 +372,7 @@ public class CombatManager : MonoBehaviour
                 enemySpawnManager.HandleEnemyForCount(this.gameObject);
 
             //destroy enemy..
-            characterMovement.RestSession();
+            characterMovement.ResetSession();
             gameObject.SetActive(false); //Destroy(gameObject, 2f);
         }
         else
@@ -420,6 +422,25 @@ public class CombatManager : MonoBehaviour
     }
 
     #endregion
+
+    #region Stelth Mode (Distraction)
+
+    /// <summary>
+    /// this method is called when player goes to stelth mode to distract enemies..
+    /// </summary>
+    public void LaunchDistractibleObject(Vector2 spawnPosition)
+    {
+        GameObject m_distractibleObject = Instantiate(distractibleObject, transform.position, Quaternion.identity);
+
+        Vector2 Vo = calculateVelocity(transform.position, spawnPosition, 1f);
+
+        m_distractibleObject.GetComponent<Rigidbody2D>().velocity = Vo;
+
+        m_distractibleObject.GetComponent<Projectile>().setRotation(Mathf.Acos(Vo.x / Vo.magnitude) * Mathf.Rad2Deg, spawnPosition);
+        m_distractibleObject.GetComponent<Projectile>().SetFlightTime(1f);
+    }
+
+    #endregion
     #region Missile thrower
 
     /// <summary>
@@ -427,16 +448,16 @@ public class CombatManager : MonoBehaviour
     /// </summary>
     public void LaunchMissile()
     {
-        
+
         if (missileCount < missileLimit)
         {
             missileCount++;
             GameObject missile = objectPooler.SpawnFromPool("Missile", transform.position, Quaternion.identity);
             missile.GetComponent<Projectile>().MT = this.gameObject;
         }
-        
-       
-       
+
+
+
     }
 
     #endregion

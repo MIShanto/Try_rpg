@@ -133,9 +133,18 @@ MonoBehaviour:
   selfDestroyTime: 0
   missileSpeed: 0
   missileRotationSpeed: 0
+  flightTime: 0
+  dis_ObjPrimaryRange: 0
+  dis_ObjSecondaryRange: 0
   hitLayer:
     serializedVersion: 2
     m_Bits: 1024
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 256
   MT: {fileID: 0}
   projectile: 0
 --- !u!50 &2602541343964040847

@@ -482,7 +482,6 @@ GameObject:
   - component: {fileID: 981181856}
   - component: {fileID: 981181857}
   - component: {fileID: 981181858}
-  - component: {fileID: 981181859}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -610,52 +609,59 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: 0
   previousCharacter: 0
-  path: {fileID: 0}
-  cutsceneDestinationTarget: {fileID: 0}
-  player: {fileID: 0}
+  MovementControl: 1
+  previousState: 0
+  characterMoveSpeed: 5
+  isCutsceneModeOn: 0
+  cutsceneFixedFaceMode: 0
+  npcStartWaitTime: 3
+  criticalHitProb: 0
+  isCharacterControllable: 1
+  isHealer: 0
+  healing: 0
+  characterHit: 0
+  callGangRadius: 0
   speedMultiplierDuringAttack: 0
   moveSpeedMultiplierDuringAttack: 1
-  characterMoveSpeed: 5
-  nextAttackTime: 0.25
+  nextAttackTime: 0
   attackIndex: 0
   getPushedForce: 0
-  dashSpeed: 50
-  startDashTime: 0.1
-  rollSpeed: 50
-  startRollTime: 0.1
-  knockSpeed: 50
-  startKnockTime: 0.1
-  chargedAttackSpeed: 30
-  startAttackTime: 0.2
+  dashSpeed: 0
+  startDashTime: 0
+  rollSpeed: 0
+  startRollTime: 0
+  waitTimeForThrow: 0
+  knockSpeed: 0
+  startKnockTime: 0
+  chargedAttackSpeed: 0
+  startAttackTime: 0
   chargedAttackTime: 0
   chargedDistance: 0
   waitAfterAttackDuration: 0
   chargeAndLookoutArea: 0
-  stamina: 1e+9
+  stamina: 0
   staminaDecreaseRate: 0
-  characterHit: 0
-  criticalHitProb: 0
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  speedFactor: 1
   enemyHealingAmount: 0
+  fov: 0
+  viewDistanceBack: 0
+  viewDistanceFront: 0
   direction: {x: 0, y: 0}
   myFacingDirection: {x: 0, y: 0}
   otherCharacterFacingDirection: {x: 0, y: 0}
   targetForDirection: {x: 0, y: 0}
-  isCharacterControllable: 1
-  isHealer: 0
-  healing: 0
-  speedFactor: 1
-  isCutsceneModeOn: 0
-  cutsceneFixedFaceMode: 0
-  npcStartWaitTime: 3
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  cutsceneDestinationTarget: {fileID: 0}
+  patrolPoints: []
   minX: {fileID: 0}
   maxX: {fileID: 0}
   minY: {fileID: 0}
   maxY: {fileID: 0}
-  npcMoveSpeed: 2
-  MovementControl: 0
+  player: {fileID: 0}
+  path: {fileID: 0}
+  m_Fov: {fileID: 6840031424448009175, guid: 42511d4cf2c4619478e59143fd2d2629, type: 3}
 --- !u!114 &2751545783011731726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,6 +674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5478a661663b72441b76f87f8b5a4cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  distractibleObject: {fileID: 0}
   enemySpawnManager: {fileID: 0}
   missileLimit: 0
   missileCount: 0
@@ -795,34 +802,6 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
---- !u!114 &981181859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2751545783011731716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  drawGizmos: 1
-  detailedGizmos: 0
-  startEndModifier:
-    addPoints: 0
-    exactStartPoint: 3
-    exactEndPoint: 3
-    useRaycasting: 0
-    mask:
-      serializedVersion: 2
-      m_Bits: 4294967295
-    useGraphRaycasting: 0
-  traversableTags: -1
-  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  graphMask:
-    value: -1
 --- !u!1 &2751545783263399736
 GameObject:
   m_ObjectHideFlags: 0

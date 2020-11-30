@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DamageHandler : MonoBehaviour
 {
-    public static DamageHandler Instance { get;  set; }
+    public static DamageHandler Instance { get; set; }
     struct ArmorHandler
     {
         public int minIndex;
@@ -83,9 +83,9 @@ public class DamageHandler : MonoBehaviour
         int tmpDamageValue = damageTypes[damageType];
         int armorDefenceValue = 0;
         //check if the armor can protect from the damage type..
-        if(damageType >= armorTypes[armorType].minIndex && damageType <= armorTypes[armorType].minIndex)
+        if (damageType >= armorTypes[armorType].minIndex && damageType <= armorTypes[armorType].minIndex)
         {
-            armorDefenceValue = armorTypes[armorType].damageValueToDecrease; 
+            armorDefenceValue = armorTypes[armorType].damageValueToDecrease;
         }
 
         if (damageType == 1)  // TODO: this indexes will be hard coded 
@@ -93,7 +93,7 @@ public class DamageHandler : MonoBehaviour
 
         else if (damageType == 2)
             return tmpDamageValue - armorDefenceValue;
-        
+
         else if (damageType == 3)
         {
             //if there is no armor do bleeding
@@ -101,10 +101,10 @@ public class DamageHandler : MonoBehaviour
                 StartCoroutine(DoBleedingAction());
             return tmpDamageValue;
         }
-        
+
         else if (damageType == 4)
             return tmpDamageValue - armorDefenceValue;
-        
+
         else if (damageType == 5)
         {
 
@@ -121,7 +121,7 @@ public class DamageHandler : MonoBehaviour
 
     }
 
-    IEnumerator  DoBleedingAction()
+    IEnumerator DoBleedingAction()
     {
         yield return new WaitForSeconds(2f);//TODO: this will be hard coded
         if (bleedingAttackCounter < 3)
