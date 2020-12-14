@@ -441,7 +441,7 @@ MonoBehaviour:
   startEndModifier:
     addPoints: 0
     exactStartPoint: 3
-    exactEndPoint: 1
+    exactEndPoint: 3
     useRaycasting: 0
     mask:
       serializedVersion: 2
@@ -469,7 +469,7 @@ MonoBehaviour:
   repathRate: 0.5
   canSearch: 1
   canMove: 1
-  maxSpeed: 2
+  maxSpeed: 1.3
   gravity: {x: 0, y: 0, z: 0}
   groundMask:
     serializedVersion: 2
@@ -478,9 +478,9 @@ MonoBehaviour:
   orientation: 1
   enableRotation: 0
   targetCompatibility: {fileID: 0}
-  maxAcceleration: 2
+  maxAcceleration: -2.5
   rotationSpeed: 360
-  slowdownDistance: 6
+  slowdownDistance: 0.6
   pickNextWaypointDist: 1.3
   endReachedDistance: 10
   alwaysDrawGizmos: 0
@@ -618,12 +618,13 @@ MonoBehaviour:
   isHealer: 0
   healing: 0
   characterHit: 0
-  callGangRadius: 0
+  doInvestigation: 0
+  callGangRadius: 4
   speedMultiplierDuringAttack: 0
   moveSpeedMultiplierDuringAttack: 1
-  nextAttackTime: 0
+  nextAttackTime: 1
   attackIndex: 0
-  getPushedForce: 0
+  getPushedForce: 1000
   dashSpeed: 0
   startDashTime: 0
   rollSpeed: 0
@@ -655,10 +656,9 @@ MonoBehaviour:
   patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
-  minX: {fileID: 0}
-  maxX: {fileID: 0}
-  minY: {fileID: 0}
-  maxY: {fileID: 0}
+  diagonalPoints:
+  - {fileID: 0}
+  - {fileID: 0}
   player: {fileID: 0}
   path: {fileID: 0}
   m_Fov: {fileID: 6840031424448009175, guid: 42511d4cf2c4619478e59143fd2d2629, type: 3}

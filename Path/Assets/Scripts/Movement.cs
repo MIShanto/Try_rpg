@@ -22,7 +22,8 @@ public class Movement : MonoBehaviour
     {
         walk, patrol, dash, roll, attack, block, chargedAttack, knockedOff, none
     }
-    public MovementControls MovementControl, previousState;
+    public MovementControls MovementControl;
+    [HideInInspector] public MovementControls previousState;
 
     #endregion
 
@@ -35,9 +36,11 @@ public class Movement : MonoBehaviour
     private int destPoint = 0, total, cnt = 0; // for patrol enemies.. // total for critical hit
     private bool isReadyToGetNPCRandomDirection = true, waiting = false, enemyPlayerDistanceAdjustment = false, isReadyToSavePreviousState,
                  isReadyToThrow = true; // waiting is for charged attack waiting..
-    private float tmpMoveSpeed, moveSpeed, angle = 0, npcWaitTime, mainEndDistance, dashTime, rollTime, knockTime; // mainEndDistance is the distance fixed at the start via inspector.. // movespeed used for player animation..
+    private float tmpMoveSpeed, moveSpeed, angle = 0, npcWaitTime, mainEndDistance, mainSlowDownDistance, patrolWaitTime, waitBeforeGoingToDisObject,
+                  waitAfterGoingToDisObject, dashTime, rollTime, knockTime; // mainEndDistance is the distance fixed at the start via inspector.. // movespeed used for player animation..
 
     [SerializeField] bool isCutsceneModeOn, cutsceneFixedFaceMode;
+    [Tooltip("NPC wait time at the self position after destination reached")]
     [SerializeField] float npcStartWaitTime; // how much seconds npc will wait..
 
     [HideInInspector] public int criticalHitProb;
@@ -54,20 +57,19 @@ public class Movement : MonoBehaviour
 
     [HideInInspector] public Vector2 direction, myFacingDirection, otherCharacterFacingDirection, targetForDirection; // target for enemy direction;
     [SerializeField] LayerMask obstacleLayer;
+    Vector3 PrevLocation; // character previous location on previous frame (used for enemy animation direction)..
     #endregion
 
     #region Components
 
     [SerializeField] Transform cutsceneDestinationTarget;
     [SerializeField] Transform[] patrolPoints;
-    [Tooltip("NPC wait time at the self position after destination reached")]
-    public Transform minX;
-    public Transform maxX;
-    public Transform minY;
-    public Transform maxY;
+    [Header("Diagonal 2 Points for NPC")]
+    [Tooltip("For rectangle ABCD 1st point is A and 2nd point is D")]
+    [SerializeField] Transform[] diagonalPoints;
     Transform targetForDirection_Transform;
     [HideInInspector]
-    public Transform player;
+    public Transform player, distractionObjPosition;
 
 
 
@@ -379,7 +381,7 @@ public class Movement : MonoBehaviour
             HandlePath();
 
         //for animation purpose get direction..
-        targetForDirection = aIDestinationSetter.target.transform.position;
+        //targetForDirection = aIDestinationSetter.target.transform.position;
     }
     private void DoEnemyStuffsInFixedUpdate()
     {
@@ -409,27 +411,72 @@ public class Movement : MonoBehaviour
             // close to the current one.                
             if (path.reachedDestination && Vector2.Distance(transform.position, aIDestinationSetter.target.position) < 0.01f)
             {
-                //isCutsceneModeOn = true;
-                GotoNextPoint();
-            }
-            // play move animation if more than one point..
-            if (patrolPoints.Length > 1)
-                MoveEnemy();
-            else
                 animator.SetFloat("Speed", 0);
+                //isCutsceneModeOn = true;
+
+                //wait for 1 sec brfore moving o next patrol point
+                if (patrolWaitTime <= 0)
+                {
+                    patrolWaitTime = 1;
+                    GotoNextPoint();
+                }
+                else
+                {
+                    patrolWaitTime -= Time.deltaTime;
+
+                }
+            }
+            else
+                animator.SetFloat("Speed", 1);
+
+            // play move animation if more than one point..
+            if (patrolPoints.Length == 1)
+                animator.SetFloat("Speed", 0);
+
 
         }
         else if(doInvestigation)
         {
-            //aIDestinationSetter.target = 
             if (path.remainingDistance < 100f)
             {
-                if(path.reachedDestination && Vector2.Distance(transform.position, aIDestinationSetter.target.position) < 0.01f)
+                
+
+                if (waitBeforeGoingToDisObject <= 0)
                 {
-                    doInvestigation = false;
-                }
-                else
+                    aIDestinationSetter.target = distractionObjPosition;
+
+                    path.canMove = true;
+
+                    waitBeforeGoingToDisObject = 2;
+                    
                     MoveEnemy();
+                }
+                else if(aIDestinationSetter.target == null)
+                {
+                    path.canMove = false;
+
+                    animator.SetFloat("Speed", 0f); // stop moving
+                    //TODO: play alert animation..
+                    waitBeforeGoingToDisObject -= Time.deltaTime;
+                }
+
+                if (aIDestinationSetter.target !=null && path.reachedDestination && Vector2.Distance(transform.position, aIDestinationSetter.target.position) < 0.01f)
+                {
+                    if (waitAfterGoingToDisObject <= 0)
+                    {
+                        doInvestigation = false;
+                        waitAfterGoingToDisObject = 2;
+                    }
+                    else
+                    {
+
+                        animator.SetFloat("Speed", 0f); // stop moving
+                                                        //TODO: play search animation..
+                        waitAfterGoingToDisObject -= Time.deltaTime;
+                    }
+                    
+                }
+
             }
             else
                 doInvestigation = false;
@@ -629,7 +676,6 @@ public class Movement : MonoBehaviour
 
         aIDestinationSetter.target = targetForDirection_Transform;
         targetForDirection = aIDestinationSetter.target.transform.position;
-        //transform.position = Vector2.MoveTowards(transform.position, targetForDirection, npcMoveSpeed * Time.deltaTime);
 
         animator.SetFloat("Speed", 1f);
 
@@ -652,7 +698,8 @@ public class Movement : MonoBehaviour
 
     private void GetRandomPointToMoveNPC()
     {
-        targetForDirection_Transform.position = new Vector2(UnityEngine.Random.Range(minX.position.x, maxX.position.x), UnityEngine.Random.Range(minY.position.y, maxY.position.y));
+        targetForDirection_Transform.position = new Vector2(UnityEngine.Random.Range(diagonalPoints[0].position.x, diagonalPoints[1].position.x),
+            UnityEngine.Random.Range(diagonalPoints[0].position.y, diagonalPoints[1].position.y));
     }
 
     #endregion
@@ -672,9 +719,9 @@ public class Movement : MonoBehaviour
 
         else
         {
-            // aro better kisu paile replace kore nite hobe..(need optimization).. 
-            //direction = new Vector2(rb.velocity.x, rb.velocity.y);
-            direction = (targetForDirection - (Vector2)transform.position);
+
+            direction = transform.position - PrevLocation;
+            PrevLocation = transform.position;
 
             direction.Normalize();
 
@@ -1039,6 +1086,9 @@ public class Movement : MonoBehaviour
     {
         OnFreezeInputDisable();
 
+        waitBeforeGoingToDisObject = 2f;
+        waitAfterGoingToDisObject = 2f;
+        patrolWaitTime = 1f;
         dashTime = startDashTime;
         rollTime = startRollTime;
         knockTime = startKnockTime;

@@ -143,7 +143,8 @@ public class Projectile : MonoBehaviour
     private void PrepareForInvestigation(Collider2D obj)
     {
         obj.GetComponent<Movement>().doInvestigation = true;
-        obj.GetComponent<AIDestinationSetter>().target = this.gameObject.transform;
+        obj.GetComponent<Movement>().distractionObjPosition = this.gameObject.transform;
+        obj.GetComponent<AIDestinationSetter>().target = null;  
     }
 
     #region hit manager
