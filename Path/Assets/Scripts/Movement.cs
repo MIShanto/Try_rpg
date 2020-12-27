@@ -35,7 +35,7 @@ public class Movement : MonoBehaviour
     private int[] hitProbTable;
     private int destPoint = 0, total, cnt = 0; // for patrol enemies.. // total for critical hit
     private bool isReadyToGetNPCRandomDirection = true, waiting = false, enemyPlayerDistanceAdjustment = false, isReadyToSavePreviousState,
-                 isReadyToThrow = true; // waiting is for charged attack waiting..
+                 isReadyToThrow = true, patrolPause; // waiting is for charged attack waiting..
     private float tmpMoveSpeed, moveSpeed, angle = 0, npcWaitTime, mainEndDistance, mainSlowDownDistance, patrolWaitTime, waitBeforeGoingToDisObject,
                   waitAfterGoingToDisObject, dashTime, rollTime, knockTime; // mainEndDistance is the distance fixed at the start via inspector.. // movespeed used for player animation..
 
@@ -58,12 +58,20 @@ public class Movement : MonoBehaviour
     [HideInInspector] public Vector2 direction, myFacingDirection, otherCharacterFacingDirection, targetForDirection; // target for enemy direction;
     [SerializeField] LayerMask obstacleLayer;
     Vector3 PrevLocation; // character previous location on previous frame (used for enemy animation direction)..
+
+
+    [System.Serializable]
+    public class PatrolPoints
+    {
+        public bool willEnemyWait;
+        public Transform point;
+    }
+    [Space] [SerializeField] PatrolPoints[] myPatrolPoints;
     #endregion
 
     #region Components
-
+    [Space]
     [SerializeField] Transform cutsceneDestinationTarget;
-    [SerializeField] Transform[] patrolPoints;
     [Header("Diagonal 2 Points for NPC")]
     [Tooltip("For rectangle ABCD 1st point is A and 2nd point is D")]
     [SerializeField] Transform[] diagonalPoints;
@@ -401,12 +409,25 @@ public class Movement : MonoBehaviour
 
     private void PerfomPatrol()
     {
-        if (patrolPoints != null && !doInvestigation)
+        if (myPatrolPoints != null && !doInvestigation)
         {
             path.endReachedDistance = 0.01f;
 
-            if (Array.IndexOf(patrolPoints, aIDestinationSetter.target) < 0 || aIDestinationSetter.target == null)
+            bool isAvailable = true;
+            for (int i = 0; i < myPatrolPoints.Length; i++)
+            {
+                if (myPatrolPoints[i].point == aIDestinationSetter.target)
+                {
+                    isAvailable = true;
+                    break;
+                }
+                else
+                    isAvailable = false;
+
+            }
+            if (!isAvailable || aIDestinationSetter.target == null)
                 GotoNextPoint();
+            
             // Choose the next destination point when the enemy gets
             // close to the current one.                
             if (path.reachedDestination && Vector2.Distance(transform.position, aIDestinationSetter.target.position) < 0.01f)
@@ -414,23 +435,30 @@ public class Movement : MonoBehaviour
                 animator.SetFloat("Speed", 0);
                 //isCutsceneModeOn = true;
 
-                //wait for 1 sec brfore moving o next patrol point
-                if (patrolWaitTime <= 0)
+                //wait for 1 sec before moving o next patrol point while in selected points..
+
+                if (patrolPause)
                 {
-                    patrolWaitTime = 1;
-                    GotoNextPoint();
+                    if (patrolWaitTime <= 0)
+                    {
+                        patrolWaitTime = 1;
+                        GotoNextPoint();
+                    }
+                    else
+                    {
+                        patrolWaitTime -= Time.deltaTime;
+
+                    }
                 }
                 else
-                {
-                    patrolWaitTime -= Time.deltaTime;
-
-                }
+                    GotoNextPoint();
+                
             }
             else
                 animator.SetFloat("Speed", 1);
 
             // play move animation if more than one point..
-            if (patrolPoints.Length == 1)
+            if (myPatrolPoints.Length == 1)
                 animator.SetFloat("Speed", 0);
 
 
@@ -485,17 +513,23 @@ public class Movement : MonoBehaviour
     void GotoNextPoint()
     {
         // Returns if no points have been set up
-        if (patrolPoints.Length == 0)
+        if (myPatrolPoints.Length == 0)
             return;
 
 
         // Set the enemy to go to the currently selected destination.
-        aIDestinationSetter.target = patrolPoints[destPoint];
+        aIDestinationSetter.target = myPatrolPoints[destPoint].point;
+
+        //will enmey wait ?
+        if (myPatrolPoints[destPoint].willEnemyWait)
+            patrolPause = true;
+        else
+            patrolPause = false;
 
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
-        if (patrolPoints.Length > 1)
-            destPoint = (destPoint + 1) % patrolPoints.Length;
+        if (myPatrolPoints.Length > 1)
+            destPoint = (destPoint + 1) % myPatrolPoints.Length;
 
     }
 
