@@ -36,7 +36,8 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] GameObject archerPrefab;
     [SerializeField] float callGangRadius_archer;
     [SerializeField] float attackDuration_archer;
-    [SerializeField] float fov_archer;
+    [SerializeField] float fovAngleFront_archer;
+    [SerializeField] float fovAngleBack_archer;
     [SerializeField] float viewDistanceFront_archer;
     [SerializeField] float viewDistanceBack_archer;
     [SerializeField] float getPushedForce_archer;
@@ -46,7 +47,8 @@ public class CharacterManagement : MonoBehaviour
     [Header("missile thrower Section")]
     [SerializeField] GameObject MTPrefab;
     [SerializeField] float callGangRadius_MT;
-    [SerializeField] float fov_MT;
+    [SerializeField] float fovAngleFront_MT;
+    [SerializeField] float fovAngleBack_MT;
     [SerializeField] float viewDistanceFront_MT;
     [SerializeField] float viewDistanceBack_MT;
     [SerializeField] float attackDuration_MT;
@@ -57,7 +59,8 @@ public class CharacterManagement : MonoBehaviour
     [Header("Swordsman Section")]
     [SerializeField] GameObject swordsmanPrefab;
     [SerializeField] float callGangRadius_swordsman;
-    [SerializeField] float fov_swordsman;
+    [SerializeField] float fovAngleFront_swordsman;
+    [SerializeField] float fovAngleBack_swordsman;
     [SerializeField] float viewDistanceFront_swordsman;
     [SerializeField] float viewDistanceBack_swordsman;
     [SerializeField] float attackDuration_swordsman;
@@ -72,7 +75,8 @@ public class CharacterManagement : MonoBehaviour
     [Header("Charged enemy Section")]
     [SerializeField] GameObject chargedEnemyPrefab;
     [SerializeField] float callGangRadius_CE;
-    [SerializeField] float fov_CE;
+    [SerializeField] float fovAngleFront_CE;
+    [SerializeField] float fovAngleBack_CE;
     [SerializeField] float viewDistanceFront_CE;
     [SerializeField] float viewDistanceBack_CE;
     [SerializeField] float attackDuration_chargedEnemy;
@@ -135,7 +139,8 @@ public class CharacterManagement : MonoBehaviour
             archerPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_archer;
             archerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
             archerPrefab.GetComponent<Movement>().callGangRadius = callGangRadius_archer;
-            archerPrefab.GetComponent<Movement>().fov = fov_archer;
+            archerPrefab.GetComponent<Movement>().fovAngleFront = fovAngleFront_archer;
+            archerPrefab.GetComponent<Movement>().fovAngleBack = fovAngleBack_archer;
             archerPrefab.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_archer;
             archerPrefab.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_archer;
             archerPrefab.GetComponent<CombatManager>().maxHealth = health_archer;
@@ -152,7 +157,8 @@ public class CharacterManagement : MonoBehaviour
             MTPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_MT;
             MTPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_MT;
             MTPrefab.GetComponent<Movement>().callGangRadius = callGangRadius_MT;
-            MTPrefab.GetComponent<Movement>().fov = fov_MT;
+            MTPrefab.GetComponent<Movement>().fovAngleFront = fovAngleFront_MT;
+            MTPrefab.GetComponent<Movement>().fovAngleBack = fovAngleBack_MT;
             MTPrefab.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_MT;
             MTPrefab.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_MT;
             MTPrefab.GetComponent<CombatManager>().maxHealth = health_MT;
@@ -171,7 +177,8 @@ public class CharacterManagement : MonoBehaviour
                 s_man.GetComponent<AIPath>().maxAcceleration = movementSpeed_swordsman;
                 s_man.GetComponent<Movement>().nextAttackTime = attackDuration_swordsman;
                 s_man.GetComponent<Movement>().callGangRadius = callGangRadius_swordsman;
-                s_man.GetComponent<Movement>().fov = fov_swordsman;
+                s_man.GetComponent<Movement>().fovAngleFront = fovAngleFront_swordsman;
+                s_man.GetComponent<Movement>().fovAngleBack = fovAngleBack_swordsman;
                 s_man.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_swordsman;
                 s_man.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_swordsman;
                 s_man.GetComponent<Movement>().getPushedForce = getPushedForce_swordsman;
@@ -187,7 +194,8 @@ public class CharacterManagement : MonoBehaviour
         if (chargedEnemyPrefab != null)
         {
             chargedEnemyPrefab.GetComponent<Movement>().callGangRadius = callGangRadius_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().fov = attackDuration_chargedEnemy;
+            chargedEnemyPrefab.GetComponent<Movement>().fovAngleFront = fovAngleFront_CE;
+            chargedEnemyPrefab.GetComponent<Movement>().fovAngleBack = fovAngleBack_CE;
             chargedEnemyPrefab.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_CE;
             chargedEnemyPrefab.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_CE;
             chargedEnemyPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_chargedEnemy;

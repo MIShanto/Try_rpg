@@ -1633,6 +1633,58 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1673376008
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1673376010}
+  - component: {fileID: 1673376009}
+  m_Layer: 0
+  m_Name: Audio Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1673376009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673376008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96e08ed4656a2d246943a76be6800245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: test
+    clip: {fileID: 8300000, guid: c6bcae7275d74a944b2a5b05394c20c7, type: 3}
+    masterMixtureGroup: {fileID: 24300002, guid: 71d042d32d01dc441bc0a7f3912e5de2,
+      type: 2}
+    volume: 1
+    pinch: 1
+    loop: 0
+    source: {fileID: 0}
+--- !u!4 &1673376010
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673376008}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1713357001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2509,7 +2561,47 @@ PrefabInstance:
     - target: {fileID: 3621261064660041041, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
         type: 3}
       propertyPath: myPatrolPoints.Array.data[2].willEnemyWait
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621261064660041041, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
+        type: 3}
+      propertyPath: myPatrolPoints.Array.data[3].willEnemyWait
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621261064660041041, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
+        type: 3}
+      propertyPath: myPatrolPoints.Array.data[0].waitTime
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621261064660041041, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
+        type: 3}
+      propertyPath: myPatrolPoints.Array.data[1].waitTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621261064660041041, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
+        type: 3}
+      propertyPath: myPatrolPoints.Array.data[2].waitTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621261065156082756, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
+        type: 3}
+      propertyPath: slowdownDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621261065156082756, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
+        type: 3}
+      propertyPath: maxAcceleration
+      value: -2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621261065156082756, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
+        type: 3}
+      propertyPath: whenCloseToDestination
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621261065156082756, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
+        type: 3}
+      propertyPath: repathRate
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3621261065156082778, guid: 13847c3d98b7a1e49a21ad29cb78bcd0,
         type: 3}
@@ -2691,6 +2783,11 @@ PrefabInstance:
       objectReference: {fileID: 709603596}
     - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
         type: 3}
+      propertyPath: chargedEnemyPrefab
+      value: 
+      objectReference: {fileID: 1025649331}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
       propertyPath: arrowPrefab
       value: 
       objectReference: {fileID: 159335104}
@@ -2699,112 +2796,6 @@ PrefabInstance:
       propertyPath: missilePrefab
       value: 
       objectReference: {fileID: 6671407162098502612}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: distractibleObject
-      value: 
-      objectReference: {fileID: 2756107380769460280, guid: 7d07cd9630d6c1d44880e21f633071e0,
-        type: 3}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: waitDurationToThrowObject
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: fov_archer
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: viewDistanceFront_archer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: viewDistanceBack_archer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: fov_MT
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: viewDistanceFront_MT
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: viewDistanceBack_MT
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: fov_swordsman
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: viewDistanceFront_swordsman
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: viewDistanceBack_swordsman
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: fov_CE
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: viewDistanceFront_CE
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: viewDistanceBack_CE
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: callGangRadius_archer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: callGangRadius_MT
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: callGangRadius_swordsman
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: callGangRadius_CE
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: chargedEnemyPrefab
-      value: 
-      objectReference: {fileID: 1025649331}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: primaryRange
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
-        type: 3}
-      propertyPath: secondaryRange
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 5098450398515338324, guid: 81e8bea2d28795842925b2daabba5117,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2991,6 +2982,11 @@ PrefabInstance:
     - target: {fileID: 2094478337780873325, guid: 8b75925b06b33b3468d665e32847254c,
         type: 3}
       propertyPath: showGraphs
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094478337780873325, guid: 8b75925b06b33b3468d665e32847254c,
+        type: 3}
+      propertyPath: logPathResults
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5663518568025657178, guid: 8b75925b06b33b3468d665e32847254c,

@@ -49,7 +49,7 @@ public class Movement : MonoBehaviour
     public float callGangRadius, speedMultiplierDuringAttack, moveSpeedMultiplierDuringAttack = 1, nextAttackTime, attackIndex, getPushedForce,
                  dashSpeed, startDashTime, rollSpeed, startRollTime, waitTimeForThrow, knockSpeed, startKnockTime, chargedAttackSpeed, startAttackTime,
                  chargedAttackTime, chargedDistance, waitAfterAttackDuration, chargeAndLookoutArea, stamina, staminaDecreaseRate, speedFactor = 1,
-                 enemyHealingAmount, fov, viewDistanceBack, viewDistanceFront;
+                 enemyHealingAmount, fovAngleFront, fovAngleBack, viewDistanceBack, viewDistanceFront;
 
     #endregion
 
@@ -64,6 +64,7 @@ public class Movement : MonoBehaviour
     public class PatrolPoints
     {
         public bool willEnemyWait;
+        public float waitTime;
         public Transform point;
     }
     [Space] [SerializeField] PatrolPoints[] myPatrolPoints;
@@ -99,7 +100,8 @@ public class Movement : MonoBehaviour
     private void Start()
     {
         m_Fov = Instantiate(m_Fov, Vector3.zero, Quaternion.identity);
-        m_Fov.SetFoV(fov);
+        m_Fov.SetFoVFront(fovAngleFront);
+        m_Fov.SetFoVBack(fovAngleBack);
         m_Fov.SetFrontViewDistance(viewDistanceFront);
         m_Fov.SetBackViewDistance(viewDistanceBack);
         GetComponentsAtStart();
@@ -297,6 +299,7 @@ public class Movement : MonoBehaviour
                 //click to fire..
                 if (Input.GetMouseButtonDown(0))
                 {
+                    
                     myCombatManager.LaunchDistractibleObject(mousePos);
                     StartCoroutine(WaitForAnotherThrow(tmpMoveSpeed));
                 }
@@ -413,6 +416,7 @@ public class Movement : MonoBehaviour
         {
             path.endReachedDistance = 0.01f;
 
+            //check if target is in patrol point array or not  (start)
             bool isAvailable = true;
             for (int i = 0; i < myPatrolPoints.Length; i++)
             {
@@ -423,6 +427,7 @@ public class Movement : MonoBehaviour
                 }
                 else
                     isAvailable = false;
+            // (end)
 
             }
             if (!isAvailable || aIDestinationSetter.target == null)
@@ -441,7 +446,7 @@ public class Movement : MonoBehaviour
                 {
                     if (patrolWaitTime <= 0)
                     {
-                        patrolWaitTime = 1;
+                        //patrolWaitTime = 1;
                         GotoNextPoint();
                     }
                     else
@@ -525,6 +530,9 @@ public class Movement : MonoBehaviour
             patrolPause = true;
         else
             patrolPause = false;
+
+        //Duration of waiting
+        patrolWaitTime = myPatrolPoints[destPoint].waitTime;
 
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.

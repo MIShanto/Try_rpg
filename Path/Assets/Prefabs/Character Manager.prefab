@@ -44,12 +44,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 0}
-  movementSpeed_player: 5
   stamina: 1000
   staminaDecreaseRate: 20
   speedMultiplierDuringAttack: 0.5
   attackDuration_player: 0.25
   getPushedForce_player: 1000
+  waitDurationToThrowObject: 3
   dashDuration: 0.1
   dashVelocity: 50
   rollDuration: 0.1
@@ -61,18 +61,37 @@ MonoBehaviour:
   health_player: 300
   criticalHitProbability: 20
   playerSwordDamage: 35
+  distractibleObject: {fileID: 2756107380769460280, guid: 7d07cd9630d6c1d44880e21f633071e0,
+    type: 3}
+  primaryRange: 7
+  secondaryRange: 5
   archerPrefab: {fileID: 0}
+  callGangRadius_archer: 4
   attackDuration_archer: 1
+  fovAngleFront_archer: 90
+  fovAngleBack_archer: 120
+  viewDistanceFront_archer: 4
+  viewDistanceBack_archer: 2
   getPushedForce_archer: 1000
   movementSpeed_archer: 2
   health_archer: 100
   MTPrefab: {fileID: 7952596589723609999, guid: f39e663e9b41b994fbdb8e63cca78589,
     type: 3}
+  callGangRadius_MT: 4
+  fovAngleFront_MT: 0
+  fovAngleBack_MT: 0
+  viewDistanceFront_MT: 4
+  viewDistanceBack_MT: 2
   attackDuration_MT: 1
   getPushedForce_MT: 1000
   movementSpeed_MT: 2
   health_MT: 130
   swordsmanPrefab: {fileID: 0}
+  callGangRadius_swordsman: 4
+  fovAngleFront_swordsman: 0
+  fovAngleBack_swordsman: 0
+  viewDistanceFront_swordsman: 4
+  viewDistanceBack_swordsman: 2
   attackDuration_swordsman: 0.25
   getPushedForce_swordsman: 1000
   movementSpeed_swordsman: 2
@@ -80,6 +99,11 @@ MonoBehaviour:
   healingAmount: 10
   swordDamage: 20
   chargedEnemyPrefab: {fileID: 0}
+  callGangRadius_CE: 4
+  fovAngleFront_CE: 0
+  fovAngleBack_CE: 0
+  viewDistanceFront_CE: 4
+  viewDistanceBack_CE: 2
   attackDuration_chargedEnemy: 0.25
   getPushedForce_CE: 0
   chargedAttackDuration_enemy: 0.1

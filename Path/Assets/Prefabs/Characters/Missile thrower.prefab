@@ -466,7 +466,7 @@ MonoBehaviour:
   version: 2
   radius: 0.7
   height: 1
-  repathRate: 0.5
+  repathRate: 0
   canSearch: 1
   canMove: 1
   maxSpeed: 1.3
@@ -480,7 +480,7 @@ MonoBehaviour:
   targetCompatibility: {fileID: 0}
   maxAcceleration: -2.5
   rotationSpeed: 360
-  slowdownDistance: 0.6
+  slowdownDistance: 0
   pickNextWaypointDist: 1.3
   endReachedDistance: 10
   alwaysDrawGizmos: 0
@@ -652,14 +652,13 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256
+  myPatrolPoints: []
   cutsceneDestinationTarget: {fileID: 0}
-  patrolPoints:
-  - {fileID: 0}
-  - {fileID: 0}
   diagonalPoints:
   - {fileID: 0}
   - {fileID: 0}
   player: {fileID: 0}
+  distractionObjPosition: {fileID: 0}
   path: {fileID: 0}
   m_Fov: {fileID: 6840031424448009175, guid: 42511d4cf2c4619478e59143fd2d2629, type: 3}
 --- !u!114 &7952596589723609993
