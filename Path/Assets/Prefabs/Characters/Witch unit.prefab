@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2051667850926170405}
   m_Layer: 0
   m_Name: Witch unit
-  m_TagString: Untagged
+  m_TagString: SwordsmanUnit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -70,7 +70,7 @@ PrefabInstance:
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
-      value: Witch (3)
+      value: Swordman (3)
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -125,6 +125,11 @@ PrefabInstance:
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: patrolPoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: diagonalPoints.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
@@ -301,7 +306,7 @@ PrefabInstance:
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
-      value: Witch (2)
+      value: Swordman (2)
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -346,6 +351,11 @@ PrefabInstance:
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: patrolPoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: diagonalPoints.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
@@ -517,7 +527,7 @@ PrefabInstance:
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
-      value: Witch (1)
+      value: Swordman (1)
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -572,6 +582,11 @@ PrefabInstance:
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: patrolPoints.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: diagonalPoints.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966907, guid: 4fe65435d4c2c0249ba98317eb8b571e,

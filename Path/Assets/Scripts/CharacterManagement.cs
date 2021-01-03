@@ -30,6 +30,7 @@ public class CharacterManagement : MonoBehaviour
     [Header("Distraction Object Section")]
     [SerializeField] GameObject distractibleObject;
     [SerializeField] float primaryRange, secondaryRange;
+    GameObject[] m_players;
 
 
     [Header("Archer Section")]
@@ -43,6 +44,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float getPushedForce_archer;
     [SerializeField] float movementSpeed_archer;
     [SerializeField] float health_archer;
+    GameObject[] m_archers;
 
     [Header("missile thrower Section")]
     [SerializeField] GameObject MTPrefab;
@@ -55,9 +57,10 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float getPushedForce_MT;
     [SerializeField] float movementSpeed_MT;
     [SerializeField] float health_MT;
+    GameObject[] m_missileThrowers;
 
     [Header("Swordsman Section")]
-    [SerializeField] GameObject swordsmanPrefab;
+    [SerializeField] GameObject SUnitPrefab;
     [SerializeField] float callGangRadius_swordsman;
     [SerializeField] float fovAngleFront_swordsman;
     [SerializeField] float fovAngleBack_swordsman;
@@ -70,10 +73,11 @@ public class CharacterManagement : MonoBehaviour
     [Tooltip("Applicable for healer only")]
     [SerializeField] float healingAmount;
     [SerializeField] int swordDamage;
+    GameObject[] m_swordsmans;
 
 
     [Header("Charged enemy Section")]
-    [SerializeField] GameObject chargedEnemyPrefab;
+    [SerializeField] GameObject CEPrefab;
     [SerializeField] float callGangRadius_CE;
     [SerializeField] float fovAngleFront_CE;
     [SerializeField] float fovAngleBack_CE;
@@ -88,6 +92,7 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float lookingRangeDuringCharge;
     [SerializeField] float movementSpeed_CE;
     [SerializeField] float health_CE;
+    GameObject[] m_chargedEnemies;
     //charged enemy bug fix korte hobe...
 
     [Header("poison damage")]
@@ -108,71 +113,83 @@ public class CharacterManagement : MonoBehaviour
     private void Awake()
     {
         #region player
-        if (playerPrefab != null)
+
+        if (m_players == null)
+            m_players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject m_player in m_players)
         {
-            playerPrefab.GetComponent<Movement>().stamina = stamina;
-            playerPrefab.GetComponent<Movement>().staminaDecreaseRate = staminaDecreaseRate;
-            playerPrefab.GetComponent<Movement>().speedMultiplierDuringAttack = speedMultiplierDuringAttack;
-            playerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_player;
-            playerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_player;
-            playerPrefab.GetComponent<Movement>().waitTimeForThrow = waitDurationToThrowObject;
-            playerPrefab.GetComponent<Movement>().startDashTime = dashDuration;
-            playerPrefab.GetComponent<Movement>().dashSpeed = dashVelocity;
-            playerPrefab.GetComponent<Movement>().startRollTime = rollDuration;
-            playerPrefab.GetComponent<Movement>().rollSpeed = rollVelocity;
-            playerPrefab.GetComponent<Movement>().startKnockTime = knockDuration;
-            playerPrefab.GetComponent<Movement>().knockSpeed = knockVelocity;
-            playerPrefab.GetComponent<Movement>().startAttackTime = chargedAttackDuration_player;
-            playerPrefab.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_player;
-            playerPrefab.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
-            playerPrefab.GetComponent<CombatManager>().maxHealth = health_player;
-            playerPrefab.GetComponent<CombatManager>().distractibleObject = distractibleObject;
-
-
+            m_player.GetComponent<Movement>().stamina = stamina;
+            m_player.GetComponent<Movement>().staminaDecreaseRate = staminaDecreaseRate;
+            m_player.GetComponent<Movement>().speedMultiplierDuringAttack = speedMultiplierDuringAttack;
+            m_player.GetComponent<Movement>().nextAttackTime = attackDuration_player;
+            m_player.GetComponent<Movement>().getPushedForce = getPushedForce_player;
+            m_player.GetComponent<Movement>().waitTimeForThrow = waitDurationToThrowObject;
+            m_player.GetComponent<Movement>().startDashTime = dashDuration;
+            m_player.GetComponent<Movement>().dashSpeed = dashVelocity;
+            m_player.GetComponent<Movement>().startRollTime = rollDuration;
+            m_player.GetComponent<Movement>().rollSpeed = rollVelocity;
+            m_player.GetComponent<Movement>().startKnockTime = knockDuration;
+            m_player.GetComponent<Movement>().knockSpeed = knockVelocity;
+            m_player.GetComponent<Movement>().startAttackTime = chargedAttackDuration_player;
+            m_player.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_player;
+            m_player.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
+            m_player.GetComponent<CombatManager>().maxHealth = health_player;
+            m_player.GetComponent<CombatManager>().distractibleObject = distractibleObject;
         }
 
         #endregion
 
         #region archer
-        if (archerPrefab != null)
-        {
-            archerPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_archer;
-            archerPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
-            archerPrefab.GetComponent<Movement>().callGangRadius = callGangRadius_archer;
-            archerPrefab.GetComponent<Movement>().fovAngleFront = fovAngleFront_archer;
-            archerPrefab.GetComponent<Movement>().fovAngleBack = fovAngleBack_archer;
-            archerPrefab.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_archer;
-            archerPrefab.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_archer;
-            archerPrefab.GetComponent<CombatManager>().maxHealth = health_archer;
-            archerPrefab.GetComponent<CombatManager>().arrowFlightTime = flightTime;
-            archerPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_archer;
-        }
 
+        if (m_archers == null)
+            m_archers = GameObject.FindGameObjectsWithTag("Archer");
+
+        foreach (GameObject m_archer in m_archers)
+        {
+            m_archer.GetComponent<AIPath>().maxAcceleration = movementSpeed_archer;
+            m_archer.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
+            m_archer.GetComponent<Movement>().callGangRadius = callGangRadius_archer;
+            m_archer.GetComponent<Movement>().fovAngleFront = fovAngleFront_archer;
+            m_archer.GetComponent<Movement>().fovAngleBack = fovAngleBack_archer;
+            m_archer.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_archer;
+            m_archer.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_archer;
+            m_archer.GetComponent<CombatManager>().maxHealth = health_archer;
+            m_archer.GetComponent<CombatManager>().arrowFlightTime = flightTime;
+            m_archer.GetComponent<Movement>().getPushedForce = getPushedForce_archer;
+        }
 
         #endregion
 
         #region missile thrower
-        if (MTPrefab != null)
-        {
-            MTPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_MT;
-            MTPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_MT;
-            MTPrefab.GetComponent<Movement>().callGangRadius = callGangRadius_MT;
-            MTPrefab.GetComponent<Movement>().fovAngleFront = fovAngleFront_MT;
-            MTPrefab.GetComponent<Movement>().fovAngleBack = fovAngleBack_MT;
-            MTPrefab.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_MT;
-            MTPrefab.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_MT;
-            MTPrefab.GetComponent<CombatManager>().maxHealth = health_MT;
-            MTPrefab.GetComponent<CombatManager>().missileLimit = missileLimit;
-            MTPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_MT;
-        }
 
+        if(m_missileThrowers == null)
+            m_missileThrowers = GameObject.FindGameObjectsWithTag("MissileThrower");
+
+        foreach (GameObject m_missileThrower in m_missileThrowers)
+        {
+            m_missileThrower.GetComponent<AIPath>().maxAcceleration = movementSpeed_MT;
+            m_missileThrower.GetComponent<Movement>().nextAttackTime = attackDuration_MT;
+            m_missileThrower.GetComponent<Movement>().callGangRadius = callGangRadius_MT;
+            m_missileThrower.GetComponent<Movement>().fovAngleFront = fovAngleFront_MT;
+            m_missileThrower.GetComponent<Movement>().fovAngleBack = fovAngleBack_MT;
+            m_missileThrower.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_MT;
+            m_missileThrower.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_MT;
+            m_missileThrower.GetComponent<CombatManager>().maxHealth = health_MT;
+            m_missileThrower.GetComponent<CombatManager>().missileLimit = missileLimit;
+            m_missileThrower.GetComponent<Movement>().getPushedForce = getPushedForce_MT;
+        }
 
         #endregion
 
         #region sworsman
-        if (swordsmanPrefab != null)
+
+        if (m_swordsmans == null)
+            m_swordsmans = GameObject.FindGameObjectsWithTag("SwordsmanUnit");
+
+        foreach (GameObject m_swordsman in m_swordsmans)
         {
-            foreach (Transform s_man in swordsmanPrefab.transform)
+            foreach (Transform s_man in m_swordsman.transform)
             {
                 s_man.GetComponent<AIPath>().maxAcceleration = movementSpeed_swordsman;
                 s_man.GetComponent<Movement>().nextAttackTime = attackDuration_swordsman;
@@ -191,23 +208,27 @@ public class CharacterManagement : MonoBehaviour
         #endregion
 
         #region chargedEnemy
-        if (chargedEnemyPrefab != null)
+
+        if (m_chargedEnemies == null)
+            m_chargedEnemies = GameObject.FindGameObjectsWithTag("ChargedEnemy");
+
+        foreach (GameObject m_chargedEnemie in m_chargedEnemies)
         {
-            chargedEnemyPrefab.GetComponent<Movement>().callGangRadius = callGangRadius_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().fovAngleFront = fovAngleFront_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().fovAngleBack = fovAngleBack_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().nextAttackTime = attackDuration_chargedEnemy;
-            chargedEnemyPrefab.GetComponent<Movement>().getPushedForce = getPushedForce_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().startAttackTime = chargedAttackDuration_enemy;
-            chargedEnemyPrefab.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_enemy;
-            chargedEnemyPrefab.GetComponent<Movement>().chargedDistance = chargedAttackDistance_enemy;
-            chargedEnemyPrefab.GetComponent<Movement>().waitAfterAttackDuration = waitAfterAttackDuration;
-            chargedEnemyPrefab.GetComponent<AIPath>().maxAcceleration = movementSpeed_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().chargeAndLookoutArea = lookingRangeDuringCharge;
-            chargedEnemyPrefab.GetComponent<CombatManager>().maxHealth = health_CE;
-            chargedEnemyPrefab.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
+            m_chargedEnemie.GetComponent<Movement>().callGangRadius = callGangRadius_CE;
+            m_chargedEnemie.GetComponent<Movement>().fovAngleFront = fovAngleFront_CE;
+            m_chargedEnemie.GetComponent<Movement>().fovAngleBack = fovAngleBack_CE;
+            m_chargedEnemie.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_CE;
+            m_chargedEnemie.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_CE;
+            m_chargedEnemie.GetComponent<Movement>().nextAttackTime = attackDuration_chargedEnemy;
+            m_chargedEnemie.GetComponent<Movement>().getPushedForce = getPushedForce_CE;
+            m_chargedEnemie.GetComponent<Movement>().startAttackTime = chargedAttackDuration_enemy;
+            m_chargedEnemie.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_enemy;
+            m_chargedEnemie.GetComponent<Movement>().chargedDistance = chargedAttackDistance_enemy;
+            m_chargedEnemie.GetComponent<Movement>().waitAfterAttackDuration = waitAfterAttackDuration;
+            m_chargedEnemie.GetComponent<AIPath>().maxAcceleration = movementSpeed_CE;
+            m_chargedEnemie.GetComponent<Movement>().chargeAndLookoutArea = lookingRangeDuringCharge;
+            m_chargedEnemie.GetComponent<CombatManager>().maxHealth = health_CE;
+            m_chargedEnemie.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
 
             if (lookingRangeDuringCharge > chargedAttackDistance_enemy)
             {
@@ -272,8 +293,8 @@ public class CharacterManagement : MonoBehaviour
     {
         Gizmos.DrawWireSphere(archerPrefab.transform.position, callGangRadius_archer);
         Gizmos.DrawWireSphere(MTPrefab.transform.position, callGangRadius_MT);
-        Gizmos.DrawWireSphere(swordsmanPrefab.transform.position, callGangRadius_swordsman);
-        Gizmos.DrawWireSphere(chargedEnemyPrefab.transform.position, callGangRadius_CE);
+        Gizmos.DrawWireSphere(SUnitPrefab.transform.position, callGangRadius_swordsman);
+        Gizmos.DrawWireSphere(CEPrefab.transform.position, callGangRadius_CE);
         Gizmos.DrawWireSphere(distractibleObject.transform.position, primaryRange);
         Gizmos.DrawWireSphere(distractibleObject.transform.position, secondaryRange);
     }
