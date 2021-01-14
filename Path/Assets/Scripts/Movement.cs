@@ -34,12 +34,12 @@ public class Movement : MonoBehaviour
 
     private int[] hitProbTable;
     private int destPoint = 0, total, cnt = 0; // for patrol enemies.. // total for critical hit
-    private bool isReadyToGetNPCRandomDirection = true, waiting = false, enemyPlayerDistanceAdjustment = false, isReadyToSavePreviousState,
+    private bool isReadyToGetNPCRandomDirection = true, waiting = false, enemyPlayerDistanceAdjustment = false, isReadyToSavePreviousState, cutsceneDestReached,
                  isReadyToThrow = true, patrolPause; // waiting is for charged attack waiting..
     private float tmpMoveSpeed, moveSpeed, angle = 0, npcWaitTime, mainEndDistance, mainSlowDownDistance, patrolWaitTime, waitBeforeGoingToDisObject,
                   waitAfterGoingToDisObject, dashTime, rollTime, knockTime; // mainEndDistance is the distance fixed at the start via inspector.. // movespeed used for player animation..
 
-    [SerializeField] bool isCutsceneModeOn, cutsceneFixedFaceMode;
+    bool isCutsceneModeOn, cutsceneFixedFaceMode;
     [Tooltip("NPC wait time at the self position after destination reached")]
     [SerializeField] float npcStartWaitTime; // how much seconds npc will wait..
 
@@ -55,7 +55,7 @@ public class Movement : MonoBehaviour
 
     #region Non Primitives
 
-    [HideInInspector] public Vector2 direction, myFacingDirection, otherCharacterFacingDirection, targetForDirection; // target for enemy direction;
+    [HideInInspector] public Vector2 direction, animationdirection, myFacingDirection, otherCharacterFacingDirection, targetForDirection; // target for enemy direction;
     [SerializeField] LayerMask obstacleLayer;
     Vector3 PrevLocation; // character previous location on previous frame (used for enemy animation direction)..
 
@@ -72,7 +72,7 @@ public class Movement : MonoBehaviour
 
     #region Components
     [Space]
-    [SerializeField] Transform cutsceneDestinationTarget;
+    Transform cutsceneDestinationTarget;
     [Header("Diagonal 2 Points for NPC")]
     [Tooltip("For rectangle ABCD 1st point is A and 2nd point is D")]
     [SerializeField] Transform[] diagonalPoints;
@@ -171,7 +171,7 @@ public class Movement : MonoBehaviour
             }
             else
             {
-                CutsceneMode(cutsceneFixedFaceMode, cutsceneDestinationTarget);
+                StartCutscene(cutsceneFixedFaceMode, cutsceneDestinationTarget);
             }
 
         }
@@ -182,6 +182,7 @@ public class Movement : MonoBehaviour
 
 
     }
+
 
     private void FixedUpdate()
     {
@@ -755,62 +756,65 @@ public class Movement : MonoBehaviour
     {
         if (character == characters.player)
         {
-
-            animator.SetFloat("Speed", moveSpeed);
+            if (!isCutsceneModeOn)
+                animator.SetFloat("Speed", moveSpeed);
+            
         }
 
-        else
-        {
+        animationdirection = transform.position - PrevLocation;
 
-            direction = transform.position - PrevLocation;
+        if (cutsceneDestReached)
+            animationdirection *= -1f;
+
+        if(!isCutsceneModeOn)
             PrevLocation = transform.position;
 
-            direction.Normalize();
+        animationdirection.Normalize();
 
-            // for making animation not to overlap
-            if (direction.x > 0)
+        // for making animation not to overlap
+        if (animationdirection.x > 0)
+        {
+            if (animationdirection.y > 0.5f)
             {
-                if (direction.y > 0.5f)
-                {
-                    direction.y = 1;
-                    direction.x = 0;
-                }
-                else if (direction.y < -0.5f)
-                {
-                    direction.y = -1;
-                    direction.x = 0;
-                }
-                else
-                {
-                    direction.y = 0;
-                    direction.x = 1;
-                }
+                animationdirection.y = 1;
+                animationdirection.x = 0;
             }
-            else if (direction.x < 0)
+            else if (animationdirection.y < -0.5f)
             {
-                if (direction.y > 0.5f)
-                {
-                    direction.y = 1;
-                    direction.x = 0;
-                }
-                else if (direction.y < -0.5f)
-                {
-                    direction.y = -1;
-                    direction.x = 0;
-                }
-                else
-                {
-                    direction.y = 0;
-                    direction.x = -1;
-                }
+                animationdirection.y = -1;
+                animationdirection.x = 0;
+            }
+            else
+            {
+                animationdirection.y = 0;
+                animationdirection.x = 1;
+            }
+        }
+        else if (animationdirection.x < 0)
+        {
+            if (animationdirection.y > 0.5f)
+            {
+                animationdirection.y = 1;
+                animationdirection.x = 0;
+            }
+            else if (animationdirection.y < -0.5f)
+            {
+                animationdirection.y = -1;
+                animationdirection.x = 0;
+            }
+            else
+            {
+                animationdirection.y = 0;
+                animationdirection.x = -1;
             }
         }
 
-        if (direction != Vector2.zero)
+
+        if (animationdirection != Vector2.zero)
         {
-            animator.SetFloat("Horizontal", direction.x);
-            animator.SetFloat("Vertical", direction.y);
-            myFacingDirection = direction;
+            animator.SetFloat("Horizontal", animationdirection.x);
+            animator.SetFloat("Vertical", animationdirection.y);
+            myFacingDirection = animationdirection;
 
         }
 
@@ -1047,7 +1051,24 @@ public class Movement : MonoBehaviour
     /// </summary>
     /// <param name="fixedFaceMode"></param>
     /// <param name="aiTarget"></param>
-    void CutsceneMode(bool fixedFaceMode, Transform aiTarget)
+    public void CutsceneModeSettings(bool turnOn, bool fixedFaceMode, Transform aiTarg)
+    {
+        if (!turnOn)
+            cutsceneDestReached = false;
+        else
+            cutsceneDestReached = true;
+
+        isCutsceneModeOn = turnOn;
+
+        cutsceneFixedFaceMode = fixedFaceMode;
+
+        cutsceneDestinationTarget = aiTarg;
+
+
+
+    }
+
+    void StartCutscene(bool fixedFaceMode, Transform aiTarget)
     {
         //disable fov..
         m_Fov.gameObject.SetActive(false);
@@ -1058,12 +1079,13 @@ public class Movement : MonoBehaviour
             aIDestinationSetter.enabled = true;
             seeker.enabled = true;
         }
-        path.endReachedDistance = 0.5f;
+        path.endReachedDistance = 0.01f;
 
         aIDestinationSetter.target = aiTarget;
 
         if (path.reachedDestination)
         {
+            
             animator.SetFloat("Speed", 0f);
 
             if (!fixedFaceMode)
@@ -1076,17 +1098,20 @@ public class Movement : MonoBehaviour
                 float x = Mathf.Cos(angle) * radius;
                 float y = Mathf.Sin(angle) * radius;
 
-                targetForDirection = new Vector2(x, y);
+                PrevLocation = new Vector2(x, y);
 
             }
             else
             {
-                targetForDirection = player.position;
+                cutsceneDestReached = true;
+                PrevLocation = player.position;
+
             }
 
         }
         else
         {
+            cutsceneDestReached = false;
             MoveEnemy();
             targetForDirection = aiTarget.position;
         }
