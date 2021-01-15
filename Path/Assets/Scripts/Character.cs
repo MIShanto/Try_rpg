@@ -11,7 +11,7 @@ public class Character : MonoBehaviour
     {
        /* if (Input.GetKeyDown(KeyCode.L))
         {
-            m.CutsceneModeSettings(true, true, t);
+            m.CutsceneModeSettings(true, false, t);
         }
         if (Input.GetKeyDown(KeyCode.K))
         {

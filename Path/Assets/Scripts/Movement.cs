@@ -34,7 +34,7 @@ public class Movement : MonoBehaviour
 
     private int[] hitProbTable;
     private int destPoint = 0, total, cnt = 0; // for patrol enemies.. // total for critical hit
-    private bool isReadyToGetNPCRandomDirection = true, waiting = false, enemyPlayerDistanceAdjustment = false, isReadyToSavePreviousState, cutsceneDestReached,
+    private bool isReadyToGetNPCRandomDirection = true, waiting = false, enemyPlayerDistanceAdjustment = false, isReadyToSavePreviousState,
                  isReadyToThrow = true, patrolPause; // waiting is for charged attack waiting..
     private float tmpMoveSpeed, moveSpeed, angle = 0, npcWaitTime, mainEndDistance, mainSlowDownDistance, patrolWaitTime, waitBeforeGoingToDisObject,
                   waitAfterGoingToDisObject, dashTime, rollTime, knockTime; // mainEndDistance is the distance fixed at the start via inspector.. // movespeed used for player animation..
@@ -55,7 +55,7 @@ public class Movement : MonoBehaviour
 
     #region Non Primitives
 
-    [HideInInspector] public Vector2 direction, animationdirection, myFacingDirection, otherCharacterFacingDirection, targetForDirection; // target for enemy direction;
+    [HideInInspector] public Vector2 direction, animation_direction, myFacingDirection, otherCharacterFacingDirection, targetForDirection; // target for enemy direction;
     [SerializeField] LayerMask obstacleLayer;
     Vector3 PrevLocation; // character previous location on previous frame (used for enemy animation direction)..
 
@@ -107,7 +107,7 @@ public class Movement : MonoBehaviour
         GetComponentsAtStart();
 
         targetForDirection_Transform = new GameObject().transform;
-
+        
         player = (GameObject.FindGameObjectWithTag("Player")).transform;
 
         //previousCharacter = character;
@@ -550,6 +550,8 @@ public class Movement : MonoBehaviour
     {
         aIDestinationSetter.target = player;
         path.endReachedDistance = mainEndDistance;
+        targetForDirection = aIDestinationSetter.target.position;
+
 
         //if destination reached enemy will play attack animation otherwise play move animation
         if (!path.reachedDestination && !player.GetComponent<CombatManager>().isDead)
@@ -754,73 +756,103 @@ public class Movement : MonoBehaviour
     /// </summary>
     private void AnimateMovement()
     {
-        if (character == characters.player)
+       
+        if(aIDestinationSetter.target!=null  && path.enabled && !path.reachedDestination && Vector2.Distance(transform.position, aIDestinationSetter.target.position) > 0.01f)
         {
-            if (!isCutsceneModeOn)
-                animator.SetFloat("Speed", moveSpeed);
-            
-        }
+            Debug.LogError(0);
+            animation_direction = transform.position - PrevLocation;
 
-        animationdirection = transform.position - PrevLocation;
-
-        if (cutsceneDestReached)
-            animationdirection *= -1f;
-
-        if(!isCutsceneModeOn)
             PrevLocation = transform.position;
 
-        animationdirection.Normalize();
+            animation_direction.Normalize();
 
-        // for making animation not to overlap
-        if (animationdirection.x > 0)
-        {
-            if (animationdirection.y > 0.5f)
-            {
-                animationdirection.y = 1;
-                animationdirection.x = 0;
-            }
-            else if (animationdirection.y < -0.5f)
-            {
-                animationdirection.y = -1;
-                animationdirection.x = 0;
-            }
-            else
-            {
-                animationdirection.y = 0;
-                animationdirection.x = 1;
-            }
-        }
-        else if (animationdirection.x < 0)
-        {
-            if (animationdirection.y > 0.5f)
-            {
-                animationdirection.y = 1;
-                animationdirection.x = 0;
-            }
-            else if (animationdirection.y < -0.5f)
-            {
-                animationdirection.y = -1;
-                animationdirection.x = 0;
-            }
-            else
-            {
-                animationdirection.y = 0;
-                animationdirection.x = -1;
-            }
-        }
+            AnimationOverlappingIssueHandler();
 
+            if (animation_direction != Vector2.zero)
+            {
+                animator.SetFloat("Horizontal", animation_direction.x);
+                animator.SetFloat("Vertical", animation_direction.y);
+                myFacingDirection = animation_direction;
 
-        if (animationdirection != Vector2.zero)
-        {
-            animator.SetFloat("Horizontal", animationdirection.x);
-            animator.SetFloat("Vertical", animationdirection.y);
-            myFacingDirection = animationdirection;
+            }
 
         }
+        else if(aIDestinationSetter.target!=null  && path.enabled && path.reachedDestination )
+        {
+            Debug.LogError(1);
 
+            animation_direction = targetForDirection - (Vector2)transform.position;
 
+            animation_direction.Normalize();
+
+            AnimationOverlappingIssueHandler();
+
+            if (animation_direction != Vector2.zero)
+            {
+                animator.SetFloat("Horizontal", animation_direction.x);
+                animator.SetFloat("Vertical", animation_direction.y);
+                myFacingDirection = animation_direction;
+
+            }
+
+        }
+        else
+        {
+            animator.SetFloat("Speed", moveSpeed);
+
+            if (direction != Vector2.zero)
+            {
+                animator.SetFloat("Horizontal", direction.x);
+                animator.SetFloat("Vertical", direction.y);
+                myFacingDirection = direction;
+
+            }
+
+        }
 
     }
+
+    private void AnimationOverlappingIssueHandler()
+    {
+        // for making animation not to overlap
+        if (animation_direction.x > 0)
+        {
+            if (animation_direction.y > 0.5f)
+            {
+                animation_direction.y = 1;
+                animation_direction.x = 0;
+            }
+            else if (animation_direction.y < -0.5f)
+            {
+                animation_direction.y = -1;
+                animation_direction.x = 0;
+            }
+            else
+            {
+                animation_direction.y = 0;
+                animation_direction.x = 1;
+            }
+        }
+        else if (animation_direction.x < 0)
+        {
+            if (animation_direction.y > 0.5f)
+            {
+                animation_direction.y = 1;
+                animation_direction.x = 0;
+            }
+            else if (animation_direction.y < -0.5f)
+            {
+                animation_direction.y = -1;
+                animation_direction.x = 0;
+            }
+            else
+            {
+                animation_direction.y = 0;
+                animation_direction.x = -1;
+            }
+        }
+    }
+
     /// <summary>
     /// This method completes the dash in the last facing direction.
     /// </summary>
@@ -1053,10 +1085,6 @@ public class Movement : MonoBehaviour
     /// <param name="aiTarget"></param>
     public void CutsceneModeSettings(bool turnOn, bool fixedFaceMode, Transform aiTarg)
     {
-        if (!turnOn)
-            cutsceneDestReached = false;
-        else
-            cutsceneDestReached = true;
 
         isCutsceneModeOn = turnOn;
 
@@ -1098,22 +1126,20 @@ public class Movement : MonoBehaviour
                 float x = Mathf.Cos(angle) * radius;
                 float y = Mathf.Sin(angle) * radius;
 
-                PrevLocation = new Vector2(x, y);
+                targetForDirection = new Vector2(x, y);
 
             }
             else
             {
-                cutsceneDestReached = true;
-                PrevLocation = player.position;
+                targetForDirection = player.position;
 
             }
 
         }
         else
         {
-            cutsceneDestReached = false;
             MoveEnemy();
-            targetForDirection = aiTarget.position;
+            //targetForDirection = aiTarget.position;
         }
 
     }
