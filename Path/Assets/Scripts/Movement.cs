@@ -759,7 +759,7 @@ public class Movement : MonoBehaviour
        
         if(aIDestinationSetter.target!=null  && path.enabled && !path.reachedDestination && Vector2.Distance(transform.position, aIDestinationSetter.target.position) > 0.01f)
         {
-            Debug.LogError(0);
+
             animation_direction = transform.position - PrevLocation;
 
             PrevLocation = transform.position;
@@ -779,7 +779,6 @@ public class Movement : MonoBehaviour
         }
         else if(aIDestinationSetter.target!=null  && path.enabled && path.reachedDestination )
         {
-            Debug.LogError(1);
 
             animation_direction = targetForDirection - (Vector2)transform.position;
 

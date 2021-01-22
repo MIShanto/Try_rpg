@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2051667850926170402}
   - component: {fileID: 2051667850926170405}
   m_Layer: 0
-  m_Name: Witch unit
+  m_Name: Swordsman unit
   m_TagString: SwordsmanUnit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
