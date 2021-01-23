@@ -188,6 +188,16 @@ public class Movement : MonoBehaviour
     {
         if (!myCombatManager.isDead)
         {
+            // ignore auto collision if AI is on..
+            if (path.enabled)
+            {
+                Physics2D.IgnoreLayerCollision(gameObject.layer, 8, true); // get curent layer, 8 = obstacle layer
+            }
+            else
+            {
+                Physics2D.IgnoreLayerCollision(gameObject.layer, 8, false);
+            }
+
             if (!isCutsceneModeOn)
             {
 
