@@ -268,7 +268,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   myPatrolPoints: []
-  diagonalPoints: []
+  diagonalPoints:
+  - {fileID: 0}
+  - {fileID: 0}
   player: {fileID: 0}
   distractionObjPosition: {fileID: 0}
   path: {fileID: 0}
@@ -384,7 +386,13 @@ MonoBehaviour:
   maxHealth: 999999
   currentHealth: 0
   chargedDamage: 50
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 1085138690408731758}
+  alertBar: {fileID: 534384565735692162}
+  currentValue_AlertBar: 0
+  alertIncreaseRate: 0
+  alertDecreaseRate: 0
+  isAlertIncreasing: 0
+  isAlertDecreasing: 0
   isDead: 0
   isAttacking: 0
   isBlocked: 0

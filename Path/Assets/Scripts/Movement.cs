@@ -32,14 +32,15 @@ public class Movement : MonoBehaviour
     //[HideInInspector] public float playerInteractionDistance; //TODO:..
     public float characterMoveSpeed; // used for player speed
 
+    private string animation_1_for_move_with_AI, animation_2_for_move_with_AI;
     private int[] hitProbTable;
-    private int destPoint = 0, total, cnt = 0; // for patrol enemies.. // total for critical hit
+    private int destPoint = 0, total, cnt = 0, counterForAnim2InMoveWithAI; // for patrol enemies.. // total for critical hit
     private bool isReadyToGetNPCRandomDirection = true, waiting = false, enemyPlayerDistanceAdjustment = false, isReadyToSavePreviousState,
                  isReadyToThrow = true, patrolPause; // waiting is for charged attack waiting..
     private float tmpMoveSpeed, moveSpeed, angle = 0, npcWaitTime, mainEndDistance, mainSlowDownDistance, patrolWaitTime, waitBeforeGoingToDisObject,
                   waitAfterGoingToDisObject, dashTime, rollTime, knockTime; // mainEndDistance is the distance fixed at the start via inspector.. // movespeed used for player animation..
 
-    bool isCutsceneModeOn, cutsceneFixedFaceMode;
+    bool isCutsceneModeOn, cutsceneFixedFaceMode, isMoveWithAIOn;
     [Tooltip("NPC wait time at the self position after destination reached")]
     [SerializeField] float npcStartWaitTime; // how much seconds npc will wait..
 
@@ -72,7 +73,7 @@ public class Movement : MonoBehaviour
 
     #region Components
     [Space]
-    Transform cutsceneDestinationTarget;
+    Transform cutsceneDestinationTarget, moveWithAIDestinationTarget;
     [Header("Diagonal 2 Points for NPC")]
     [Tooltip("For rectangle ABCD 1st point is A and 2nd point is D")]
     [SerializeField] Transform[] diagonalPoints;
@@ -148,7 +149,7 @@ public class Movement : MonoBehaviour
             if (isCharacterControllable || Vector2.Distance(transform.position, player.transform.position) <= chargeAndLookoutArea)
                 AnimateMovement();
 
-            if (!isCutsceneModeOn)
+            if (!isCutsceneModeOn && !isMoveWithAIOn)
             {
 
                 if (character == characters.player)
@@ -169,13 +170,17 @@ public class Movement : MonoBehaviour
                 }
 
             }
-            else
+            else if(isCutsceneModeOn)
             {
                 StartCutscene(cutsceneFixedFaceMode, cutsceneDestinationTarget);
             }
+            else if (isMoveWithAIOn)
+            {
+                StartMovingWithAI(moveWithAIDestinationTarget);
+            }
 
         }
-        if (character == characters.enemy && MovementControl == MovementControls.patrol && !isCutsceneModeOn && !myCombatManager.isDead)
+        if (character == characters.enemy && MovementControl == MovementControls.patrol && !isCutsceneModeOn && !isMoveWithAIOn && !myCombatManager.isDead)
             m_Fov.gameObject.SetActive(true);
         else
             m_Fov.gameObject.SetActive(false);
@@ -198,7 +203,7 @@ public class Movement : MonoBehaviour
                 Physics2D.IgnoreLayerCollision(gameObject.layer, 8, false);
             }
 
-            if (!isCutsceneModeOn)
+            if (!isCutsceneModeOn && !isMoveWithAIOn)
             {
 
                 if (character == characters.player)
@@ -1097,20 +1102,22 @@ public class Movement : MonoBehaviour
 
         isCutsceneModeOn = turnOn;
 
-        cutsceneFixedFaceMode = fixedFaceMode;
+        if (turnOn)
+        {
+            cutsceneFixedFaceMode = fixedFaceMode;
 
-        cutsceneDestinationTarget = aiTarg;
+            cutsceneDestinationTarget = aiTarg;
+        }
 
 
 
     }
-
     void StartCutscene(bool fixedFaceMode, Transform aiTarget)
     {
         //disable fov..
         m_Fov.gameObject.SetActive(false);
         //enable AI if disabled..
-        if (!path.enabled && !aIDestinationSetter.enabled && !seeker.enabled)
+        if (!path.enabled || !aIDestinationSetter.enabled || !seeker.enabled)
         {
             path.enabled = true;
             aIDestinationSetter.enabled = true;
@@ -1152,6 +1159,82 @@ public class Movement : MonoBehaviour
         }
 
     }
+    
+    /// <summary>
+    /// This is for character movement with AI. (one kind of cutscene).. 
+    /// </summary>
+    /// <param name="fixedFaceMode"></param>
+    /// <param name="aiTarget"></param>
+    public void MoveCharacterWithAISettings(bool turnOn, string animation_1, string animation_2, Transform destinatonTarget)
+    {
+        if (turnOn)
+        {
+            //disable fov..
+            m_Fov.gameObject.SetActive(false);
+
+            OnFreezeInputEnable();
+
+            this.animation_1_for_move_with_AI = animation_1;
+            this.animation_2_for_move_with_AI = animation_2;
+
+            animator.SetTrigger(animation_1);
+
+            moveWithAIDestinationTarget = destinatonTarget;
+
+            isMoveWithAIOn = turnOn;
+        }
+        else
+        {
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName(animation_1) && !animator.GetCurrentAnimatorStateInfo(0).IsName(animation_2))
+            {
+                isMoveWithAIOn = turnOn;
+            }
+        }
+
+
+    }
+    void StartMovingWithAI(Transform aiTarget)
+    {
+        
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName(animation_1_for_move_with_AI) &&
+            animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+        {
+            OnFreezeInputDisable();
+            //enable AI if disabled..
+            if (!path.enabled || !aIDestinationSetter.enabled || !seeker.enabled)
+            {
+                path.enabled = true;
+                aIDestinationSetter.enabled = true;
+                seeker.enabled = true;
+            }
+
+            path.endReachedDistance = 0.01f;
+
+            aIDestinationSetter.target = aiTarget;
+
+            MoveEnemy();
+
+            counterForAnim2InMoveWithAI = 1;
+        }
+
+        if (path.reachedDestination)
+        {
+            if (counterForAnim2InMoveWithAI == 1)
+            {
+                animator.SetTrigger(animation_2_for_move_with_AI);
+                animator.SetFloat("Speed", 0f);
+                counterForAnim2InMoveWithAI = 0;
+            }
+
+        }
+
+
+
+
+
+
+    }
+
 
     #endregion
 

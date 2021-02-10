@@ -70,7 +70,7 @@ PrefabInstance:
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
-      value: Swordman (3)
+      value: Swordsman (3)
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -107,6 +107,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966903, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: alertBar
+      value: 
+      objectReference: {fileID: 4988528192410260712}
     - target: {fileID: 8921415669450966904, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Enabled
@@ -286,6 +291,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2051667850561331183}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4988528192410260712 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6431759292284439303, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2051667850561331183}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2051667850745505206
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -306,7 +323,7 @@ PrefabInstance:
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
-      value: Swordman (2)
+      value: Swordsman (2)
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -343,6 +360,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966903, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: alertBar
+      value: 
+      objectReference: {fileID: 4988528191018167985}
     - target: {fileID: 8921415669450966904, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Enabled
@@ -507,6 +529,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2051667850745505206}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4988528191018167985 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6431759292284439303, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2051667850745505206}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7473654599992901823
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -527,7 +561,7 @@ PrefabInstance:
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Name
-      value: Swordman (1)
+      value: Swordsman (1)
       objectReference: {fileID: 0}
     - target: {fileID: 8921415669450966881, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
@@ -569,6 +603,11 @@ PrefabInstance:
       propertyPath: leftHitboxRange
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8921415669450966903, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+        type: 3}
+      propertyPath: alertBar
+      value: 
+      objectReference: {fileID: 4536800193523485624}
     - target: {fileID: 8921415669450966904, guid: 4fe65435d4c2c0249ba98317eb8b571e,
         type: 3}
       propertyPath: m_Enabled
@@ -738,3 +777,15 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7473654599992901823}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4536800193523485624 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6431759292284439303, guid: 4fe65435d4c2c0249ba98317eb8b571e,
+    type: 3}
+  m_PrefabInstance: {fileID: 7473654599992901823}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

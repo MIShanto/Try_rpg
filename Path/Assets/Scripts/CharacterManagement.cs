@@ -44,6 +44,8 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float getPushedForce_archer;
     [SerializeField] float movementSpeed_archer;
     [SerializeField] float health_archer;
+    [Range(0,100)][Tooltip("increase/decrease in every 0.2 second..")]
+    [SerializeField] float alertIncreaseRate_archer, alertDecreaseRate_archer;
     GameObject[] m_archers;
 
     [Header("missile thrower Section")]
@@ -57,6 +59,9 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float getPushedForce_MT;
     [SerializeField] float movementSpeed_MT;
     [SerializeField] float health_MT;
+    [Range(0, 100)]
+    [Tooltip("increase/decrease in every 0.2 second..")]
+    [SerializeField] float alertIncreaseRate_MT, alertDecreaseRate_MT;
     GameObject[] m_missileThrowers;
 
     [Header("Swordsman Section")]
@@ -70,6 +75,9 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float getPushedForce_swordsman;
     [SerializeField] float movementSpeed_swordsman;
     [SerializeField] float health_swordsman;
+    [Range(0, 100)]
+    [Tooltip("increase/decrease in every 0.2 second..")]
+    [SerializeField] float alertIncreaseRate_swordsman, alertDecreaseRate_swordsman;
     [Tooltip("Applicable for healer only")]
     [SerializeField] float healingAmount;
     [SerializeField] int swordDamage;
@@ -92,6 +100,9 @@ public class CharacterManagement : MonoBehaviour
     [SerializeField] float lookingRangeDuringCharge;
     [SerializeField] float movementSpeed_CE;
     [SerializeField] float health_CE;
+    [Range(0, 100)]
+    [Tooltip("increase/decrease in every 0.2 second..")]
+    [SerializeField] float alertIncreaseRate_CE, alertDecreaseRate_CE;
     GameObject[] m_chargedEnemies;
     //charged enemy bug fix korte hobe...
 
@@ -155,6 +166,8 @@ public class CharacterManagement : MonoBehaviour
             m_archer.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_archer;
             m_archer.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_archer;
             m_archer.GetComponent<CombatManager>().maxHealth = health_archer;
+            m_archer.GetComponent<CombatManager>().alertIncreaseRate = alertIncreaseRate_archer;
+            m_archer.GetComponent<CombatManager>().alertDecreaseRate = alertDecreaseRate_archer;
             m_archer.GetComponent<CombatManager>().arrowFlightTime = flightTime;
             m_archer.GetComponent<Movement>().getPushedForce = getPushedForce_archer;
         }
@@ -176,6 +189,8 @@ public class CharacterManagement : MonoBehaviour
             m_missileThrower.GetComponent<Movement>().viewDistanceFront = viewDistanceFront_MT;
             m_missileThrower.GetComponent<Movement>().viewDistanceBack = viewDistanceBack_MT;
             m_missileThrower.GetComponent<CombatManager>().maxHealth = health_MT;
+            m_missileThrower.GetComponent<CombatManager>().alertIncreaseRate = alertIncreaseRate_MT;
+            m_missileThrower.GetComponent<CombatManager>().alertDecreaseRate = alertDecreaseRate_MT;
             m_missileThrower.GetComponent<CombatManager>().missileLimit = missileLimit;
             m_missileThrower.GetComponent<Movement>().getPushedForce = getPushedForce_MT;
         }
@@ -202,6 +217,9 @@ public class CharacterManagement : MonoBehaviour
                 s_man.GetComponent<Movement>().enemyHealingAmount = healingAmount;
                 s_man.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
                 s_man.GetComponent<CombatManager>().maxHealth = health_swordsman;
+                s_man.GetComponent<CombatManager>().alertIncreaseRate = alertIncreaseRate_swordsman;
+                s_man.GetComponent<CombatManager>().alertDecreaseRate = alertDecreaseRate_swordsman;
+
             }
         }
 
@@ -228,6 +246,8 @@ public class CharacterManagement : MonoBehaviour
             m_chargedEnemie.GetComponent<AIPath>().maxSpeed = movementSpeed_CE;
             m_chargedEnemie.GetComponent<Movement>().chargeAndLookoutArea = lookingRangeDuringCharge;
             m_chargedEnemie.GetComponent<CombatManager>().maxHealth = health_CE;
+            m_chargedEnemie.GetComponent<CombatManager>().alertIncreaseRate = alertIncreaseRate_CE;
+            m_chargedEnemie.GetComponent<CombatManager>().alertDecreaseRate = alertDecreaseRate_CE;
             m_chargedEnemie.GetComponent<Movement>().criticalHitProb = criticalHitProbability;
 
             if (lookingRangeDuringCharge > chargedAttackDistance_enemy)

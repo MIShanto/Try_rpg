@@ -386,7 +386,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &485293495808205312
 RectTransform:
   m_ObjectHideFlags: 0
@@ -775,7 +775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: 0
   previousCharacter: 0
-  MovementControl: 1
+  MovementControl: 0
   previousState: 0
   characterMoveSpeed: 5
   npcStartWaitTime: 3
@@ -862,6 +862,12 @@ MonoBehaviour:
   currentHealth: 0
   chargedDamage: 50
   healthBar: {fileID: 1583002447}
+  alertBar: {fileID: 2753172411171221770}
+  currentValue_AlertBar: 0
+  alertIncreaseRate: 5
+  alertDecreaseRate: 20
+  isAlertIncreasing: 0
+  isAlertDecreasing: 0
   isDead: 0
   isAttacking: 0
   isBlocked: 0

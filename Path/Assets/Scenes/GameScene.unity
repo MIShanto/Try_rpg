@@ -1538,18 +1538,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1437240100 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2753172411171221770, guid: 980ff0b8ecdd77547953aa37079e16d9,
-    type: 3}
-  m_PrefabInstance: {fileID: 2751545782310587539}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1441336802
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,51 +1585,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
+    - target: {fileID: 1190139877823271188, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
-      propertyPath: diagonalPoints.Array.size
-      value: 2
+      propertyPath: m_AnchorMax.x
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
+    - target: {fileID: 1190139877823271188, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
-      propertyPath: patrolPoints.Array.size
-      value: 2
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
+    - target: {fileID: 1534869433676935352, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
-      propertyPath: cutsceneDestinationTarget
-      value: 
-      objectReference: {fileID: 1188476136}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534869433676935352, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
-      propertyPath: patrolPoints.Array.data[0]
-      value: 
-      objectReference: {fileID: 1236465809}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
-        type: 3}
-      propertyPath: patrolPoints.Array.data[1]
-      value: 
-      objectReference: {fileID: 601218986}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
-        type: 3}
-      propertyPath: minX
-      value: 
-      objectReference: {fileID: 827019131}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
-        type: 3}
-      propertyPath: maxX
-      value: 
-      objectReference: {fileID: 1441336803}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
-        type: 3}
-      propertyPath: minY
-      value: 
-      objectReference: {fileID: 1236465809}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
-        type: 3}
-      propertyPath: maxY
-      value: 
-      objectReference: {fileID: 601218986}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
       propertyPath: diagonalPoints.Array.data[0]
@@ -1650,11 +1613,6 @@ PrefabInstance:
     - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
         type: 3}
       propertyPath: diagonalPoints.Array.data[1]
-      value: 
-      objectReference: {fileID: 1441336803}
-    - target: {fileID: 1873951907665199214, guid: 907798e6d7bf6394fb373f72356b14e7,
-        type: 3}
-      propertyPath: patrolPoints.Array.data[2]
       value: 
       objectReference: {fileID: 1441336803}
     - target: {fileID: 4092660100111519775, guid: 907798e6d7bf6394fb373f72356b14e7,
@@ -2330,11 +2288,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2051667851431905220, guid: 7cb74f6095c51ac4ca669e47156f912e,
         type: 3}
-      propertyPath: cutsceneDestinationTarget
-      value: 
-      objectReference: {fileID: 1188476136}
-    - target: {fileID: 2051667851431905220, guid: 7cb74f6095c51ac4ca669e47156f912e,
-        type: 3}
       propertyPath: diagonalPoints.Array.data[0]
       value: 
       objectReference: {fileID: 827019131}
@@ -2348,17 +2301,42 @@ PrefabInstance:
       propertyPath: enemySpawnManager
       value: 
       objectReference: {fileID: 1393633152}
-    - target: {fileID: 2051667851431905246, guid: 7cb74f6095c51ac4ca669e47156f912e,
-        type: 3}
-      propertyPath: m_Name
-      value: Swordsman (1)
-      objectReference: {fileID: 0}
     - target: {fileID: 2598377624155885308, guid: 7cb74f6095c51ac4ca669e47156f912e,
         type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2598377624155885308, guid: 7cb74f6095c51ac4ca669e47156f912e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575720271590157522, guid: 7cb74f6095c51ac4ca669e47156f912e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575720271590157522, guid: 7cb74f6095c51ac4ca669e47156f912e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575720273518859915, guid: 7cb74f6095c51ac4ca669e47156f912e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4575720273518859915, guid: 7cb74f6095c51ac4ca669e47156f912e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922158487068445147, guid: 7cb74f6095c51ac4ca669e47156f912e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4922158487068445147, guid: 7cb74f6095c51ac4ca669e47156f912e,
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -2383,16 +2361,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7473654598724917390, guid: 7cb74f6095c51ac4ca669e47156f912e,
-        type: 3}
-      propertyPath: m_Name
-      value: Swordsman (3)
-      objectReference: {fileID: 0}
-    - target: {fileID: 7473654598724917396, guid: 7cb74f6095c51ac4ca669e47156f912e,
-        type: 3}
-      propertyPath: cutsceneDestinationTarget
-      value: 
-      objectReference: {fileID: 1188476136}
     - target: {fileID: 7473654598724917396, guid: 7cb74f6095c51ac4ca669e47156f912e,
         type: 3}
       propertyPath: diagonalPoints.Array.data[0]
@@ -2415,11 +2383,6 @@ PrefabInstance:
       objectReference: {fileID: 1393633152}
     - target: {fileID: 7473654599614522061, guid: 7cb74f6095c51ac4ca669e47156f912e,
         type: 3}
-      propertyPath: cutsceneDestinationTarget
-      value: 
-      objectReference: {fileID: 1188476136}
-    - target: {fileID: 7473654599614522061, guid: 7cb74f6095c51ac4ca669e47156f912e,
-        type: 3}
       propertyPath: diagonalPoints.Array.data[0]
       value: 
       objectReference: {fileID: 827019131}
@@ -2428,11 +2391,6 @@ PrefabInstance:
       propertyPath: diagonalPoints.Array.data[1]
       value: 
       objectReference: {fileID: 1441336803}
-    - target: {fileID: 7473654599614522071, guid: 7cb74f6095c51ac4ca669e47156f912e,
-        type: 3}
-      propertyPath: m_Name
-      value: Swordsman (2)
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7cb74f6095c51ac4ca669e47156f912e, type: 3}
 --- !u!1001 &2751545782310587539
@@ -2525,38 +2483,7 @@ PrefabInstance:
       propertyPath: enemySpawnManager
       value: 
       objectReference: {fileID: 1393633152}
-    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
-        type: 3}
-      propertyPath: alertBar
-      value: 
-      objectReference: {fileID: 1437240100}
-    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
-        type: 3}
-      propertyPath: maxStatus_AlertBar
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
-        type: 3}
-      propertyPath: alertIncreaseRate
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2751545783011731726, guid: 980ff0b8ecdd77547953aa37079e16d9,
-        type: 3}
-      propertyPath: alertDecreaseRate
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126129982233602351, guid: 980ff0b8ecdd77547953aa37079e16d9,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5126129982233602351, guid: 980ff0b8ecdd77547953aa37079e16d9,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: -6245815814931799436, guid: 980ff0b8ecdd77547953aa37079e16d9, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 980ff0b8ecdd77547953aa37079e16d9, type: 3}
 --- !u!1001 &3192179333990942546
 PrefabInstance:
@@ -2904,6 +2831,81 @@ PrefabInstance:
       propertyPath: fovAngleBack_MT
       value: 60
       objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: alertIncreaseRate_archer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: alertDecreaseRate_archer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: fovAngleFront_swordsman
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: fovAngleBack_swordsman
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: fovAngleFront_CE
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: fovAngleBack_CE
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: getPushedForce_CE
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: lookingRangeDuringCharge
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: health_CE
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: alertIncreaseRate_CE
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: alertDecreaseRate_CE
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: alertIncreaseRate_swordsman
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: alertDecreaseRate_swordsman
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: alertIncreaseRate_MT
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5098450398515338323, guid: 81e8bea2d28795842925b2daabba5117,
+        type: 3}
+      propertyPath: alertDecreaseRate_MT
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 5098450398515338324, guid: 81e8bea2d28795842925b2daabba5117,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2988,31 +2990,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7126549077795459170, guid: f39e663e9b41b994fbdb8e63cca78589,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 7952596589143550594, guid: f39e663e9b41b994fbdb8e63cca78589,
         type: 3}
-      propertyPath: myPatrolPoints.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952596589143550594, guid: f39e663e9b41b994fbdb8e63cca78589,
-        type: 3}
-      propertyPath: cutsceneDestinationTarget
-      value: 
-      objectReference: {fileID: 1188476136}
-    - target: {fileID: 7952596589143550594, guid: f39e663e9b41b994fbdb8e63cca78589,
-        type: 3}
-      propertyPath: patrolPoints.Array.data[0]
+      propertyPath: myPatrolPoints.Array.data[0].point
       value: 
       objectReference: {fileID: 1236465809}
-    - target: {fileID: 7952596589143550594, guid: f39e663e9b41b994fbdb8e63cca78589,
-        type: 3}
-      propertyPath: patrolPoints.Array.data[1]
-      value: 
-      objectReference: {fileID: 601218986}
     - target: {fileID: 7952596589143550594, guid: f39e663e9b41b994fbdb8e63cca78589,
         type: 3}
       propertyPath: diagonalPoints.Array.data[0]
@@ -3023,11 +3005,6 @@ PrefabInstance:
       propertyPath: diagonalPoints.Array.data[1]
       value: 
       objectReference: {fileID: 1441336803}
-    - target: {fileID: 7952596589143550594, guid: f39e663e9b41b994fbdb8e63cca78589,
-        type: 3}
-      propertyPath: myPatrolPoints.Array.data[0].point
-      value: 
-      objectReference: {fileID: 1236465809}
     - target: {fileID: 7952596589723609992, guid: f39e663e9b41b994fbdb8e63cca78589,
         type: 3}
       propertyPath: m_LocalPosition.x

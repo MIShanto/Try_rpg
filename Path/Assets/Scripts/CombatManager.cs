@@ -31,8 +31,8 @@ public class CombatManager : MonoBehaviour
 
     [Header("Alert functionality")]
     [SerializeField] Slider alertBar;
-    public float maxStatus_AlertBar, currentValue_AlertBar, alertIncreaseRate, alertDecreaseRate;
-    public bool isAlertIncreasing, isAlertDecreasing;
+    [HideInInspector] public float currentValue_AlertBar, alertIncreaseRate, alertDecreaseRate;
+    [HideInInspector] public bool isAlertIncreasing, isAlertDecreasing;
 
     [HideInInspector] public bool isDead, isAttacking = false, isBlocked;
     [HideInInspector] public float arrowFlightTime;
@@ -541,12 +541,18 @@ public class CombatManager : MonoBehaviour
     /// </summary>
     public void ResetSession()
     {
-        currentHealth = maxHealth;
-        healthBar.maxValue = currentHealth;
+        if (healthBar != null)
+        {
+            currentHealth = maxHealth;
+            healthBar.maxValue = currentHealth;
+        }
 
-        currentValue_AlertBar = 0; // measure in 100. 
-        alertBar.maxValue = 100;
-        alertBar.value = currentValue_AlertBar; // initial value. 
+        if (alertBar != null)
+        {
+            currentValue_AlertBar = 0; // measure in 100. 
+            alertBar.maxValue = 100;
+            alertBar.value = currentValue_AlertBar; // initial value. 
+        }
 
         isDead = false;
         isBlocked = false;
