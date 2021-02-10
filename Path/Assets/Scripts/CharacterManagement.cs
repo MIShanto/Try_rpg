@@ -147,7 +147,7 @@ public class CharacterManagement : MonoBehaviour
 
         foreach (GameObject m_archer in m_archers)
         {
-            m_archer.GetComponent<AIPath>().maxAcceleration = movementSpeed_archer;
+            m_archer.GetComponent<AIPath>().maxSpeed = movementSpeed_archer;
             m_archer.GetComponent<Movement>().nextAttackTime = attackDuration_archer;
             m_archer.GetComponent<Movement>().callGangRadius = callGangRadius_archer;
             m_archer.GetComponent<Movement>().fovAngleFront = fovAngleFront_archer;
@@ -168,7 +168,7 @@ public class CharacterManagement : MonoBehaviour
 
         foreach (GameObject m_missileThrower in m_missileThrowers)
         {
-            m_missileThrower.GetComponent<AIPath>().maxAcceleration = movementSpeed_MT;
+            m_missileThrower.GetComponent<AIPath>().maxSpeed = movementSpeed_MT;
             m_missileThrower.GetComponent<Movement>().nextAttackTime = attackDuration_MT;
             m_missileThrower.GetComponent<Movement>().callGangRadius = callGangRadius_MT;
             m_missileThrower.GetComponent<Movement>().fovAngleFront = fovAngleFront_MT;
@@ -183,15 +183,15 @@ public class CharacterManagement : MonoBehaviour
         #endregion
 
         #region sworsman
-
+        
         if (m_swordsmans == null)
             m_swordsmans = GameObject.FindGameObjectsWithTag("SwordsmanUnit");
-
+        
         foreach (GameObject m_swordsman in m_swordsmans)
         {
             foreach (Transform s_man in m_swordsman.transform)
             {
-                s_man.GetComponent<AIPath>().maxAcceleration = movementSpeed_swordsman;
+                s_man.GetComponent<AIPath>().maxSpeed = movementSpeed_swordsman;
                 s_man.GetComponent<Movement>().nextAttackTime = attackDuration_swordsman;
                 s_man.GetComponent<Movement>().callGangRadius = callGangRadius_swordsman;
                 s_man.GetComponent<Movement>().fovAngleFront = fovAngleFront_swordsman;
@@ -225,7 +225,7 @@ public class CharacterManagement : MonoBehaviour
             m_chargedEnemie.GetComponent<Movement>().chargedAttackSpeed = chargedAttackVelocity_enemy;
             m_chargedEnemie.GetComponent<Movement>().chargedDistance = chargedAttackDistance_enemy;
             m_chargedEnemie.GetComponent<Movement>().waitAfterAttackDuration = waitAfterAttackDuration;
-            m_chargedEnemie.GetComponent<AIPath>().maxAcceleration = movementSpeed_CE;
+            m_chargedEnemie.GetComponent<AIPath>().maxSpeed = movementSpeed_CE;
             m_chargedEnemie.GetComponent<Movement>().chargeAndLookoutArea = lookingRangeDuringCharge;
             m_chargedEnemie.GetComponent<CombatManager>().maxHealth = health_CE;
             m_chargedEnemie.GetComponent<Movement>().criticalHitProb = criticalHitProbability;

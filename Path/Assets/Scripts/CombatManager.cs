@@ -29,6 +29,11 @@ public class CombatManager : MonoBehaviour
     [SerializeField] int chargedDamage;
     [SerializeField] Slider healthBar;
 
+    [Header("Alert functionality")]
+    [SerializeField] Slider alertBar;
+    public float maxStatus_AlertBar, currentValue_AlertBar, alertIncreaseRate, alertDecreaseRate;
+    public bool isAlertIncreasing, isAlertDecreasing;
+
     [HideInInspector] public bool isDead, isAttacking = false, isBlocked;
     [HideInInspector] public float arrowFlightTime;
 
@@ -57,13 +62,13 @@ public class CombatManager : MonoBehaviour
         animator = GetComponent<Animator>();
         characterMovement = GetComponent<Movement>();
         rb = GetComponent<Rigidbody2D>();
-
         ResetSession();
     }
 
     //only for debug mode.
     private void Update()
     {
+
         //only for debug mode.
         //armor section
         if (closedRangedArmor && !longRangedArmor && !magicalArmor)
@@ -423,24 +428,6 @@ public class CombatManager : MonoBehaviour
 
     #endregion
 
-    #region Stelth Mode (Distraction)
-
-    /// <summary>
-    /// this method is called when player goes to stelth mode to distract enemies..
-    /// </summary>
-    public void LaunchDistractibleObject(Vector2 spawnPosition)
-    {
-        GameObject m_distractibleObject = Instantiate(distractibleObject, transform.position, Quaternion.identity);
-
-        Vector2 Vo = calculateVelocity(transform.position, spawnPosition, 1f);
-
-        m_distractibleObject.GetComponent<Rigidbody2D>().velocity = Vo;
-
-        m_distractibleObject.GetComponent<Projectile>().setRotation(Mathf.Acos(Vo.x / Vo.magnitude) * Mathf.Rad2Deg, spawnPosition);
-        m_distractibleObject.GetComponent<Projectile>().SetFlightTime(1f);
-    }
-
-    #endregion
     #region Missile thrower
 
     /// <summary>
@@ -462,6 +449,93 @@ public class CombatManager : MonoBehaviour
 
     #endregion
 
+    #region Stelth Mode
+
+    /// <summary>
+    /// this method is called when player goes to stelth mode to distract enemies..
+    /// </summary>
+    public void LaunchDistractibleObject(Vector2 spawnPosition)
+    {
+        GameObject m_distractibleObject = Instantiate(distractibleObject, transform.position, Quaternion.identity);
+
+        Vector2 Vo = calculateVelocity(transform.position, spawnPosition, 1f);
+
+        m_distractibleObject.GetComponent<Rigidbody2D>().velocity = Vo;
+
+        m_distractibleObject.GetComponent<Projectile>().setRotation(Mathf.Acos(Vo.x / Vo.magnitude) * Mathf.Rad2Deg, spawnPosition);
+        m_distractibleObject.GetComponent<Projectile>().SetFlightTime(1f);
+    }
+
+    /// <summary>
+    /// increase alert value..
+    /// </summary>
+    /// <param name="enemyLayer"></param>
+    /// <returns></returns>
+    public IEnumerator EnemyAlertIncrease(LayerMask enemyLayer)
+    {
+        isAlertIncreasing = true;
+        isAlertDecreasing = false;
+
+        while (true)
+        { // loops forever...
+            if (currentValue_AlertBar < 100)
+            { // if value < 100...
+                currentValue_AlertBar += alertIncreaseRate; // increase value and wait the specified time
+                alertBar.value = currentValue_AlertBar;
+                yield return new WaitForSeconds(0.2f);
+            }
+            else
+            { // if value >= 100, just yield 
+                yield return null;
+                OnPlayerDetection(enemyLayer);
+            }
+        }
+        
+    }
+
+    /// <summary>
+    /// Things to do when enemy is alerted... 
+    /// </summary>
+    private void OnPlayerDetection(LayerMask enemyLayer)
+    {
+        characterMovement.MovementControl = Movement.MovementControls.walk;
+        Collider2D[] hitArea = Physics2D.OverlapCircleAll(transform.position,
+                                                         characterMovement.callGangRadius, enemyLayer);
+        foreach (Collider2D hitObject in hitArea)
+        {
+            if (hitObject.GetComponent<Movement>().character == Movement.characters.enemy)
+            {
+                hitObject.GetComponent<Movement>().MovementControl = Movement.MovementControls.walk;
+            }
+        }
+    }
+
+    /// <summary>
+    /// decrease alert value..
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator EnemyAlertDecrease()
+    {
+        isAlertDecreasing = true;
+        isAlertIncreasing = false;
+
+        while (true)
+        { // loops forever...
+            if (currentValue_AlertBar > 0)
+            { // if value > 0...
+                currentValue_AlertBar -= alertDecreaseRate; // decrease value and wait the specified time
+                alertBar.value = currentValue_AlertBar;
+                yield return new WaitForSeconds(0.2f);
+            }
+            else
+            { // if value <= 0, just yield 
+                yield return null;
+            }
+        }
+    }
+
+    #endregion
+
     /// <summary>
     /// resets everythig of that script
     /// </summary>
@@ -469,6 +543,11 @@ public class CombatManager : MonoBehaviour
     {
         currentHealth = maxHealth;
         healthBar.maxValue = currentHealth;
+
+        currentValue_AlertBar = 0; // measure in 100. 
+        alertBar.maxValue = 100;
+        alertBar.value = currentValue_AlertBar; // initial value. 
+
         isDead = false;
         isBlocked = false;
     }

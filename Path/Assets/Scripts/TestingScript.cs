@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class TestingScript : MonoBehaviour
 {
     public Movement m;
     public Transform t;
